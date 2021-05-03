@@ -15,6 +15,9 @@
 	<description>Deckbuilder REST API</description>
 	<properties>
 		<java.version>1.8</java.version>
+  		<sonar.projectKey>rnbiv45_group-2-project-2</sonar.projectKey>
+  		<sonar.organization>rnbiv45</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
