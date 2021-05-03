@@ -69,32 +69,35 @@ Keeping track of data
 3	Admins can view logs
 
 ### Monday
-1-As a user, I can register an account.
-2-As a user, I can login to an account.
-3-As a user, I can log out from an account.
-4-As a user, I can create a new deck.
-5-As a user, I can view cards in my decks.
-6-As a user, I can delete a deck.
-7-As a user, I can collect cards (how?)
-8-As a user, I can view any missing cards that are in the system I don't have
-9-As a user, I can view all the cards available in the system.
-10-As a user, I can view all the cards I own
-11-As a user, I can view all users in the system who have cards.
-12-As a user, I can see the cards that are meta to the card game.
-13-As a user, I can add and remove cards from a deck.
-14-As a user, I can view other users’ decks.
-15-As a user, I can interact with a user for a trade request.
-16-As a user, I can accept the interaction with a user who started the trade request.
-17-As a user, I can accept or deny the trade form by another user.
-18-As a user, I can view my own trade histories and transaction history, popular cards.
-19-As an Admin, I can remove (ban) a user from the system.
-20-As an Admin, I can add or remove a card in the database.
-21-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.
-22-As an Admin, I can view all users' trade histories and transaction history, popular cards.
+01	-As a user, I can register an account.
+02	-As a user, I can login to an account.
+02	-As a user, I can log out from an account.
 
-------if we have more time? ------
-23-As an Admin, I can change role of user to from a user to a mod, vice versa.
-24-As a Mod, I can remove (ban) a user from the system.
+02	-As a user, I can view all users in the system who have cards.
+02	-As a user, I can collect cards (how?)
+02	-As a user, I can view all the cards I own
+02	-As a user, I can view any missing cards that are in the system I don't have
+02	-As a user, I can view all the cards available in the system.
+
+02	-As a user, I can create a new deck.
+02	-As a user, I can view cards in my decks.
+02	-As a user, I can delete a deck.
+02	-As a user, I can add and remove cards from a deck.
+02	-As a user, I can view other users’ decks.
+
+03	-As a user, I can interact with a user for a trade request.
+03	-As a user, I can accept the interaction with a user who started the trade request.
+02	-As a user, I can accept or deny the trade form by another user.
+03	-As a user, I can view my own trade histories and transaction history, popular cards.
+
+05	-As a user, I can see the cards that are meta to the card game.
+
+02	-As an Admin, I can remove (ban) a user from the system.
+02	-As an Admin, I can add or remove a card in the database.
+02	-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.
+02	-As an Admin, I can view all users' trade histories and transaction history, popular cards.
+02	-As an Admin, I can change role of user to from a user to a mod, vice versa.
+02	-As a Mod, I can remove (ban) a user from the system.
 
 ## Database
 
