@@ -1,5 +1,9 @@
 package com.revature.group2.repos;
 
-public class UserRepo {
+import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
+public interface UserRepo extends ReactiveCassandraRepository {
+	
 }
