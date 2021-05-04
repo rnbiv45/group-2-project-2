@@ -52,11 +52,12 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 		<!-- Spring Boot Actuator: Gives us some resful endpoints for web application 
-			metrics such as /health, /beans/, and /metrics -->
+			metrics such as /health, /beans/, and /metrics 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+		-->
 		<!-- provides you with JUnit, SpringTest (Spring Boot Test), AssertJ, Hamcrest, 
 			Mockito, JSONassert, and JSONPath. -->
 		<dependency>
