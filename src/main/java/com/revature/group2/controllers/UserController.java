@@ -1,29 +1,30 @@
 package com.revature.group2.controllers;
 
-import org.reactivestreams.Publisher;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.group2.beans.User;
 import com.revature.group2.services.UserService;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping(value="/users")
 public class UserController {
 	
-	@PostMapping(value="{userId}/cards")
-	public Publisher<User> collectCard() {
-		return null;
+	private UserService userService;
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 	
-	@PostMapping("users")
-	public Publisher<User> registerUser(@RequestBody User user){
-		userService.addUser(user);
-		return ResponseEntity.status(201).body(user);
+	@PostMapping
+	public Mono<User> registerUser(@RequestBody User user){
+		return userService.addUser(user);
 	}
 
 }
