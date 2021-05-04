@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### MetaData ###
+/.metadata/
+
+### Git ###
+/.git/
+/.github
