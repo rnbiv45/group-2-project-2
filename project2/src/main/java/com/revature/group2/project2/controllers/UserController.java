@@ -9,9 +9,9 @@ import com.revature.group2.project2.services.UserService;
 public class UserController {
 	private UserService userservice;
 	
-	@Autowired
+	@Autowired // allows Spring to resolve and inject collaborating beans into our bean
 	public void setPlayerService(UserService userservice) {
-		this.userservice = userservice;
+		this.userservice = userservice; //userservice will now be declared in it's variable!
 	}
 	
 }

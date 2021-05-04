@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.revature.group2.project2.beans.User;
 
 
-@Repository
+@Repository // fulfils the role for the DAO
 public interface UserRepository extends CassandraRepository<User, String>{
 	@AllowFiltering
 	List<User> findAllByRole(User.Role r);
