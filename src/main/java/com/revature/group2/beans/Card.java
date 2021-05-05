@@ -9,9 +9,12 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import lombok.Data;
+
 @Table("card")
+@Data
 public class Card {
-	@Column
+	@Column 
 	String name;
 	@PrimaryKeyColumn(
 			name="type",
@@ -53,5 +56,4 @@ public class Card {
 	Integer defenseValue;
 	@Column
 	Integer damageValue;
-
 }

@@ -1,5 +1,11 @@
 package com.revature.group2.repos;
 
-public class DeckRepo {
+import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
+import org.springframework.stereotype.Repository;
+
+import com.revature.group2.beans.Deck;
+
+@Repository
+public interface DeckRepo extends ReactiveCassandraRepository<Deck, String> {
 
 }

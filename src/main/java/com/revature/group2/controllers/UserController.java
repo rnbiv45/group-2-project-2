@@ -16,7 +16,7 @@ import com.revature.group2.services.UserService;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(value="/users")
+@RequestMapping(path="/users")
 public class UserController {
 	
 	private UserService userService;
