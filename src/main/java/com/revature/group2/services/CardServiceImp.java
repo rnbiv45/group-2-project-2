@@ -3,6 +3,7 @@ package com.revature.group2.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.User;
@@ -10,6 +11,7 @@ import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
 
+@Service
 public class CardServiceImp implements CardService {
 	private CardRepo cardRepo;
 	
