@@ -2,6 +2,8 @@ package com.revature.group2.beans;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.revature.group2.beans.Archetype;;
+
 public class Deck {
 	private Archetype primaryArchetype;
 	private Archetype secondaryArchetype;

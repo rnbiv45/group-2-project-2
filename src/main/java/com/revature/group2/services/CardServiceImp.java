@@ -1,21 +1,29 @@
 package com.revature.group2.services;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
 
+@Service
 public class CardServiceImp implements CardService {
 	private CardRepo cardRepo;
 	
+	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
 		this.cardRepo = cardRepo;
 	}
 
 	@Override
 	public Flux<Card> getCardsFromSystem() {
-		return cardRepo.findAll();
+		return null;
+		//return cardRepo.findAll();
 	}
 
 	@Override
@@ -38,21 +46,21 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public void addCardToSystem(Card card) {
-		cardRepo.insert(card);
+		//cardRepo.insert(card);
 		return;
 		
 	}
 
 	@Override
 	public void removeCardFromSystem(Card card) {
-		cardRepo.delete(card);
+		//cardRepo.delete(card);
 		return;
 		
 	}
 
 	@Override
 	public void setCard(Card card) {
-		cardRepo.save(card);
+		//cardRepo.save(card);
 		return;
 		
 	}
