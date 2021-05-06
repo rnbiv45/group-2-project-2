@@ -35,68 +35,11 @@ public class Deck {
 	@CassandraType(type = Name.UUID)
 	private UUID uuid;
 	@Column
-	private User creator;
+	@CassandraType(type = Name.TEXT)
+	private String creator;
 	@Column
+	@CassandraType(type = Name.BLOB)
 	private Map<Card, Integer> cards;
-	
-	
-	
-	public Deck() {
-		super();
-		this.setPrimaryArchetype(null);
-		this.setSecondaryArchetype(null);
-		this.setCreator(null);
-		this.setCards(new HashMap<Card, Integer>());
-		
-	}
-
-
-
-	public Archetype getPrimaryArchetype() {
-		return primaryArchetype;
-	}
-
-
-
-	public void setPrimaryArchetype(Archetype primaryArchetype) {
-		this.primaryArchetype = primaryArchetype;
-	}
-
-
-
-	public Archetype getSecondaryArchetype() {
-		return secondaryArchetype;
-	}
-
-
-
-	public void setSecondaryArchetype(Archetype secondaryArchetype) {
-		this.secondaryArchetype = secondaryArchetype;
-	}
-
-
-
-	public User getCreator() {
-		return creator;
-	}
-
-
-
-	public void setCreator(User creator) {
-		this.creator = creator;
-	}
-
-
-
-	public Map<Card, Integer> getCards() {
-		return cards;
-	}
-
-
-
-	public void setCards(Map<Card, Integer> cards) {
-		this.cards = cards;
-	}
 
 
 
