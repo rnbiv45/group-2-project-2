@@ -1,23 +1,22 @@
 package com.revature.group2.beans;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Table(value=Card.tableName)
 @Data
 public class Card {
 	
-	@org.springframework.data.annotation.Transient
+	@Transient
 	public static final String tableName = "card";
 	
 	@PrimaryKey
-	@Getter @Setter private CardPrimaryKey cardPrimaryKey;
+	private CardPrimaryKey cardPrimaryKey;
 	@Column
 	private String name;
 	@Column
@@ -28,4 +27,6 @@ public class Card {
 	private Integer defenseValue;
 	@Column
 	private Integer damageValue;
+	@Column
+	private Integer buffValue;
 }

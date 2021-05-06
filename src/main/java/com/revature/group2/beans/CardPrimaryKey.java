@@ -41,7 +41,7 @@ public class CardPrimaryKey implements Serializable{
 			type = PrimaryKeyType.CLUSTERED,
 			ordering = Ordering.DESCENDING)
 	@CassandraType(type = Name.UUID)
-	UUID id;
+	UUID uuid;
 	@PrimaryKeyColumn(
 			name="rarity",
 			ordinal=2,
