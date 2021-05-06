@@ -75,6 +75,7 @@ public class CardServiceImp implements CardService {
 	@Override
 	public Mono<Card> collectCard(UUID cardUuid) {
 		// TODO add card to logged in player
-		return cardRepo.findByUuid(cardUuid);
+		//return cardRepo.findByUuid(cardUuid);
+		return Mono.empty();
 	}
 }
