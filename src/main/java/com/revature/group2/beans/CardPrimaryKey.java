@@ -24,15 +24,13 @@ public class CardPrimaryKey implements Serializable{
 	@PrimaryKeyColumn(
 			name="type",
 			ordinal=1,
-			type = PrimaryKeyType.PARTITIONED,
-			ordering = Ordering.DESCENDING)
+			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
 	Type type;
 	@PrimaryKeyColumn(
 			name="archetype",
 			ordinal=0,
-			type = PrimaryKeyType.PARTITIONED,
-			ordering = Ordering.DESCENDING)
+			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
 	Archetype archetype;
 	@PrimaryKeyColumn(

@@ -17,21 +17,20 @@ public class Deck {
 	@PrimaryKeyColumn(
 			name="primaryArchetype",
 			ordinal=0,
-			type = PrimaryKeyType.PARTITIONED,
-			ordering = Ordering.DESCENDING)
+			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
 	private Archetype primaryArchetype;
 	@PrimaryKeyColumn(
 			name="secondaryArchetype",
 			ordinal=1,
-			type = PrimaryKeyType.PARTITIONED,
-			ordering = Ordering.DESCENDING)
+			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
 	private Archetype secondaryArchetype;
 	@PrimaryKeyColumn(
 			name="uuid",
 			ordinal=2,
-			type = PrimaryKeyType.CLUSTERED)
+			type = PrimaryKeyType.CLUSTERED,
+			ordering = Ordering.DESCENDING)
 	@CassandraType(type = Name.UUID)
 	private UUID uuid;
 	@Column
