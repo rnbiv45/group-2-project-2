@@ -26,8 +26,9 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Flux<Card> getCardsFromSystem() {
-		return Flux.empty();
-		//return cardRepo.findAll();
+		//return null;
+		return cardRepo.findAll();
+		//return Flux.empty();
 	}
 
 	@Override
@@ -50,21 +51,23 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public void addCardToSystem(Card card) {
-		//cardRepo.insert(card);
+		System.out.println(card);
+		cardRepo.insert(card);
+		System.out.println("9900");
 		return;
 		
 	}
 
 	@Override
 	public void removeCardFromSystem(Card card) {
-		//cardRepo.delete(card);
+		cardRepo.delete(card);
 		return;
 		
 	}
 
 	@Override
 	public void setCard(Card card) {
-		//cardRepo.save(card);
+		cardRepo.save(card);
 		return;
 		
 	}

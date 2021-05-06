@@ -8,7 +8,6 @@ import org.springframework.data.cassandra.core.cql.Ordering;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
-import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyClass;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 
@@ -24,15 +23,13 @@ public class CardPrimaryKey implements Serializable{
 	@PrimaryKeyColumn(
 			name="type",
 			ordinal=1,
-			type = PrimaryKeyType.PARTITIONED,
-			ordering = Ordering.DESCENDING)
+			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
 	Type type;
 	@PrimaryKeyColumn(
 			name="archetype",
 			ordinal=0,
-			type = PrimaryKeyType.PARTITIONED,
-			ordering = Ordering.DESCENDING)
+			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
 	Archetype archetype;
 	@PrimaryKeyColumn(
@@ -49,8 +46,6 @@ public class CardPrimaryKey implements Serializable{
 			ordering = Ordering.DESCENDING)
 	@CassandraType(type = Name.INT)
 	int rarity;
-	@Column
-	Set<Effect> effects;
 	@PrimaryKeyColumn(
 			name="isBanned",
 			ordinal=3,
