@@ -37,7 +37,7 @@ public class CassandraConfig {
 		sessionFactory.setSession(session);
 		sessionFactory.setConverter(converter);
 		// Please do not drop all of my tables.
-		sessionFactory.setSchemaAction(SchemaAction.NONE);
+		sessionFactory.setSchemaAction(SchemaAction.CREATE_IF_NOT_EXISTS);
 
 		return sessionFactory;
 	}

@@ -35,7 +35,7 @@ public class CardController {
 		CardPrimaryKey myKey = new CardPrimaryKey();
 		myKey.setArchetype(Archetype.FIRE);
 		myKey.setBanned(false);
-		myKey.setEffects(null);
+		//myKey.setEffects(null);
 		myKey.setUuid(UUID.randomUUID());
 		myKey.setType(Type.MONSTER);
 		myKey.setRarity(5);
@@ -45,7 +45,9 @@ public class CardController {
 		myCard.setDefenseValue(5);
 		myCard.setDamageValue(0);
 		myCard.setName("DummyCard");
+		System.out.println(myCard);
 		cardService.addCardToSystem(myCard);
+		System.out.println("999999");
 	}
 	
 	//get all cards
