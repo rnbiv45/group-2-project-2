@@ -37,7 +37,7 @@ public class Deck {
 	private User creator;
 	@Column
 	private Map<Card, Integer> cards;
-	
+		
 	public Deck() {
 		super();
 		this.setPrimaryArchetype(null);

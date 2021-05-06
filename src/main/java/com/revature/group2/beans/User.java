@@ -19,12 +19,6 @@ public class User {
 	private Map<Card, Integer> cards; //* cards: Map of Card, Amount
 	@Column
 	private Set<Deck> decks; //* decks: Set of Decks
-	@Column
-	private Role role; //* isAdmin: Boolean
-	
-	public enum Role {
-		MEMBER, MOD, ADMIN;
-	}
 	
 	
 	public User() {
