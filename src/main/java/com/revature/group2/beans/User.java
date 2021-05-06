@@ -4,26 +4,26 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.Data;
 
-//import org.springframework.data.cassandra.core.mapping.Column;
-//import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-//import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
-//@Table("player")
+
+@Table("player")
 @Data
 public class User {
-	//@PrimaryKey
+	@PrimaryKey
 	private String name; //* username: String
-	//@Column
+	@Column
 	private String pass; //* password: String
-	//@Column
+	@Column
 	private Map<Card, Integer> cards; //* cards: Map of Card, Amount
-	//@Column
+	@Column
 	private Set<Deck> decks; //* decks: Set of Decks
-	//@Column
+	@Column
 	private UserRole role; //* isAdmin: Boolean
 	
 	public User() {

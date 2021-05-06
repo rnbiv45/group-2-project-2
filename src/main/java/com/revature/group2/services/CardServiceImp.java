@@ -74,7 +74,4 @@ public class CardServiceImp implements CardService {
 		// TODO add card to logged in player
 		return cardRepo.findByUuid(cardUuid);
 	}
-	
-	
-
 }
