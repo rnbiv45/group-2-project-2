@@ -12,7 +12,6 @@ import org.springframework.data.cassandra.core.mapping.Column;
 
 import com.revature.group2.beans.Archetype;;
 
-
 public class Deck {
 	@PrimaryKeyColumn(
 			name="primaryArchetype",
@@ -38,8 +37,6 @@ public class Deck {
 	private User creator;
 	@Column
 	private Map<Card, Integer> cards;
-	
-	
 	
 	public Deck() {
 		super();
