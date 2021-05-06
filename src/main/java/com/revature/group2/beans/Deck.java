@@ -38,8 +38,6 @@ public class Deck {
 	@Column
 	private Map<Card, Integer> cards;
 	
-	
-	
 	public Deck() {
 		super();
 		this.setPrimaryArchetype(null);

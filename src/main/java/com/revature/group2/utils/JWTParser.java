@@ -8,11 +8,13 @@ import com.revature.group2.beans.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
 
 public class JWTParser {
 
 	private ObjectMapper mapper;
+	private JWTParser tokenService;
 	
 	public User parser(String jwStr) throws JsonMappingException, JsonProcessingException{
 		Jws<Claims> jws = Jwts.parser()
@@ -24,8 +26,13 @@ public class JWTParser {
 				.get("user").toString(), User.class);
 	}
 	
-	public String makeToken(User user) {
-		return null;
+	public String makeToken(User user) throws JsonProcessingException {
+		String secretKey = System.getenv("SECRET_KEY");
 		
+		String userString = mapper.writeValueAsString(user);
+
+		return Jwts.builder().claim("user", userString).signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(
+				secretKey
+		)).compact();
 	}
 }
