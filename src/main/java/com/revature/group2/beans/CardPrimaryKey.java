@@ -33,7 +33,7 @@ public class CardPrimaryKey implements Serializable{
 	@CassandraType(type = Name.TEXT)
 	Archetype archetype;
 	@PrimaryKeyColumn(
-			name="id",
+			name="uuid",
 			ordinal=4,
 			type = PrimaryKeyType.CLUSTERED,
 			ordering = Ordering.DESCENDING)
