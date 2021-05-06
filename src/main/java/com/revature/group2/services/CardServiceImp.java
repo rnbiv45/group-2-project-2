@@ -1,6 +1,8 @@
 package com.revature.group2.services;
 
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,9 +12,11 @@ import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class CardServiceImp implements CardService {
+	private Random random = new Random();
 	private CardRepo cardRepo;
 	
 	@Autowired
@@ -64,5 +68,13 @@ public class CardServiceImp implements CardService {
 		return;
 		
 	}
+
+	@Override
+	public Mono<Card> collectCard(UUID cardUuid) {
+		// TODO add card to logged in player
+		return cardRepo.findByUuid(cardUuid);
+	}
+	
+	
 
 }
