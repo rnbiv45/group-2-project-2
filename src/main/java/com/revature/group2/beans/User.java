@@ -8,21 +8,26 @@ import java.util.UUID;
 
 import lombok.Data;
 
+//import org.springframework.data.cassandra.core.mapping.Column;
+//import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 //import org.springframework.data.cassandra.core.mapping.Table;
 
 //@Table("player")
 @Data
 public class User {
-	private UUID id;
-	private String name;
-	private String pass;
-	private Map<Card, Integer> cards;
-	private Set<Deck> decks;
-	private UserRole role;
+	//@PrimaryKey
+	private String name; //* username: String
+	//@Column
+	private String pass; //* password: String
+	//@Column
+	private Map<Card, Integer> cards; //* cards: Map of Card, Amount
+	//@Column
+	private Set<Deck> decks; //* decks: Set of Decks
+	//@Column
+	private UserRole role; //* isAdmin: Boolean
 	
 	public User() {
 		super();
-		this.id = UUID.randomUUID();
 		this.setName("");
 		this.setPass("");
 		this.setCards(new HashMap<Card, Integer>());
