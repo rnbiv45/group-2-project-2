@@ -22,7 +22,7 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Flux<Card> getCardsFromSystem() {
-		return null;
+		return Flux.empty();
 		//return cardRepo.findAll();
 	}
 

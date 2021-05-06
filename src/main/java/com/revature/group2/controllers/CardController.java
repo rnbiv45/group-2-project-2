@@ -49,7 +49,10 @@ public class CardController {
 	@GetMapping
 	public Flux<Card> getAllCards(){
 		return cardService.getCardsFromSystem();
-		
 	}
+	
+//	@PostMapping(path="/new") 
+//	public Mono<Card> collectCard{
+//	}
 
 }
