@@ -5,21 +5,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import org.springframework.data.cassandra.core.mapping.Column;
-//import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-//import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
-//@Table("player")
+@Table("player")
 public class User {
-	//@PrimaryKey
+	@PrimaryKey
 	private String name; //* username: String
-	//@Column
+	@Column
 	private String pass; //* password: String
-	//@Column
+	@Column
 	private Map<Card, Integer> cards; //* cards: Map of Card, Amount
-	//@Column
+	@Column
 	private Set<Deck> decks; //* decks: Set of Decks
-	//@Column
+	@Column
 	private Role role; //* isAdmin: Boolean
 	
 	public enum Role {
