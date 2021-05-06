@@ -13,7 +13,7 @@ import com.revature.group2.beans.Effect;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-//@Repository
+@Repository
 public interface CardRepo extends ReactiveCassandraRepository<Card, CardPrimaryKey> {
 
 }
