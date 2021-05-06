@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.revature.group2.beans.Type;
 import com.revature.group2.services.CardService;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(value="/cards")
@@ -34,7 +36,7 @@ public class CardController {
 		myKey.setArchetype(Archetype.FIRE);
 		myKey.setBanned(false);
 		//myKey.setEffects(null);
-		myKey.setId(UUID.randomUUID());
+		myKey.setUuid(UUID.randomUUID());
 		myKey.setType(Type.MONSTER);
 		myKey.setRarity(5);
 		myCard.setCardPrimaryKey(myKey);
@@ -52,12 +54,15 @@ public class CardController {
 	@GetMapping
 	public Flux<Card> getAllCards(){
 		return cardService.getCardsFromSystem();
-		
 	}
 	
 	//add a card
 	public void addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
 	}
-
+	
+	@GetMapping(path="/new/{cardId}")
+	public Mono<Card> collectCard(@PathVariable UUID cardUuid) {
+		return cardService.collectCard(cardUuid);
+	}
 }

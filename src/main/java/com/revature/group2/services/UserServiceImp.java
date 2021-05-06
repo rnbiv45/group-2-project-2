@@ -29,8 +29,7 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> addUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepo.insert(user);
 	}
 
 	@Override

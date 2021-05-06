@@ -1,9 +1,12 @@
 package com.revature.group2.services;
 
+import java.util.UUID;
+
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.User;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface CardService {
 	
@@ -31,6 +34,8 @@ public interface CardService {
 	
 	//-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.
 	void setCard(Card card);
+
+	Mono<Card> collectCard(UUID cardUuid);
 	
 	
 	

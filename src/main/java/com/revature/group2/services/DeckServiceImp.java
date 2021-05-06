@@ -1,9 +1,12 @@
 package com.revature.group2.services;
 
+import org.springframework.stereotype.Service;
+
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 
+@Service
 public class DeckServiceImp implements DeckService {
 
 	@Override
