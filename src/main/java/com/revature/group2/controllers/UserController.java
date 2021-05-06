@@ -59,7 +59,7 @@ public class UserController {
 		});
 	}
 	
-	@DeleteMapping("login")
+	@DeleteMapping("logout")
 	public ResponseEntity<Void> logout(ServerWebExchange exchange) {
 		exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
 		return ResponseEntity.noContent().build();
