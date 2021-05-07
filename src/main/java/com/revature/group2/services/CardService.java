@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.User;
+import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -12,6 +13,8 @@ public interface CardService {
 	
 	// THE PARAMETERS ARE GUESSES OF WHAT YOU NEED, CHANGE THEM IF NEEDED!!
 
+	//set card repo, for testing
+	public void setCardRepo(CardRepo cardRepo);
 	//-As a user, I can view all the cards available in the system.
 	Flux<Card> getCardsFromSystem();
 	
