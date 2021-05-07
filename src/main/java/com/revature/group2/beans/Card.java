@@ -8,6 +8,8 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import lombok.Data;
 
+
+
 @Table(value=Card.tableName)
 @Data
 public class Card {
@@ -29,4 +31,6 @@ public class Card {
 	private Integer damageValue;
 	@Column
 	private Integer buffValue;
+	
+	
 }

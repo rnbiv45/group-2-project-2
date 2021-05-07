@@ -1,20 +1,15 @@
 package com.revature.group2.beans;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.cassandra.core.mapping.CassandraType;
-import lombok.Data;
-
+import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import com.datastax.oss.protocol.internal.ProtocolConstants.DataType;
-
-import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
+import lombok.Data;
 
 @Table("user")
 @Data
@@ -35,13 +30,7 @@ public class User {
 	@CassandraType(type = Name.TEXT)
 	private UserRole role; //* isAdmin: Boolean
 
+
 	
-	public User() {
-		super();
-		this.setName("");
-		this.setPass("");
-		this.setCards(new HashMap<Card, Integer>());
-		this.setDecks(new HashSet<Deck>());
-		this.setRole(UserRole.MEMBER);
-	}
+
 }

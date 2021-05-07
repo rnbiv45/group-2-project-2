@@ -16,7 +16,7 @@ public interface CardService {
 	Flux<Card> getCardsFromSystem();
 	
 	//-As a user, I can view all the cards I own
-	Flux<Card> getCardsFromUser(User user); //this belongs here or in User service?
+	Mono<Object> getCardsFromUser(User user); //this belongs here or in User service?
 	
 	//-As a user, I can view any missing cards that are in the system I don't have
 	Flux<Card> getCardsMissingFromSystem(User user); //this belongs here or in User service?

@@ -1,6 +1,7 @@
 package com.revature.group2.services;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
+import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,10 +20,15 @@ import reactor.core.publisher.Mono;
 public class CardServiceImp implements CardService {
 	private Random random = new Random();
 	private CardRepo cardRepo;
+	private UserRepo userRepo;
 	
 	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
 		this.cardRepo = cardRepo;
+	}
+	@Autowired
+	public void setUserRepo(UserRepo userRepo) {
+		this.userRepo = userRepo;
 	}
 
 	@Override
@@ -32,14 +39,23 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-	public Flux<Card> getCardsFromUser(User user) {
-		// TODO Auto-generated method stub
+	public Mono<Object> getCardsFromUser(User userF) {
+//		Mono<User> user = userRepo.findById(userF.getName());
+//		return user.map(u -> u.getCards());
 		return null;
 	}
 
 	@Override
 	public Flux<Card> getCardsMissingFromSystem(User user) {
-		// TODO Auto-generated method stub
+//		Map<Card, Integer> userCards = new User().getCards();
+//		Map<Card, Integer> systemCards = new HashMap<Card, Integer>();
+//		for (Map.Entry<Card, Integer> userC : userCards.entrySet()) {
+//			for (Map.Entry<Card, Integer> systemC : systemCards.entrySet()) {
+//				if (userC.getValue() == systemC.getValue()) {
+//					systemCards.remove(systemC.getKey());
+//				}
+//			}
+//		}
 		return null;
 	}
 
