@@ -32,7 +32,7 @@ public interface CardService {
 	/* ADMIN SECTION */
 	
 	//-As an Admin, I can add or remove a card in the database.
-	void addCardToSystem(Card card);
+	Mono<Card> addCardToSystem(Card card);
 	void removeCardFromSystem(Card card);
 	
 	//-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.
