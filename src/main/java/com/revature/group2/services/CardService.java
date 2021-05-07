@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.User;
+import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -12,6 +13,8 @@ public interface CardService {
 	
 	// THE PARAMETERS ARE GUESSES OF WHAT YOU NEED, CHANGE THEM IF NEEDED!!
 
+	//set card repo, for testing
+	public void setCardRepo(CardRepo cardRepo);
 	//-As a user, I can view all the cards available in the system.
 	Flux<Card> getCardsFromSystem();
 	
@@ -29,7 +32,7 @@ public interface CardService {
 	/* ADMIN SECTION */
 	
 	//-As an Admin, I can add or remove a card in the database.
-	void addCardToSystem(Card card);
+	Mono<Card> addCardToSystem(Card card);
 	void removeCardFromSystem(Card card);
 	
 	//-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.

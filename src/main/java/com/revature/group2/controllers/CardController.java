@@ -30,7 +30,7 @@ public class CardController {
 	
 	//add a dummy card, is a test to make sure add works
 	@PostMapping("/test")
-	public void addDummyCard() {
+	public Mono<Card> addDummyCard() {
 		Card myCard = new Card();
 		CardPrimaryKey myKey = new CardPrimaryKey();
 		myKey.setArchetype(Archetype.FIRE);
@@ -47,8 +47,7 @@ public class CardController {
 		myCard.setName("DummyCard");
 		myCard.setBuffValue(0);
 		System.out.println(myCard);
-		cardService.addCardToSystem(myCard);
-		System.out.println("999999");
+		return cardService.addCardToSystem(myCard);
 	}
 	
 	//get all cards
