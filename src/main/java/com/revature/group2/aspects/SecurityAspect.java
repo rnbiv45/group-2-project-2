@@ -24,7 +24,5 @@ public class SecurityAspect {
 			throw new Exception("Invalid User");
 		}
 		HttpRequest req = (HttpRequest) joinPoint.getArgs()[0];
-		
-		User u = req.
 	}
 }
