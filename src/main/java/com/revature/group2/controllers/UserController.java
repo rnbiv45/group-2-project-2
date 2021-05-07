@@ -1,6 +1,11 @@
 package com.revature.group2.controllers;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.revature.group2.beans.Archetype;
+import com.revature.group2.beans.Card;
+import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.Deck;
+import com.revature.group2.beans.Type;
 import com.revature.group2.beans.User;
+import com.revature.group2.beans.UserRole;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -29,6 +42,24 @@ public class UserController {
 	private UserService userService;
 	private JWTParser tokenService;
 
+	@PostMapping(value="/test")
+	public void addDummyUser() {
+		User myUser = new User();
+		Map<Card, Integer> myCards = new HashMap<Card, Integer>();
+		Set<Deck> myDecks = new HashSet<>();
+		myUser.setName("DummyUser");
+		myUser.setDecks(myDecks);
+		myUser.setCards(myCards);
+		myUser.setPass("Tom");
+		myUser.setRole(UserRole.MEMBER);
+		userService.addUser(myUser);
+		
+	}
+	@GetMapping(value="/test")
+	public Flux<User> checkUsers() {
+		return userService.getUsers();
+	}
+	
 	@Autowired
 	public void setUserService(UserService userService) {
 		this.userService = userService;

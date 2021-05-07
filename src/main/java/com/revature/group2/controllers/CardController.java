@@ -45,6 +45,7 @@ public class CardController {
 		myCard.setDefenseValue(5);
 		myCard.setDamageValue(0);
 		myCard.setName("DummyCard");
+		myCard.setBuffValue(0);
 		System.out.println(myCard);
 		cardService.addCardToSystem(myCard);
 		System.out.println("999999");

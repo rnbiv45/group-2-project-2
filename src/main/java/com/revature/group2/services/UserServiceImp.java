@@ -40,8 +40,7 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Flux<User> getUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepo.findAll();
 	}
 
 	@Override

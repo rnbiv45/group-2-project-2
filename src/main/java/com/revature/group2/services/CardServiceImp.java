@@ -52,8 +52,8 @@ public class CardServiceImp implements CardService {
 	@Override
 	public void addCardToSystem(Card card) {
 		System.out.println(card);
-		cardRepo.insert(card);
-		System.out.println("9900");
+		Mono<Card> returnedCard =cardRepo.insert(card);
+		//System.out.println(returnedCard);
 		return;
 		
 	}
