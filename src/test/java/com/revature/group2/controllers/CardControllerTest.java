@@ -23,7 +23,7 @@ public class CardControllerTest {
 	@TestConfiguration
 	static class Configuration {
 		@Bean
-		public CardController getCardService(CardService cardService) {
+		public CardController getCardController(CardService cardService) {
 			CardController cardController = new CardController();
 			cardController.setCardService(cardService);
 			return cardController;

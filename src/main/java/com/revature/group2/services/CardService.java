@@ -4,7 +4,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.revature.group2.beans.Card;
+import com.revature.group2.beans.CardPrimaryKey;
 import com.revature.group2.beans.User;
+import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,6 +15,8 @@ public interface CardService {
 	
 	// THE PARAMETERS ARE GUESSES OF WHAT YOU NEED, CHANGE THEM IF NEEDED!!
 
+	//set card repo, for testing
+	public void setCardRepo(CardRepo cardRepo);
 	//-As a user, I can view all the cards available in the system.
 	Flux<Card> getCardsFromSystem();
 	
@@ -25,6 +29,8 @@ public interface CardService {
 	
 	//-As a user, I can see the cards that are meta to the card game.
 	Flux<Card> getMetaCards(); //find a better name if need be for this function
+	
+	Mono<Card> getCard(CardPrimaryKey key);
 	
 	
 	/* ADMIN SECTION */
