@@ -44,7 +44,7 @@ public class CardServiceTest {
 	CardRepo cardRepo;
 	
 	@Test
-	public void testGetCardsFromSystem () {
+	void testGetCardsFromSystem () {
 		Card[] cards = {new Card(), new Card(), new Card()};
 		Flux<Card> cardFlux = Flux.fromArray(cards);
 		when(cardRepo.findAll()).thenReturn(cardFlux);
@@ -55,7 +55,7 @@ public class CardServiceTest {
 	}
 	
 	@Test
-	public void testGetCard() {
+	void testGetCard() {
 		Card card = new Card();
 		Mono<Card> cardMono = Mono.just(card);
 		CardPrimaryKey key = new CardPrimaryKey();

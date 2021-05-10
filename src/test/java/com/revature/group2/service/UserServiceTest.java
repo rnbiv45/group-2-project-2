@@ -1,6 +1,5 @@
 package com.revature.group2.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +17,7 @@ import com.revature.group2.services.UserService;
 import com.revature.group2.services.UserServiceImp;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @ExtendWith(SpringExtension.class)
 public class UserServiceTest {
@@ -43,7 +43,7 @@ public class UserServiceTest {
 	UserRepo userRepo;
 	
 	@Test
-	public void testGetUsers () {
+	void testGetUsers () {
 		User[] users = {new User(), new User(), new User()};
 		Flux<User> userFlux = Flux.fromArray(users);
 		when(userRepo.findAll()).thenReturn(userFlux);
@@ -51,5 +51,14 @@ public class UserServiceTest {
 		//assertEquals("userService should return that is passed to it by the userRepo", userFlux, result);
 		assertThat(result).isEqualTo(userFlux);
 		
+	}
+	
+	@Test
+	void testGetUser() {
+		User user = new User();
+		Mono<User> userMono = Mono.just(user);
+		when(userRepo.findById("thomas15399")).thenReturn(userMono);
+		Mono<User> result = userService.getUser("thomas15399");
+		assertThat(result).isEqualTo(userMono);
 	}
 }
