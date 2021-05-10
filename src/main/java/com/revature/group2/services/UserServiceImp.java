@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class UserServiceImp implements UserService {
+	Mono<User> resultsMono;
+	Flux<User> resultsFlux;
 
 	private UserRepo userRepo;
 	
@@ -23,13 +25,26 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> getUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepo.findById(username);
 	}
 
 	@Override
 	public Mono<User> addUser(User user) {
-		return userRepo.insert(user);
+		synchronized (resultsMono) {
+			resultsMono = null;
+			userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
+				if(result) {
+					resultsMono = userRepo.insert(user);
+				} else {
+					resultsMono = null;
+				}
+			}).subscribe();
+			return resultsMono;
+		//if(userRepo.findById(user.getName()).hasElement().block()) {
+		//	return userRepo.insert(user);
+		//}
+		//return null;
+		}
 	}
 
 	@Override
