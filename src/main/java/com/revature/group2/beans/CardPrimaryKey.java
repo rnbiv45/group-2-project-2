@@ -24,7 +24,7 @@ public class CardPrimaryKey implements Serializable{
 			ordinal=1,
 			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
-	Type type;
+	CardType type;
 	@PrimaryKeyColumn(
 			name="archetype",
 			ordinal=0,

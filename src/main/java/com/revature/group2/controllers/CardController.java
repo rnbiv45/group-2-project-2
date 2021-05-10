@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
-import com.revature.group2.beans.Type;
+import com.revature.group2.beans.CardType;
 import com.revature.group2.services.CardService;
 
 import reactor.core.publisher.Flux;
@@ -39,7 +39,7 @@ public class CardController {
 		myKey.setIsBanned(false);
 		//myKey.setEffects(null);
 		myKey.setUuid(UUID.randomUUID());
-		myKey.setType(Type.MONSTER);
+		myKey.setType(CardType.MONSTER);
 		myKey.setRarity(5);
 		myCard.setCardPrimaryKey(myKey);
 		myCard.setIsUnique(false);
@@ -63,7 +63,7 @@ public class CardController {
 			@RequestParam Optional<String> archetype,
 			@RequestParam Optional<Integer> rarity,
 			@RequestParam Optional<Boolean> isBanned){
-		return cardService.getCardsFromSystem(type, archetype, rarity, isBanned);
+		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
 	
 	@GetMapping(path="{name}")

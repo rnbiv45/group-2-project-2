@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
-import com.revature.group2.beans.Type;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Effect;
 

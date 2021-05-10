@@ -45,9 +45,9 @@ public interface CardService {
 	Mono<Card> addCardToUser(String name);
 
 	Mono<Card> getCardByName(String name);
-
-	Flux<Card> getCardsFromSystem(Optional<String> type, Optional<String> archetype, Optional<Integer> rarity,
-			Optional<Boolean> isBanned);
+	
+	public Flux<Card> getCardsFromSystemWithArguments(Optional<String> type, Optional<String> archetype,
+			Optional<Integer> rarity, Optional<Boolean> isBanned);
 	
 	
 	

@@ -1,23 +1,23 @@
 package com.revature.group2.services;
 
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import sun.net.www.protocol.http.AuthCacheValue.Type;
 
 @Service
 public class CardServiceImp implements CardService {
-	private Random random = new Random();
 	private CardRepo cardRepo;
 	
 	@Autowired
@@ -85,5 +85,40 @@ public class CardServiceImp implements CardService {
 	@Override
 	public Mono<Card> getCardByName(String name) {
 		return cardRepo.findByName(name);
+	}
+	
+	@Override
+	public Flux<Card> getCardsFromSystemWithArguments(
+			Optional<String> type, 
+			Optional<String> archetype, 
+			Optional<Integer> rarity,
+			Optional<Boolean> isBanned) {
+		Flux<Card> cards = cardRepo.findAll();
+		
+		if (isBanned.isPresent()) {
+			cards = cards.filter((card) -> {
+				return card.getCardPrimaryKey().getIsBanned().equals(isBanned.get());
+			});
+		}
+		
+		if (type.isPresent()) {
+			cards = cards.filter((card) -> {
+				return card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get()));
+			});
+		}
+		
+		if (archetype.isPresent()) {
+			cards = cards.filter((card) -> {
+				return card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get()));
+			});
+		}
+		
+		if (rarity.isPresent()) {
+			cards = cards.filter((card) -> {
+				return card.getCardPrimaryKey().getRarity().equals(rarity.get());
+			});
+		}
+		
+		return cards;
 	}
 }

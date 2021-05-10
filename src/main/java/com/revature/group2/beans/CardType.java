@@ -1,5 +1,5 @@
 package com.revature.group2.beans;
 
-public enum Type {
+public enum CardType {
 	MONSTER, SPELL, TRAP
 }
