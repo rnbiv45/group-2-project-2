@@ -21,19 +21,19 @@ import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 public class User {
 	@PrimaryKey
 	@CassandraType(type = Name.TEXT)
-	private String name; //* username: String
+	private String name;
 	@Column
 	@CassandraType(type = Name.TEXT)
-	private String pass; //* password: String
+	private String pass;
 	@Column
 	@CassandraType(type = Name.BLOB)
-	private Map<Card, Integer> cards; //* cards: Map of Card, Amount
+	private Map<Card, Integer> cards;
 	@Column
 	@CassandraType(type = Name.BLOB)
-	private Set<Deck> decks; //* decks: Set of Decks
+	private Set<Deck> decks;
 	@Column
 	@CassandraType(type = Name.TEXT)
-	private UserRole role; //* isAdmin: Boolean
+	private UserRole role;
 
 	
 	public User() {
@@ -43,5 +43,26 @@ public class User {
 		this.setCards(new HashMap<Card, Integer>());
 		this.setDecks(new HashSet<Deck>());
 		this.setRole(UserRole.MEMBER);
+	}
+	
+	public void addCard(Card card) {
+		Integer amount = this.cards.get(card);
+		if (amount == null) {
+			this.cards.put(card, 1);
+			return;
+		}
+		this.cards.put(card, amount+1);
+	}
+	
+	public void removeCard(Card card) {
+		Integer amount = this.cards.get(card);
+		if (amount == null) {
+			return;
+		}
+		if (amount > 1) {
+			this.cards.put(card, amount-1);
+			return;
+		}
+		this.cards.remove(card);
 	}
 }

@@ -40,7 +40,17 @@ public class UserController {
 	
 	private UserService userService;
 	private JWTParser tokenService;
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 
+	@Autowired
+	public void setTokenServicer(JWTParser parser) {
+		this.tokenService = parser;
+	}
+	
 	@PostMapping(value="/test")
 	public void addDummyUser() {
 		User myUser = new User();
@@ -59,19 +69,10 @@ public class UserController {
 	public Flux<User> checkUsers() {
 		return userService.getUsers();
 	}
-	
-	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-
-	@Autowired
-	public void setTokenServicer(JWTParser parser) {
-		this.tokenService = parser;
-	}
 
 	@PostMapping
 	public Mono<User> registerUser(@RequestBody User user){
+		System.out.println(user);
 		return userService.addUser(user);
 	}
 

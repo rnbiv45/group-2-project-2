@@ -64,4 +64,18 @@ public class CardServiceTest {
 		assertThat(result).isEqualTo(cardMono);
 	}
 
+	@Test
+	void testAddCardToUser() {
+		// TODO
+	}
+	
+	@Test
+	void addCardToUserWithInvalidCardName() {
+		// TODO
+	}
+	
+	@Test
+	void addCardToUserWithoutToken() {
+		// TODO
+	}
 }
