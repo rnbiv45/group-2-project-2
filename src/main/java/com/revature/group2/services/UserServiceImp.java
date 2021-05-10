@@ -32,12 +32,9 @@ public class UserServiceImp implements UserService {
 	public Mono<User> addUser(User user) {
 			resultsMono = null;
 			userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
-				System.out.println("999");
 				if(!result) {
-					System.out.println("user");
 					resultsMono = userRepo.insert(user);
 				} else {
-					System.out.println("888888");
 					resultsMono = null;
 				}
 			}).subscribe();
