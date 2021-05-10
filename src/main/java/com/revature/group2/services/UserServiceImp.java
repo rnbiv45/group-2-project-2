@@ -23,8 +23,7 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> getUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepo.findById(username);
 	}
 
 	@Override

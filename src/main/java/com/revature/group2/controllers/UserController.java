@@ -23,7 +23,7 @@ import com.revature.group2.utils.JWTParser;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(value="/users")
+@RequestMapping(value="users")
 public class UserController {
 	
 	private UserService userService;
@@ -39,9 +39,11 @@ public class UserController {
 		this.tokenService = parser;
 	}
 
-	@PostMapping
-	public Mono<User> registerUser(@RequestBody User user){
-		return userService.addUser(user);
+	@PostMapping("/register")
+	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
+//		return Mono.just(ResponseEntity.ok().body(user));
+		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(user)));
+//		return userService.addUser(user);
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_NDJSON_VALUE)

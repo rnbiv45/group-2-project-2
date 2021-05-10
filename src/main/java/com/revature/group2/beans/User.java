@@ -1,24 +1,23 @@
 package com.revature.group2.beans;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.cassandra.core.mapping.CassandraType;
-import lombok.Data;
-
+import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import com.datastax.oss.protocol.internal.ProtocolConstants.DataType;
-
-import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
+import lombok.Data;
 
 @Table("user")
 @Data
-public class User {
+public class User implements Serializable{
+	private static final long serialVersionUID = 2952017686227479583L;
 	@PrimaryKey
 	@CassandraType(type = Name.TEXT)
 	private String name; //* username: String
