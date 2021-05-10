@@ -26,7 +26,6 @@ import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
 import com.revature.group2.beans.Deck;
-import com.revature.group2.beans.Type;
 import com.revature.group2.beans.User;
 import com.revature.group2.beans.UserRole;
 import com.revature.group2.services.UserService;
@@ -55,6 +54,7 @@ public class UserController {
 		userService.addUser(myUser);
 		
 	}
+	
 	@GetMapping(value="/test")
 	public Flux<User> checkUsers() {
 		return userService.getUsers();
