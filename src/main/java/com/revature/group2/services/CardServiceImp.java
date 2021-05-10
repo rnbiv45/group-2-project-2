@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.group2.beans.Card;
+import com.revature.group2.beans.CardPrimaryKey;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 
@@ -26,9 +27,12 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Flux<Card> getCardsFromSystem() {
-		//return null;
 		return cardRepo.findAll();
-		//return Flux.empty();
+	}
+	
+	@Override
+	public Mono<Card> getCard(CardPrimaryKey key){
+		return cardRepo.findById(key);
 	}
 
 	@Override
@@ -50,11 +54,9 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-	public void addCardToSystem(Card card) {
-		System.out.println(card);
-		cardRepo.insert(card);
-		System.out.println("9900");
-		return;
+
+	public Mono<Card> addCardToSystem(Card card) {
+		return cardRepo.save(card);
 		
 	}
 

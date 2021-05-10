@@ -7,30 +7,28 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.revature.group2.services.UserService;
+import com.revature.group2.services.DeckService;
 
 @ExtendWith(SpringExtension.class)
-public class UserControllerTest {
-
+public class DeckControllerTest {
 	@TestConfiguration
 	static class Configuration {
 		@Bean
-		public UserController getUserController(UserService userService) {
-			UserController userController = new UserController();
-			userController.setUserService(userService);
-			return userController;
+		public DeckController getDeckController(DeckService deckService) {
+			DeckController deckController = new DeckController();
+			deckController.setDeckService(deckService);
+			return deckController;
 			
 		}
 		@Bean
-		public UserService getUserService(UserService userService) {
-			return Mockito.mock(UserService.class);
+		public DeckService getDeckService(DeckService deckService) {
+			return Mockito.mock(DeckService.class);
 			
 		}
 	}
+	@Autowired
+	DeckController deckController;
 	
 	@Autowired
-	private UserController userController;
-	
-	@Autowired
-	private UserService userService;
+	DeckService deckService;
 }

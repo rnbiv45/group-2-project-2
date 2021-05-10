@@ -3,11 +3,13 @@ package com.revature.group2.services;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
+import com.revature.group2.repos.DeckRepo;
 
 public interface DeckService {
 
 	// THE PARAMETERS ARE GUESSES OF WHAT YOU NEED, CHANGE THEM IF NEEDED!!
 
+	void setDeckRepo(DeckRepo deckRepo);
 	// -As a user, I can create a new deck.
 	void createDeck();
 
