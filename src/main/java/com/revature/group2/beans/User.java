@@ -1,6 +1,5 @@
 package com.revature.group2.beans;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,8 +15,7 @@ import lombok.Data;
 
 @Table("user")
 @Data
-public class User implements Serializable{
-	private static final long serialVersionUID = 2952017686227479583L;
+public class User{
 	@PrimaryKey
 	@CassandraType(type = Name.TEXT)
 	private String name; //* username: String
