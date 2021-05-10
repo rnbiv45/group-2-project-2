@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
-import com.revature.group2.beans.CardPrimaryKey;
 import com.revature.group2.beans.Deck;
-import com.revature.group2.beans.Type;
 import com.revature.group2.beans.User;
 import com.revature.group2.beans.UserRole;
 import com.revature.group2.services.UserService;
@@ -72,9 +68,7 @@ public class UserController {
 
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
-//		return Mono.just(ResponseEntity.ok().body(user));
 		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(user)));
-//		return userService.addUser(user);
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_NDJSON_VALUE)
