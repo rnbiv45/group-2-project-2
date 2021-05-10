@@ -61,4 +61,54 @@ public class UserServiceTest {
 		Mono<User> result = userService.getUser("thomas15399");
 		assertThat(result).isEqualTo(userMono);
 	}
+	@Test
+	void testAddUserThatExists() {
+		User user = new User();
+		user.setName("thomas15399");
+		user.setPass("38831");
+		Mono<User> userMono = Mono.just(user);
+		when(userRepo.findById("thomas15399")).thenReturn(userMono);
+		when(userRepo.insert(user)).thenReturn(userMono);
+		Mono<User> result = userService.addUser(user);
+		assertThat(result).isNull();
+		//assertThat(result).isEqualTo(userMono);
+	}
+	@Test
+	void testAddUserThatDoesNotExist() {
+		Mono<User> nullMono = Mono.empty();
+		User user = new User();
+		user.setName("thomas15399");
+		user.setPass("38831");
+		Mono<User> userMono = Mono.just(user);
+		when(userRepo.findById("thomas15399")).thenReturn(nullMono);
+		when(userRepo.insert(user)).thenReturn(userMono);
+		Mono<User> result = userService.addUser(user);
+		assertThat(result).isNotNull();
+		//assertThat(result).isEqualTo(userMono);
+	}
+	@Test
+	void testUpdateUserThatExists() {
+		User user = new User();
+		user.setName("thomas15399");
+		user.setPass("38831");
+		Mono<User> userMono = Mono.just(user);
+		when(userRepo.findById("thomas15399")).thenReturn(userMono);
+		when(userRepo.save(user)).thenReturn(userMono);
+		Mono<User> result = userService.updateUser(user);
+		assertThat(result).isNotNull();
+		//assertThat(result).isEqualTo(userMono);
+	}
+	@Test
+	void testUpdateUserThatDoesNotExist() {
+		Mono<User> nullMono = Mono.empty();
+		User user = new User();
+		user.setName("thomas15399");
+		user.setPass("38831");
+		Mono<User> userMono = Mono.just(user);
+		when(userRepo.findById("thomas15399")).thenReturn(nullMono);
+		when(userRepo.save(user)).thenReturn(userMono);
+		Mono<User> result = userService.updateUser(user);
+		assertThat(result).isNull();
+		//assertThat(result).isEqualTo(userMono);
+	}
 }
