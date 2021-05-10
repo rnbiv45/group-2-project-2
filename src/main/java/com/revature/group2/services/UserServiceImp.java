@@ -43,8 +43,15 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		resultsMono = null;
+		userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
+			if(result) {
+				resultsMono = userRepo.save(user);
+			} else {
+				resultsMono = null;
+			}
+		}).subscribe();
+		return resultsMono;
 	}
 
 	@Override
