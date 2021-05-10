@@ -30,27 +30,28 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> addUser(User user) {
-		synchronized (resultsMono) {
 			resultsMono = null;
 			userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
-				if(result) {
+				if(!result) {
 					resultsMono = userRepo.insert(user);
 				} else {
 					resultsMono = null;
 				}
 			}).subscribe();
 			return resultsMono;
-		//if(userRepo.findById(user.getName()).hasElement().block()) {
-		//	return userRepo.insert(user);
-		//}
-		//return null;
-		}
 	}
 
 	@Override
 	public Mono<User> updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		resultsMono = null;
+		userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
+			if(result) {
+				resultsMono = userRepo.save(user);
+			} else {
+				resultsMono = null;
+			}
+		}).subscribe();
+		return resultsMono;
 	}
 
 	@Override
