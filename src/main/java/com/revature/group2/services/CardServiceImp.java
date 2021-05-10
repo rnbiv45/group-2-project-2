@@ -14,7 +14,6 @@ import com.revature.group2.repos.CardRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import sun.net.www.protocol.http.AuthCacheValue.Type;
 
 @Service
 public class CardServiceImp implements CardService {
@@ -76,10 +75,7 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Mono<Card> addCardToUser(String name) {
-		// TODO add card to logged in player
-		Mono<Card> card = cardRepo.findByName(name);
-		///loggedInUser.addCard(card);
-		return card;
+		return cardRepo.findByName(name);
 	}
 
 	@Override
@@ -95,29 +91,13 @@ public class CardServiceImp implements CardService {
 			Optional<Boolean> isBanned) {
 		Flux<Card> cards = cardRepo.findAll();
 		
-		if (isBanned.isPresent()) {
-			cards = cards.filter((card) -> {
-				return card.getCardPrimaryKey().getIsBanned().equals(isBanned.get());
-			});
-		}
+		cards = cards.filter(card -> isBanned.isPresent() && card.getCardPrimaryKey().getIsBanned().equals(isBanned.get()));
 		
-		if (type.isPresent()) {
-			cards = cards.filter((card) -> {
-				return card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get()));
-			});
-		}
+		cards = cards.filter(card -> type.isPresent() && card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
 		
-		if (archetype.isPresent()) {
-			cards = cards.filter((card) -> {
-				return card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get()));
-			});
-		}
+		cards = cards.filter(card -> archetype.isPresent() && card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
 		
-		if (rarity.isPresent()) {
-			cards = cards.filter((card) -> {
-				return card.getCardPrimaryKey().getRarity().equals(rarity.get());
-			});
-		}
+		cards = cards.filter(card -> rarity.isPresent() && card.getCardPrimaryKey().getRarity().equals(rarity.get()));
 		
 		return cards;
 	}
