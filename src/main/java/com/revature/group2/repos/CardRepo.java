@@ -17,6 +17,9 @@ import reactor.core.publisher.Mono;
 
 public interface CardRepo extends ReactiveCassandraRepository<Card, CardPrimaryKey> {
 //	@AllowFiltering
+
+	@AllowFiltering
+	Mono<Card> findByName(String name);
 	
 //	Mono<Card> findByUuid(UUID cardUuid);
 }
