@@ -1,5 +1,6 @@
 package com.revature.group2.services;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.Optional;
@@ -114,8 +115,9 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-	public Mono<Card> addCardToUser(String name) {
-		return cardRepo.findByName(name);
+	public Mono<User> addCardToUser(String name, User user) {
+		cardRepo.findByName(name).subscribe(card -> user.addCard(card));
+		return Mono.just(user);
 	}
 
 	@Override
@@ -130,15 +132,18 @@ public class CardServiceImp implements CardService {
 			Optional<Integer> rarity,
 			Optional<Boolean> isBanned) {
 		Flux<Card> cards = cardRepo.findAll();
-		
-		cards = cards.filter(card -> isBanned.isPresent() && card.getCardPrimaryKey().getIsBanned().equals(isBanned.get()));
-		
-		cards = cards.filter(card -> type.isPresent() && card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
-		
-		cards = cards.filter(card -> archetype.isPresent() && card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
-		
-		cards = cards.filter(card -> rarity.isPresent() && card.getCardPrimaryKey().getRarity().equals(rarity.get()));
-		
+		if (isBanned.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getIsBanned() == isBanned.get());
+		}
+		if (type.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
+		}
+		if (archetype.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
+		}
+		if (rarity.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getRarity().equals(rarity.get()));
+		}
 		return cards;
 	}
 }

@@ -42,7 +42,7 @@ public interface CardService {
 	//-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.
 	Mono<Card> setCard(Card card);
 
-	Mono<Card> addCardToUser(String name);
+	Mono<User> addCardToUser(String name, User user);
 
 	Mono<Card> getCardByName(String name);
 	
