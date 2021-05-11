@@ -1,5 +1,6 @@
 package com.revature.group2.services;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.revature.group2.beans.Card;
@@ -41,7 +42,12 @@ public interface CardService {
 	//-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.
 	Mono<Card> setCard(Card card);
 
-	Mono<Card> collectCard(UUID cardUuid);
+	Mono<Card> addCardToUser(String name);
+
+	Mono<Card> getCardByName(String name);
+	
+	public Flux<Card> getCardsFromSystemWithArguments(Optional<String> type, Optional<String> archetype,
+			Optional<Integer> rarity, Optional<Boolean> isBanned);
 	
 	
 	

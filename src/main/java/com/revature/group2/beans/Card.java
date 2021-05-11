@@ -20,7 +20,7 @@ public class Card {
 	@Column
 	private String name;
 	@Column
-	private boolean isUnique;
+	private Boolean isUnique;
 	@Column
 	private Integer attackValue;
 	@Column

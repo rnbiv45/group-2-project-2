@@ -2,12 +2,15 @@ package com.revature.group2.services;
 
 import java.util.Random;
 import java.util.UUID;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 
@@ -16,7 +19,6 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class CardServiceImp implements CardService {
-	private Random random = new Random();
 	private CardRepo cardRepo;
 	Mono<Card> resultMono;
 	Mono<Void> deleteMono;
@@ -112,9 +114,31 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-	public Mono<Card> collectCard(UUID cardUuid) {
-		// TODO add card to logged in player
-		//return cardRepo.findByUuid(cardUuid);
-		return Mono.empty();
+	public Mono<Card> addCardToUser(String name) {
+		return cardRepo.findByName(name);
+	}
+
+	@Override
+	public Mono<Card> getCardByName(String name) {
+		return cardRepo.findByName(name);
+	}
+	
+	@Override
+	public Flux<Card> getCardsFromSystemWithArguments(
+			Optional<String> type, 
+			Optional<String> archetype, 
+			Optional<Integer> rarity,
+			Optional<Boolean> isBanned) {
+		Flux<Card> cards = cardRepo.findAll();
+		
+		cards = cards.filter(card -> isBanned.isPresent() && card.getCardPrimaryKey().getIsBanned().equals(isBanned.get()));
+		
+		cards = cards.filter(card -> type.isPresent() && card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
+		
+		cards = cards.filter(card -> archetype.isPresent() && card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
+		
+		cards = cards.filter(card -> rarity.isPresent() && card.getCardPrimaryKey().getRarity().equals(rarity.get()));
+		
+		return cards;
 	}
 }

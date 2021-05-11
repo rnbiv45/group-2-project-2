@@ -69,7 +69,7 @@ public class CardControllerTest {
 		
 		Mockito.when(cardService.getCardsFromSystem()).thenReturn(cardFlux);
 		
-		Flux<Card> result = cardController.getAllCards();
+		Flux<Card> result = cardController.getAllCards(null, null, null, null);
 		
 		assertThat(result).isEqualTo(cardFlux);
 		
