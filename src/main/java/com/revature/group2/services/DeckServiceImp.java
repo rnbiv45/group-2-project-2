@@ -1,6 +1,7 @@
 package com.revature.group2.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.revature.group2.beans.Card;
@@ -10,6 +11,8 @@ import com.revature.group2.repos.DeckRepo;
 import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import reactor.core.publisher.Mono;
 
 @Service
@@ -58,6 +61,13 @@ public class DeckServiceImp implements DeckService {
 	public void removeCardFromDeck(User user, Deck deck, Card card) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Mono<User> addDeckToUser(User user) {
+		Mono<Deck> deck = Mono.just(new Deck());
+		// TODO
+		return null;
 	}
 
 }

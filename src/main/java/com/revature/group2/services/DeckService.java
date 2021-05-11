@@ -1,10 +1,11 @@
 package com.revature.group2.services;
 
+import org.springframework.http.ResponseEntity;
+
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.DeckRepo;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,5 +27,6 @@ public interface DeckService {
 	// -As a user, I can add and remove cards from a deck.
 	void addCardToDeck(User user, Deck deck, Card card);
 	void removeCardFromDeck(User user, Deck deck, Card card);
+	Mono<User> addDeckToUser(User user);
 
 }

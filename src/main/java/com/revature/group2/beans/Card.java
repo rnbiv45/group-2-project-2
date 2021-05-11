@@ -29,4 +29,8 @@ public class Card {
 	private Integer damageValue;
 	@Column
 	private Integer buffValue;
+	
+	public Card() {
+		super();
+	}
 }
