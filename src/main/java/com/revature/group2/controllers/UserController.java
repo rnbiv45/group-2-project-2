@@ -51,6 +51,7 @@ public class UserController {
 		userService.addUser(myUser);
 		
 	}
+	
 	@GetMapping(value="/test")
 	public Flux<User> checkUsers() {
 		return userService.getUsers();

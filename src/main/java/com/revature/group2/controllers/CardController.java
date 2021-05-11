@@ -1,5 +1,6 @@
 package com.revature.group2.controllers;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
-import com.revature.group2.beans.Type;
+import com.revature.group2.beans.CardType;
 import com.revature.group2.services.CardService;
 
 import reactor.core.publisher.Flux;
@@ -34,13 +36,13 @@ public class CardController {
 		Card myCard = new Card();
 		CardPrimaryKey myKey = new CardPrimaryKey();
 		myKey.setArchetype(Archetype.FIRE);
-		myKey.setBanned(false);
+		myKey.setIsBanned(false);
 		//myKey.setEffects(null);
 		myKey.setUuid(UUID.randomUUID());
-		myKey.setType(Type.MONSTER);
+		myKey.setType(CardType.MONSTER);
 		myKey.setRarity(5);
 		myCard.setCardPrimaryKey(myKey);
-		myCard.setUnique(false);
+		myCard.setIsUnique(false);
 		myCard.setAttackValue(5);
 		myCard.setDefenseValue(5);
 		myCard.setDamageValue(0);
@@ -50,19 +52,27 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
-	//get all cards
-	@GetMapping
-	public Flux<Card> getAllCards(){
-		return cardService.getCardsFromSystem();
-	}
-	
-	//add a card
+	@PostMapping
 	public void addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
 	}
 	
-	@GetMapping(path="/new/{cardId}")
-	public Mono<Card> collectCard(@PathVariable UUID cardUuid) {
-		return cardService.collectCard(cardUuid);
+	@GetMapping
+	public Flux<Card> getAllCards(
+			@RequestParam Optional<String> type,
+			@RequestParam Optional<String> archetype,
+			@RequestParam Optional<Integer> rarity,
+			@RequestParam Optional<Boolean> isBanned){
+		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
+	}
+	
+	@GetMapping(path="{name}")
+	public Mono<Card> getCard(@PathVariable String name) {
+		return cardService.getCardByName(name);
+	}
+	
+	@GetMapping(path="/new/{name}")
+	public Mono<Card> addCardToUser(@PathVariable String name) {
+		return cardService.addCardToUser(name);
 	}
 }
