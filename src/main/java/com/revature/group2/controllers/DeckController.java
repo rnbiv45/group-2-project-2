@@ -36,10 +36,8 @@ public class DeckController {
 		try {
 			User user = tokenService.parser(token);
 			return deckService.addDeckToUser(user).map(u -> ResponseEntity.status(201).body(u));
-		} catch (JsonMappingException e) {
-			return Mono.just(ResponseEntity.status(500).body("No valid token"));
-		} catch (JsonProcessingException e) {
-			return Mono.just(ResponseEntity.status(500).body("No valid token"));
+		} catch (Exception e) {
+			return Mono.just(ResponseEntity.status(500).body(e));
 		}
 	}
 }

@@ -1,8 +1,5 @@
 package com.revature.group2.services;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +113,7 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Mono<User> addCardToUser(String name, User user) {
-		cardRepo.findByName(name).subscribe(card -> user.addCard(card));
+		cardRepo.findByName(name).subscribe(user::addCard);
 		return Mono.just(user);
 	}
 

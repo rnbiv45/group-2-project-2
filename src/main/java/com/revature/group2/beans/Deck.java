@@ -1,5 +1,5 @@
 package com.revature.group2.beans;
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,9 +10,7 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
 
-import com.revature.group2.beans.Archetype;
-
-import lombok.Data;;
+import lombok.Data;
 
 @Data
 public class Deck {
