@@ -38,6 +38,7 @@ public class Deck {
 	@Column
 	@CassandraType(type = Name.BLOB)
 	private Map<Card, Integer> cards;
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
