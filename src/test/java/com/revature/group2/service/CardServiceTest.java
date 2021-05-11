@@ -49,7 +49,6 @@ public class CardServiceTest {
 		Flux<Card> cardFlux = Flux.fromArray(cards);
 		when(cardRepo.findAll()).thenReturn(cardFlux);
 		Flux<Card> result = cardService.getCardsFromSystem();
-		//assertEquals("userService should return that is passed to it by the userRepo", userFlux, result);
 		assertThat(result).isEqualTo(cardFlux);
 		
 	}
@@ -63,19 +62,93 @@ public class CardServiceTest {
 		Mono<Card> result = cardService.getCard(key);
 		assertThat(result).isEqualTo(cardMono);
 	}
-
 	@Test
-	void testAddCardToUser() {
-		// TODO
+	void testGetCardThatDoesNotExist() {
+		Card card = new Card();
+		CardPrimaryKey key = new CardPrimaryKey();
+		card.setCardPrimaryKey(key);
+		Mono<Card> cardMono = Mono.just(card);
+		Mono<Card> nullMono = Mono.empty();
+		when(cardRepo.findById(key)).thenReturn(nullMono);
+		Mono<Card> result = cardService.getCard(key);
+		assertThat(result).isEqualTo(nullMono);
 	}
-	
+	/*
 	@Test
-	void addCardToUserWithInvalidCardName() {
-		// TODO
+	void testAddCardDoesNotExist() {
+		Card card = new Card();
+		CardPrimaryKey key = new CardPrimaryKey();
+		card.setCardPrimaryKey(key);
+		Mono<Card> cardMono = Mono.just(card);
+		Mono<Card> nullMono = Mono.empty();
+		//System.out.println(cardMono);
+		when(cardRepo.findById(card.getCardPrimaryKey())).thenReturn(nullMono);
+		when(cardRepo.insert(card)).thenReturn(cardMono);
+		Mono<Card> result = cardService.addCardToSystem(card);
+		assertThat(result).isNotNull();
 	}
-	
+	@Test 
+	void testAddCardThatExists() {
+		Card card = new Card();
+		CardPrimaryKey key = new CardPrimaryKey();
+		card.setCardPrimaryKey(key);
+		Mono<Card> cardMono = Mono.just(card);
+		Mono<Card> nullMono = Mono.empty();
+		//System.out.println(card.getCardPrimaryKey());
+		when(cardRepo.findById(card.getCardPrimaryKey())).thenReturn(cardMono);
+		when(cardRepo.insert(card)).thenReturn(cardMono);
+		Mono<Card> result =  cardService.addCardToSystem(card);
+		assertThat(result).isNull();
+	}
 	@Test
-	void addCardToUserWithoutToken() {
-		// TODO
+	void testUpdateCardDoesNotExist() {
+		Card card = new Card();
+		CardPrimaryKey key = new CardPrimaryKey();
+		card.setCardPrimaryKey(key);
+		Mono<Card> cardMono = Mono.just(card);
+		Mono<Card> nullMono = Mono.empty();
+		when(cardRepo.findById(key)).thenReturn(nullMono);
+		when(cardRepo.save(card)).thenReturn(cardMono);
+		Mono<Card> result = cardService.setCard(card);
+		assertThat(result).isNull();
 	}
+	@Test 
+	void testUpdateCardThatExists() {
+		Card card = new Card();
+		CardPrimaryKey key = new CardPrimaryKey();
+		card.setCardPrimaryKey(key);
+		Mono<Card> cardMono = Mono.just(card);
+		Mono<Card> nullMono = Mono.empty();
+		when(cardRepo.findById(key)).thenReturn(cardMono);
+		when(cardRepo.save(card)).thenReturn(cardMono);
+		Mono<Card> result = cardService.setCard(card);
+		assertThat(result).isNotNull();
+	}
+	@Test
+	void testDeleteCardDoesNotExist() {
+		Card card = new Card();
+		CardPrimaryKey key = new CardPrimaryKey();
+		card.setCardPrimaryKey(key);
+		Mono<Card> cardMono = Mono.just(card);
+		Mono<Card> nullMono = Mono.empty();
+		Mono<Void> voidMono = Mono.empty();
+		when(cardRepo.findById(key)).thenReturn(nullMono);
+		when(cardRepo.delete(card)).thenReturn(voidMono);
+		Mono<Void> result = cardService.removeCardFromSystem(card);
+		assertThat(result).isNull();
+	}
+	@Test 
+	void testDeleteCardThatExists() {
+		Card card = new Card();
+		CardPrimaryKey key = new CardPrimaryKey();
+		card.setCardPrimaryKey(key);
+		Mono<Card> cardMono = Mono.just(card);
+		Mono<Card> nullMono = Mono.empty();
+		Mono<Void> voidMono = Mono.empty();
+		when(cardRepo.findById(key)).thenReturn(cardMono);
+		when(cardRepo.delete(card)).thenReturn(voidMono);
+		Mono<Void> result = cardService.removeCardFromSystem(card);
+		assertThat(result).isNotNull();
+	}
+*/
 }

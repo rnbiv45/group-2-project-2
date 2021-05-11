@@ -11,6 +11,7 @@ import com.revature.group2.services.UserService;
 
 @ExtendWith(SpringExtension.class)
 public class UserControllerTest {
+
 	@TestConfiguration
 	static class Configuration {
 		@Bean
@@ -32,5 +33,4 @@ public class UserControllerTest {
 	
 	@Autowired
 	private UserService userService;
-
 }

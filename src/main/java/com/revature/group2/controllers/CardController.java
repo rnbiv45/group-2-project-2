@@ -1,11 +1,14 @@
 package com.revature.group2.controllers;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.User;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.CardService;
@@ -37,7 +42,6 @@ public class CardController {
 	public void setCardService(CardService cardService) {
 		this.cardService = cardService;
 	}
-	
 	@Autowired
 	public void setTokenServicer(JWTParser parser) {
 		this.tokenService = parser;
@@ -65,11 +69,6 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
-	@PostMapping
-	public void addCard(@RequestBody Card card) {
-		cardService.addCardToSystem(card);
-	}
-	
 	@GetMapping
 	public Flux<Card> getAllCards(
 			@RequestParam Optional<String> type,
@@ -79,6 +78,30 @@ public class CardController {
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
 	
+	@GetMapping
+	public Map<Card, Integer> getUserCards(ServerWebExchange exchange){
+		User user = null;
+		try {
+			if(exchange.getRequest().getCookies().get("token") != null) {
+				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+				if(!token.equals("")) {
+					user = tokenService.parser(token);
+					return user.getCards();
+				}
+			}
+		} catch (Exception e) {
+			exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+			return null;
+		}
+		return null;
+	}
+	
+	//add a card
+	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
+		cardService.addCardToSystem(card);
+		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
+				.onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
+	}
 	@GetMapping(path="{name}")
 	public Mono<Card> getCard(@PathVariable String name) {
 		return cardService.getCardByName(name);

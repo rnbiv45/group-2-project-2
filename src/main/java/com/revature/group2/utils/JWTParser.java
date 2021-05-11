@@ -17,7 +17,6 @@ import io.jsonwebtoken.impl.TextCodec;
 public class JWTParser {
 
 	private ObjectMapper mapper;
-	private JWTParser tokenService;
 	
 	public User parser(String jwStr) throws JsonMappingException, JsonProcessingException{
 		Jws<Claims> jws = Jwts.parser()
@@ -34,8 +33,8 @@ public class JWTParser {
 		
 		String userString = mapper.writeValueAsString(user);
 
-		return Jwts.builder().claim("user", userString).signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(
-				secretKey
-		)).compact();
+		return Jwts.builder().claim("user", userString)
+				.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(secretKey))
+				.compact();
 	}
 }

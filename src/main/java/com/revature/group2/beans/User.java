@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revature.group2.deserializers.UserDeserializer;
 
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
+import lombok.Data;
 
 @Table("user")
 //@JsonAutoDetect(fieldVisibility = Visibility.ANY)
@@ -57,7 +59,6 @@ public class User {
 	@JsonProperty
 	private UserRole role;
 
-	
 	public User() {
 		super();
 		this.setName("");
