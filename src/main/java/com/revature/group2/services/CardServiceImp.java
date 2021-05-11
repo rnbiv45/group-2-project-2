@@ -1,5 +1,7 @@
 package com.revature.group2.services;
 
+import java.util.Random;
+import java.util.UUID;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import reactor.core.publisher.Mono;
 @Service
 public class CardServiceImp implements CardService {
 	private CardRepo cardRepo;
+	Mono<Card> resultMono;
+	Mono<Void> deleteMono;
 	
 	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
@@ -55,21 +59,57 @@ public class CardServiceImp implements CardService {
 	@Override
 
 	public Mono<Card> addCardToSystem(Card card) {
+		return cardRepo.insert(card);
+		/*
+		resultMono = null;
+		System.out.println(card.getCardPrimaryKey());
+		Mono<Card> cardResult = cardRepo.findById(card.getCardPrimaryKey());
+		System.out.println(cardResult);
+		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
+			System.out.println("0");
+			if(!result) {
+				System.out.println("5");
+				resultMono = cardRepo.insert(card);
+			} else {
+				System.out.println("6");
+				resultMono = null;
+			}
+		});
+		return resultMono;
+		*/
+		
+	}
+
+	@Override
+	public Mono<Void> removeCardFromSystem(Card card) {
+		return deleteMono = cardRepo.delete(card);
+		/*
+		resultMono = null;
+		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
+			if(result) {
+				deleteMono = cardRepo.delete(card);
+			} else {
+				deleteMono = null;
+			}
+		});
+		return deleteMono;
+		*/
+	}
+
+	@Override
+	public Mono<Card> setCard(Card card) {
 		return cardRepo.save(card);
-		
-	}
-
-	@Override
-	public void removeCardFromSystem(Card card) {
-		cardRepo.delete(card);
-		return;
-		
-	}
-
-	@Override
-	public void setCard(Card card) {
-		cardRepo.save(card);
-		return;
+		/*
+		resultMono = null;
+		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
+			if(result) {
+				resultMono = cardRepo.save(card);
+			} else {
+				resultMono = null;
+			}
+		});
+		return resultMono;
+		*/
 		
 	}
 
