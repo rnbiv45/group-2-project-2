@@ -63,6 +63,24 @@ public class UserServiceImp implements UserService {
 	public Mono<Card> collectCard() {
 		return null;
 	}
+
+	@Override
+	public Mono<User> getUserByNameAndPass(String name, String password) {
+		User resultUser = new User();
+		
+		userRepo.findById(name).subscribe(user -> {
+			if(user.getPass().equals(password)){
+				resultUser.setName(user.getName());
+				resultUser.setPass(user.getPass());
+				resultUser.setRole(user.getRole());
+				resultUser.setCards(user.getCards());
+				resultUser.setDecks(user.getDecks());
+			}
+		});
+		
+		Mono<User> user = Mono.just(resultUser);
+		return user;
+	}
 	
 
 

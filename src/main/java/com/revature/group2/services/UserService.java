@@ -21,4 +21,6 @@ public interface UserService {
 	Mono<Card> collectCard();
 
 	void setUserRepo(UserRepo userRepo);
+
+	Mono<User> getUserByNameAndPass(String name, String password);
 }

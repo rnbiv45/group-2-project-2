@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,6 @@ public class UserController {
 		myUser.setPass("Tom");
 		myUser.setRole(UserRole.MEMBER);
 		userService.addUser(myUser);
-		
 	}
 	
 	@GetMapping(value="/test")
@@ -68,14 +68,14 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
+	public Mono<ResponseEntity<User>> registerUser(String str,@RequestBody User user){
 		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(user)));
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Publisher<User> login(ServerWebExchange exchange, @RequestBody User user) {
 
-		return userService.getUser(user.getName()).delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+		return userService.getUserByNameAndPass(user.getName(), user.getPass()).delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
 			try {
 				exchange.getResponse()
 				.addCookie(ResponseCookie

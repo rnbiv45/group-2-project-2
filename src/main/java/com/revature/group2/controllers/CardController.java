@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,7 +73,7 @@ public class CardController {
 	}
 	
 	@GetMapping(path="/new/{name}")
-	public Mono<Card> addCardToUser(@PathVariable String name) {
+	public Mono<Card> addCardToUser(@CookieValue(value = "token") String token, @PathVariable String name) {
 		return cardService.addCardToUser(name);
 	}
 }
