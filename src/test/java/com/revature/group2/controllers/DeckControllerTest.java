@@ -2,6 +2,7 @@ package com.revature.group2.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -109,7 +110,7 @@ public class DeckControllerTest {
 	}
 	
 	@Test
-	public void testDeletedeckExists() {
+	public void testDeletedeck() {
 		User user = new User();
 		Deck deck1 = new Deck();
 		Deck deck2 = new Deck();
@@ -118,6 +119,8 @@ public class DeckControllerTest {
 		Set<Deck> decks = new HashSet<Deck>();
 		decks.add(deck1);
 		decks.add(deck2);
+		Set<Deck> decks2 = new HashSet<Deck>();
+		decks2.add(deck2);
 		user.setDecks(decks);
 		ServerWebExchange exchange = Mockito.mock(ServerWebExchange.class,  Mockito.RETURNS_DEEP_STUBS);
 		HttpCookie cookie = Mockito.mock(HttpCookie.class);
@@ -135,27 +138,7 @@ public class DeckControllerTest {
 			e.printStackTrace();
 			return;
 		}
-		
-	}
-	@Test
-	public void testDeleteDeckNotExist() {
-		User user = new User();
-		ServerWebExchange exchange = Mockito.mock(ServerWebExchange.class,  Mockito.RETURNS_DEEP_STUBS);
-		HttpCookie cookie = Mockito.mock(HttpCookie.class);
-		List<HttpCookie> cookies = new ArrayList<HttpCookie>();
-		cookies.add(cookie);
-		String token = "hello";
-		Mockito.when(exchange.getRequest().getCookies().get("token")).thenReturn(cookies);
-		Mockito.when(exchange.getRequest().getCookies().getFirst("token").getValue()).thenReturn(token);
-		try {
-			Mockito.when(parser.parser(token)).thenReturn(user);
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			return;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			return;
-		}
+		verify(userService).updateUser(user);
 		
 	}
 }
