@@ -41,6 +41,11 @@ public class DeckController {
 	public void setTokenServicer(JWTParser parser) {
 		this.tokenService = parser;
 	}
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 
 	public Set<Deck> viewDecks(ServerWebExchange exchange){
 		User user = null;
@@ -69,8 +74,8 @@ public class DeckController {
 					user = tokenService.parser(token);
 					user.getDecks().remove(deck);
 					userService.updateUser(user);
-					//exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
-					//exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
+					exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
+					exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
 					return;
 				}
 			}
