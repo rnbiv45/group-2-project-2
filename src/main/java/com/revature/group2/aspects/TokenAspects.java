@@ -1,5 +1,6 @@
 package com.revature.group2.aspects;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -25,8 +26,9 @@ public class TokenAspects {
 		this.tokenService = parser;
 	}
 
-	@AfterReturning(pointcut = "makeToken()", returning = "user")
-	public void makeNewToken(Mono<User> user, ServerWebExchange exchange) throws Throwable {
+	@AfterReturning(pointcut = "updateToken()", returning = "user")
+	public void makeNewToken(JoinPoint joinpoint, Mono<User> user) throws Throwable {
+		ServerWebExchange exchange = (ServerWebExchange) joinpoint.getArgs()[0];
 		user.subscribe(updatedUser -> {
 			try {
 				exchange.getResponse()
@@ -34,13 +36,11 @@ public class TokenAspects {
 						.from("token", tokenService.makeToken(updatedUser))
 						.httpOnly(true).build());
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			};
 		});
 	}
 
-	@Pointcut("@annotation(com.revature.aspects.UpdateToken)")
-	public void makeToken() {
-		/* Empty Method for Hook */}
+	@Pointcut("@annotation(com.revature.group2.aspects.UpdateToken)")
+	public void updateToken() {/* Empty Method for Hook */}
 }

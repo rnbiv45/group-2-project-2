@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.revature.group2.aspects.UpdateToken;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -71,7 +72,7 @@ public class UserController {
 	public Mono<ResponseEntity<User>> registerUser(String str,@RequestBody User user){
 		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(user)));
 	}
-
+	
 	@PostMapping(value="login", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Publisher<User> login(ServerWebExchange exchange, @RequestBody User user) {
 

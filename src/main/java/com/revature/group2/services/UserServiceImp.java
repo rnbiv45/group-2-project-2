@@ -33,7 +33,7 @@ public class UserServiceImp implements UserService {
 			resultsMono = null;
 			userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
 				if(!result) {
-					resultsMono = userRepo.insert(user);
+					resultsMono = userRepo.save(user);
 				} else {
 					resultsMono = null;
 				}
@@ -69,7 +69,7 @@ public class UserServiceImp implements UserService {
 		User resultUser = new User();
 		
 		userRepo.findById(name).subscribe(user -> {
-			if(user.getPass().equals(password)){
+			if(user != null && user.getPass().equals(password)){
 				resultUser.setName(user.getName());
 				resultUser.setPass(user.getPass());
 				resultUser.setRole(user.getRole());

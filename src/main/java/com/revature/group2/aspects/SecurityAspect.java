@@ -28,7 +28,13 @@ public class SecurityAspect {
 		if(joinPoint.getArgs().length == 0) {
 			throw new Exception("Invalid arguments for advice method" + joinPoint.getSignature());
 		}
-		String token = (String) joinPoint.getArgs()[0];
+		String token;
+		try {
+			token = (String) joinPoint.getArgs()[0];
+		}catch (Exception e) {
+			ResponseEntity.badRequest().body("Unauthorized User");
+			return;
+		}
 		
 		User user = tokenService.parser(token);
 		
@@ -61,8 +67,8 @@ public class SecurityAspect {
 		}
 	}
 	
-	@Pointcut("@annotation(com.revature.aspects.Admin)")
+	@Pointcut("@annotation(com.revature.group2.aspects.Admin)")
 	public void adminHook() { /* Empty method for Hook */ }
-	@Pointcut("@annotation(com.revature.aspects.Authorized)")
+	@Pointcut("@annotation(com.revature.group2.aspects.Authorized)")
 	public void authorizedHook() { /* Empty method for Hook */ } 
 }

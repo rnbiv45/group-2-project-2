@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.group2.aspects.Authorized;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
@@ -58,8 +59,10 @@ public class CardController {
 		cardService.addCardToSystem(card);
 	}
 	
+	@Authorized
 	@GetMapping
 	public Flux<Card> getAllCards(
+			@CookieValue("token") String string,
 			@RequestParam Optional<String> type,
 			@RequestParam Optional<String> archetype,
 			@RequestParam Optional<Integer> rarity,
