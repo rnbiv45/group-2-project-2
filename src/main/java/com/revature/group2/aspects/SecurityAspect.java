@@ -24,28 +24,21 @@ public class SecurityAspect {
 	}
 
 	@Around("authorizedHook()")
-	public void authorizedUser (ProceedingJoinPoint joinPoint) throws Throwable{
+	public Object authorizedUser (ProceedingJoinPoint joinPoint) throws Throwable{
 		if(joinPoint.getArgs().length == 0) {
 			throw new Exception("Invalid arguments for advice method" + joinPoint.getSignature());
 		}
-		String token;
-		try {
-			token = (String) joinPoint.getArgs()[0];
-		}catch (Exception e) {
-			ResponseEntity.badRequest().body("Unauthorized User");
-			return;
+		String token = (String) joinPoint.getArgs()[0];
+		if(token.isEmpty()) {
+			return ResponseEntity.status(401);
 		}
 		
 		User user = tokenService.parser(token);
 		
-		if(user != null) {
-			joinPoint.proceed();
+		if(user == null) {
+			return ResponseEntity.badRequest().body("Unauthorized User");	
 		}
-		else {
-			ResponseEntity.badRequest().body("Unauthorized User");
-			return;
-		}
-		
+		return joinPoint.proceed();
 	}
 	
 	@Around("adminHook()")

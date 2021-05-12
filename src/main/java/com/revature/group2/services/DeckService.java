@@ -5,6 +5,8 @@ import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.DeckRepo;
 
+import reactor.core.publisher.Mono;
+
 public interface DeckService {
 
 	// THE PARAMETERS ARE GUESSES OF WHAT YOU NEED, CHANGE THEM IF NEEDED!!
@@ -23,5 +25,6 @@ public interface DeckService {
 	// -As a user, I can add and remove cards from a deck.
 	void addCardToDeck(User user, Deck deck, Card card);
 	void removeCardFromDeck(User user, Deck deck, Card card);
+	Mono<User> addDeckToUser(User user);
 
 }

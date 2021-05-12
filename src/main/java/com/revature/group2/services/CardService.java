@@ -37,12 +37,12 @@ public interface CardService {
 	
 	//-As an Admin, I can add or remove a card in the database.
 	Mono<Card> addCardToSystem(Card card);
-	void removeCardFromSystem(Card card);
+	Mono<Void> removeCardFromSystem(Card card);
 	
 	//-As an Admin, I can change the functionality of the card’s stats, such as archetype, type, if it is unique, if it is banned.
-	void setCard(Card card);
+	Mono<Card> setCard(Card card);
 
-	Mono<Card> addCardToUser(String name);
+	Mono<User> addCardToUser(String name, User user);
 
 	Mono<Card> getCardByName(String name);
 	

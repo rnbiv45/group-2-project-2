@@ -18,6 +18,8 @@ import reactor.core.publisher.Mono;
 @Service
 public class CardServiceImp implements CardService {
 	private CardRepo cardRepo;
+	Mono<Card> resultMono;
+	Mono<Void> deleteMono;
 	
 	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
@@ -55,27 +57,64 @@ public class CardServiceImp implements CardService {
 	@Override
 
 	public Mono<Card> addCardToSystem(Card card) {
+		return cardRepo.insert(card);
+		/*
+		resultMono = null;
+		System.out.println(card.getCardPrimaryKey());
+		Mono<Card> cardResult = cardRepo.findById(card.getCardPrimaryKey());
+		System.out.println(cardResult);
+		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
+			System.out.println("0");
+			if(!result) {
+				System.out.println("5");
+				resultMono = cardRepo.insert(card);
+			} else {
+				System.out.println("6");
+				resultMono = null;
+			}
+		});
+		return resultMono;
+		*/
+		
+	}
+
+	@Override
+	public Mono<Void> removeCardFromSystem(Card card) {
+		return deleteMono = cardRepo.delete(card);
+		/*
+		resultMono = null;
+		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
+			if(result) {
+				deleteMono = cardRepo.delete(card);
+			} else {
+				deleteMono = null;
+			}
+		});
+		return deleteMono;
+		*/
+	}
+
+	@Override
+	public Mono<Card> setCard(Card card) {
 		return cardRepo.save(card);
+		/*
+		resultMono = null;
+		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
+			if(result) {
+				resultMono = cardRepo.save(card);
+			} else {
+				resultMono = null;
+			}
+		});
+		return resultMono;
+		*/
 		
 	}
 
 	@Override
-	public void removeCardFromSystem(Card card) {
-		cardRepo.delete(card);
-		return;
-		
-	}
-
-	@Override
-	public void setCard(Card card) {
-		cardRepo.save(card);
-		return;
-		
-	}
-
-	@Override
-	public Mono<Card> addCardToUser(String name) {
-		return cardRepo.findByName(name);
+	public Mono<User> addCardToUser(String name, User user) {
+		cardRepo.findByName(name).subscribe(user::addCard);
+		return Mono.just(user);
 	}
 
 	@Override
@@ -90,15 +129,18 @@ public class CardServiceImp implements CardService {
 			Optional<Integer> rarity,
 			Optional<Boolean> isBanned) {
 		Flux<Card> cards = cardRepo.findAll();
-		
-		cards = cards.filter(card -> isBanned.isPresent() && card.getCardPrimaryKey().getIsBanned().equals(isBanned.get()));
-		
-		cards = cards.filter(card -> type.isPresent() && card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
-		
-		cards = cards.filter(card -> archetype.isPresent() && card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
-		
-		cards = cards.filter(card -> rarity.isPresent() && card.getCardPrimaryKey().getRarity().equals(rarity.get()));
-		
+		if (isBanned.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getIsBanned() == isBanned.get());
+		}
+		if (type.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
+		}
+		if (archetype.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
+		}
+		if (rarity.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getRarity().equals(rarity.get()));
+		}
 		return cards;
 	}
 }

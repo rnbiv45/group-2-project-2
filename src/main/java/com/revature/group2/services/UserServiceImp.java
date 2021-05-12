@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.group2.beans.Card;
+import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 import com.revature.group2.repos.UserRepo;
@@ -31,7 +32,10 @@ public class UserServiceImp implements UserService {
 	@Override
 	public Mono<User> addUser(User user) {
 			resultsMono = null;
+			//makes a get for the user you are trying to add and converts that to a boolean
+			//if no user was found it adds the user
 			userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
+				System.out.println("0");
 				if(!result) {
 					resultsMono = userRepo.save(user);
 				} else {
@@ -44,6 +48,8 @@ public class UserServiceImp implements UserService {
 	@Override
 	public Mono<User> updateUser(User user) {
 		resultsMono = null;
+		//makes a get for the user you are trying to update and converts that to a boolean
+		//if a user was found it is updated otherwise nothing happens
 		userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
 			if(result) {
 				resultsMono = userRepo.save(user);
@@ -80,6 +86,16 @@ public class UserServiceImp implements UserService {
 		
 		Mono<User> user = Mono.just(resultUser);
 		return user;
+	}
+	public Mono<User> addCardToUser(Mono<Card> card, Mono<User> user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Mono<User> addDeckToUser(Mono<Deck> deck, Mono<User> user) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

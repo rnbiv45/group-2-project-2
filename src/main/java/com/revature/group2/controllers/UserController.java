@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.revature.group2.aspects.UpdateToken;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -39,7 +37,17 @@ public class UserController {
 	
 	private UserService userService;
 	private JWTParser tokenService;
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 
+	@Autowired
+	public void setTokenServicer(JWTParser parser) {
+		this.tokenService = parser;
+	}
+	
 	@PostMapping(value="/test")
 	public void addDummyUser() {
 		User myUser = new User();
@@ -57,26 +65,17 @@ public class UserController {
 	public Flux<User> checkUsers() {
 		return userService.getUsers();
 	}
-	
-	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-
-	@Autowired
-	public void setTokenServicer(JWTParser parser) {
-		this.tokenService = parser;
-	}
 
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(String str,@RequestBody User user){
 		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(user)));
 	}
-	
-	@PostMapping(value="login", produces = MediaType.APPLICATION_NDJSON_VALUE)
+
+	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Publisher<User> login(ServerWebExchange exchange, @RequestBody User user) {
 
-		return userService.getUserByNameAndPass(user.getName(), user.getPass()).delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+		return userService.getUserByNameAndPass(user.getName(), user.getPass())
+				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
 			try {
 				exchange.getResponse()
 				.addCookie(ResponseCookie

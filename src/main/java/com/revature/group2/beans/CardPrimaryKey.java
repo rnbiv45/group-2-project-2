@@ -52,4 +52,8 @@ public class CardPrimaryKey implements Serializable{
 			ordering = Ordering.DESCENDING)
 	@CassandraType(type = Name.BOOLEAN)
 	Boolean isBanned;
+	
+	public CardPrimaryKey() {
+		super();
+	}
 }

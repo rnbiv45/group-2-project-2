@@ -48,7 +48,6 @@ public class UserServiceTest {
 		Flux<User> userFlux = Flux.fromArray(users);
 		when(userRepo.findAll()).thenReturn(userFlux);
 		Flux<User> result = userService.getUsers();
-		//assertEquals("userService should return that is passed to it by the userRepo", userFlux, result);
 		assertThat(result).isEqualTo(userFlux);
 		
 	}
@@ -62,6 +61,15 @@ public class UserServiceTest {
 		assertThat(result).isEqualTo(userMono);
 	}
 	@Test
+	void testGetUserNoUserFound() {
+		User user = new User();
+		Mono<User> userMono = Mono.just(user);
+		Mono<User> nullMono = Mono.empty();
+		when(userRepo.findById("thomas15399")).thenReturn(nullMono);
+		Mono<User> result = userService.getUser("thomas15399");
+		assertThat(result).isEqualTo(nullMono);
+	}
+	@Test
 	void testAddUserThatExists() {
 		User user = new User();
 		user.setName("thomas15399");
@@ -71,7 +79,6 @@ public class UserServiceTest {
 		when(userRepo.insert(user)).thenReturn(userMono);
 		Mono<User> result = userService.addUser(user);
 		assertThat(result).isNull();
-		//assertThat(result).isEqualTo(userMono);
 	}
 	@Test
 	void testAddUserThatDoesNotExist() {
@@ -84,7 +91,6 @@ public class UserServiceTest {
 		when(userRepo.insert(user)).thenReturn(userMono);
 		Mono<User> result = userService.addUser(user);
 		assertThat(result).isNotNull();
-		//assertThat(result).isEqualTo(userMono);
 	}
 	@Test
 	void testUpdateUserThatExists() {
@@ -96,7 +102,6 @@ public class UserServiceTest {
 		when(userRepo.save(user)).thenReturn(userMono);
 		Mono<User> result = userService.updateUser(user);
 		assertThat(result).isNotNull();
-		//assertThat(result).isEqualTo(userMono);
 	}
 	@Test
 	void testUpdateUserThatDoesNotExist() {
@@ -109,6 +114,5 @@ public class UserServiceTest {
 		when(userRepo.save(user)).thenReturn(userMono);
 		Mono<User> result = userService.updateUser(user);
 		assertThat(result).isNull();
-		//assertThat(result).isEqualTo(userMono);
 	}
 }
