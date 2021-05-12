@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +24,6 @@ import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
 import com.revature.group2.beans.User;
 import com.revature.group2.beans.CardType;
-import com.revature.group2.beans.User;
 import com.revature.group2.services.CardService;
 import com.revature.group2.utils.JWTParser;
 
@@ -112,10 +110,8 @@ public class CardController {
 		try {
 			User user = tokenService.parser(token);
 			return cardService.addCardToUser(name, user).map(card -> ResponseEntity.status(201).body(card));
-		} catch (JsonMappingException e) {
-			return Mono.just(ResponseEntity.status(500).body("No valid token"));
-		} catch (JsonProcessingException e) {
-			return Mono.just(ResponseEntity.status(500).body("No valid token"));
+		} catch (Exception e) {
+			return Mono.just(ResponseEntity.status(500).body(e));
 		}
 	}
 }

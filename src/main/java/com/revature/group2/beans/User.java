@@ -5,29 +5,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import com.datastax.oss.protocol.internal.ProtocolConstants.DataType;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revature.group2.deserializers.UserDeserializer;
 
-import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
-import lombok.Data;
 
 @Table("user")
 //@JsonAutoDetect(fieldVisibility = Visibility.ANY)
@@ -69,12 +59,8 @@ public class User {
 	}
 	
 	public void addCard(Card card) {
-		Integer amount = this.cards.get(card);
-		if (amount == null) {
-			this.cards.put(card, 1);
-			return;
-		}
-		this.cards.put(card, amount+1);
+		this.cards.compute(card, (k, v) -> (v == null) ? 1 : v++);
+
 	}
 	
 	public void removeCard(Card card) {

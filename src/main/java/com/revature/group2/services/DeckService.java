@@ -1,7 +1,5 @@
 package com.revature.group2.services;
 
-import org.springframework.http.ResponseEntity;
-
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;

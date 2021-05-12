@@ -29,13 +29,13 @@ public class UserDeserializer extends StdDeserializer<User> {
 	}
 	
 	@Override
-	public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+	public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 		JsonNode node = jp.getCodec().readTree(jp);
 		User user = new User();
 		user.setName(node.get("name").asText());
 		user.setPass(node.get("pass").asText());
-		user.setCards(new HashMap<Card, Integer>());
-		user.setDecks(new HashSet<Deck>());
+		user.setCards(new HashMap<>());
+		user.setDecks(new HashSet<>());
 		user.setRole(UserRole.valueOf(node.get("role").asText()));
 		return user;
     }
