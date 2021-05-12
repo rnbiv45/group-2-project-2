@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.revature.group2.beans.Deck;
@@ -68,6 +69,8 @@ public class DeckController {
 					user = tokenService.parser(token);
 					user.getDecks().remove(deck);
 					userService.updateUser(user);
+					exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
+					exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
 					return;
 				}
 			}
