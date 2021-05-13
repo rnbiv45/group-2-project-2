@@ -50,7 +50,8 @@ public class DeckServiceImp implements DeckService {
 	}
 
 	@Override
-	public void addCardToDeck(User user, Deck deck, Card card) {
+	public User addCardToDeck(User user, Deck deck, Card card) {
+		user.getDecks().remove(deck);
 		if(deck.getCards().containsKey(card)) {
 			deck.getCards().replace(card, deck.getCards().get(card)+1);
 		}
@@ -58,11 +59,14 @@ public class DeckServiceImp implements DeckService {
 			deck.getCards().put(card, 1);
 		}
 		deckRepo.save(deck);
-		
+		user.getDecks().add(deck);
+		userRepo.save(user);
+		return user;
 	}
 
 	@Override
-	public void removeCardFromDeck(User user, Deck deck, Card card) {
+	public User removeCardFromDeck(User user, Deck deck, Card card) {
+		user.getDecks().remove(deck);
 		if(deck.getCards().containsKey(card)) {
 			if(deck.getCards().get(card) > 1) {
 				deck.getCards().replace(card, deck.getCards().get(card)-1);
@@ -71,7 +75,9 @@ public class DeckServiceImp implements DeckService {
 			}
 		}
 		deckRepo.save(deck);
-		
+		user.getDecks().add(deck);
+		userRepo.save(user);
+		return user;
 	}
 
 	@Override

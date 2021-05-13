@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.DeckService;
 import com.revature.group2.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,7 +66,7 @@ public class DeckController {
 		return null;
 		
 	}
-	
+	@DeleteMapping
 	public void deleteOwnDeck(ServerWebExchange exchange, Deck deck) {
 		User user = null;
 		try {
@@ -93,5 +95,27 @@ public class DeckController {
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
+	}
+	
+	@PostMapping("/card")
+	public Mono<ResponseEntity<Object>> addCardToDeck(ServerWebExchange exchange, Deck deck, Card card) {
+		User user = null;
+		try {
+			if(exchange.getRequest().getCookies().get("token") != null) {
+				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+				if(!token.equals("")) {
+					user = tokenService.parser(token);
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+			return null;
+		}
+		return null;
+	}
+	@DeleteMapping("/card")
+	public Mono<ResponseEntity<Object>> removeCardFromDeck(ServerWebExchange exchange, Deck deck, Card card) {
+		return null;
 	}
 }
