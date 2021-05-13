@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
-import com.revature.group2.repos.CardRepo;
 import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
@@ -84,8 +83,7 @@ public class UserServiceImp implements UserService {
 			}
 		});
 		
-		Mono<User> user = Mono.just(resultUser);
-		return user;
+		return  Mono.just(resultUser);
 	}
 	public Mono<User> addCardToUser(Mono<Card> card, Mono<User> user) {
 		// TODO Auto-generated method stub

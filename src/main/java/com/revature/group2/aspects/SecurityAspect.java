@@ -1,7 +1,5 @@
 package com.revature.group2.aspects;
 
-import javax.management.RuntimeErrorException;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,12 +7,10 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.User;
 import com.revature.group2.beans.UserRole;
 import com.revature.group2.utils.JWTParser;
@@ -33,20 +29,20 @@ public class SecurityAspect {
 	@Around("authorizedHook()")
 	public Object authorizedUser (ProceedingJoinPoint joinPoint) throws Throwable{
 		if(joinPoint.getArgs().length == 0) {
-			throw new Exception("Invalid arguments for advice method" + joinPoint.getSignature());
+			throw new IllegalArgumentException();
 		}
 		Object[] methodArgs = joinPoint.getArgs();
 		
 		ServerWebExchange exchange = null;
-		checkArg: for(Object arg: methodArgs) {
+		for(Object arg: methodArgs) {
 			if(arg instanceof ServerWebExchange) {
 				exchange = (ServerWebExchange) arg;
-				break checkArg;
+				break;
 			}
 		}
 		
-		User user = new User();;
 		try {
+			User user = new User();
 			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
 			
 			if(cookie == null) {
@@ -55,6 +51,10 @@ public class SecurityAspect {
 			}
 			String token = cookie.getValue();
 			user = tokenService.parser(token);
+			if(user == null) {
+				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+				return null;
+			}
 			
 		} catch ( JsonProcessingException e) {
 			exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -72,15 +72,15 @@ public class SecurityAspect {
 		Object[] methodArgs = joinPoint.getArgs();
 		
 		ServerWebExchange exchange = null;
-		checkArg: for(Object arg: methodArgs) {
+		for(Object arg: methodArgs) {
 			if(arg instanceof ServerWebExchange) {
 				exchange = (ServerWebExchange) arg;
-				break checkArg;
+				break;
 			}
 		}
 		
-		User user = new User();;
 		try {
+			User user = new User();
 			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
 			
 			if(cookie == null) {

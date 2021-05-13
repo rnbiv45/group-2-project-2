@@ -27,7 +27,7 @@ public class TokenAspects {
 	}
 
 	@AfterReturning(pointcut = "updateToken()", returning = "user")
-	public void makeNewToken(JoinPoint joinpoint, Mono<User> user) throws Throwable {
+	public void makeNewToken(JoinPoint joinpoint, Mono<User> user) {
 		ServerWebExchange exchange = (ServerWebExchange) joinpoint.getArgs()[0];
 		user.subscribe(updatedUser -> {
 			try {
@@ -37,7 +37,7 @@ public class TokenAspects {
 						.httpOnly(true).build());
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
-			};
+			}
 		});
 	}
 
