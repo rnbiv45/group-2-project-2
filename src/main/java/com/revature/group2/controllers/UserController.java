@@ -59,7 +59,6 @@ public class UserController {
 		myUser.setPass("Tom");
 		myUser.setRole(UserRole.MEMBER);
 		userService.addUser(myUser);
-		
 	}
 	
 	@GetMapping(value="/test")
@@ -75,7 +74,8 @@ public class UserController {
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Publisher<User> login(ServerWebExchange exchange, @RequestBody User user) {
 
-		return userService.getUser(user.getName()).delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+		return userService.getUserByNameAndPass(user.getName(), user.getPass())
+				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
 			try {
 				exchange.getResponse()
 				.addCookie(ResponseCookie
