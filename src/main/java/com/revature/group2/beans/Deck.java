@@ -1,5 +1,5 @@
 package com.revature.group2.beans;
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,9 +10,10 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
 
-import com.revature.group2.beans.Archetype;;
+import lombok.Data;
 
 
+@Data
 public class Deck {
 	@PrimaryKeyColumn(
 			name="primaryArchetype",
@@ -39,51 +40,25 @@ public class Deck {
 	@Column
 	@CassandraType(type = Name.BLOB)
 	private Map<Card, Integer> cards;
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((cards == null) ? 0 : cards.hashCode());
-		result = prime * result + ((creator == null) ? 0 : creator.hashCode());
-		result = prime * result + ((primaryArchetype == null) ? 0 : primaryArchetype.hashCode());
-		result = prime * result + ((secondaryArchetype == null) ? 0 : secondaryArchetype.hashCode());
-		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Deck other = (Deck) obj;
-		if (cards == null) {
-			if (other.cards != null)
-				return false;
-		} else if (!cards.equals(other.cards))
-			return false;
-		if (creator == null) {
-			if (other.creator != null)
-				return false;
-		} else if (!creator.equals(other.creator))
-			return false;
-		if (primaryArchetype != other.primaryArchetype)
-			return false;
-		if (secondaryArchetype != other.secondaryArchetype)
-			return false;
-		if (uuid == null) {
-			if (other.uuid != null)
-				return false;
-		} else if (!uuid.equals(other.uuid))
-			return false;
-		return true;
-	}
-	@Override
-	public String toString() {
-		return "Deck [primaryArchetype=" + primaryArchetype + ", secondaryArchetype=" + secondaryArchetype + ", uuid="
-				+ uuid + ", creator=" + creator + ", cards=" + cards + "]";
+	
+	public Deck() {
+		super();
 	}
 	
+	public void addCard(Card card) {
+		this.cards.compute(card, (k, v) -> (v == null) ? 1 : v++);
+
+	}
+	
+	public void removeCard(Card card) {
+		Integer amount = this.cards.get(card);
+		if (amount == null) {
+			return;
+		}
+		if (amount > 1) {
+			this.cards.put(card, amount-1);
+			return;
+		}
+		this.cards.remove(card);
+	}
 }

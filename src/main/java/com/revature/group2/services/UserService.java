@@ -1,6 +1,7 @@
 package com.revature.group2.services;
 
 import com.revature.group2.beans.Card;
+import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.UserRepo;
 
@@ -21,4 +22,8 @@ public interface UserService {
 	Mono<Card> collectCard();
 
 	void setUserRepo(UserRepo userRepo);
+	
+	Mono<User> addCardToUser(Mono<Card> card, Mono<User> user);
+	
+	Mono<User> addDeckToUser(Mono<Deck> deck, Mono<User> user);
 }

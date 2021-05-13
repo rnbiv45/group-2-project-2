@@ -1,7 +1,6 @@
 package com.revature.group2.beans;
 
 import java.io.Serializable;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.cql.Ordering;
@@ -25,7 +24,7 @@ public class CardPrimaryKey implements Serializable{
 			ordinal=1,
 			type = PrimaryKeyType.PARTITIONED)
 	@CassandraType(type = Name.TEXT)
-	Type type;
+	CardType type;
 	@PrimaryKeyColumn(
 			name="archetype",
 			ordinal=0,
@@ -45,12 +44,16 @@ public class CardPrimaryKey implements Serializable{
 			type = PrimaryKeyType.CLUSTERED,
 			ordering = Ordering.DESCENDING)
 	@CassandraType(type = Name.INT)
-	int rarity;
+	Integer rarity;
 	@PrimaryKeyColumn(
 			name="isBanned",
 			ordinal=3,
 			type = PrimaryKeyType.CLUSTERED,
 			ordering = Ordering.DESCENDING)
 	@CassandraType(type = Name.BOOLEAN)
-	boolean isBanned;
+	Boolean isBanned;
+	
+	public CardPrimaryKey() {
+		super();
+	}
 }

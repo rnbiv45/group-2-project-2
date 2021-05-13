@@ -1,15 +1,20 @@
 package com.revature.group2.services;
 
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 import com.revature.group2.repos.UserRepo;
@@ -19,10 +24,10 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class CardServiceImp implements CardService {
-	private Random random = new Random();
 	private CardRepo cardRepo;
 	private UserRepo userRepo;
 
+	
 	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
 		this.cardRepo = cardRepo;
@@ -73,31 +78,63 @@ public class CardServiceImp implements CardService {
 		return null;
 	}
 
-	@Override
+	
+	
 
 	public Mono<Card> addCardToSystem(Card card) {
 		return cardRepo.save(card);
 
 	}
 
-	@Override
-	public void removeCardFromSystem(Card card) {
-		cardRepo.delete(card);
-		return;
+//
+//	public Mono<Card> collectCard(UUID cardUuid) {
+//		// TODO add card to logged in player
+//		return cardRepo.findByUuid(cardUuid);
+////		return Mono.empty();
+////		return cardRepo.insert(cardUuid);
+//	}
 
+	@Override
+	public Mono<Void> removeCardFromSystem(Card card) {
+		return cardRepo.delete(card);
 	}
 
 	@Override
-	public void setCard(Card card) {
-		cardRepo.save(card);
-		return;
-
+	public Mono<Card> setCard(Card card) {
+		return cardRepo.save(card);
 	}
 
 	@Override
-	public Mono<Card> collectCard(UUID cardUuid) {
-		// TODO add card to logged in player
-		// return cardRepo.findByUuid(cardUuid);
-		return Mono.empty();
+	public Mono<User> addCardToUser(String name, User user) {
+		cardRepo.findByName(name).subscribe(user::addCard);
+		return Mono.just(user);
+	}
+
+	@Override
+	public Mono<Card> getCardByName(String name) {
+		return cardRepo.findByName(name);
+	}
+	
+	@Override
+	public Flux<Card> getCardsFromSystemWithArguments(
+			Optional<String> type, 
+			Optional<String> archetype, 
+			Optional<Integer> rarity,
+			Optional<Boolean> isBanned) {
+		Flux<Card> cards = cardRepo.findAll();
+		if (isBanned.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getIsBanned() == isBanned.get());
+		}
+		if (type.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
+		}
+		if (archetype.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
+		}
+		if (rarity.isPresent()) {
+			cards = cards.filter(card -> card.getCardPrimaryKey().getRarity().equals(rarity.get()));
+		}
+		return cards;
+
 	}
 }

@@ -22,7 +22,7 @@ public class Card {
 	@Column
 	private String name;
 	@Column
-	private boolean isUnique;
+	private Boolean isUnique;
 	@Column
 	private Integer attackValue;
 	@Column
@@ -32,26 +32,9 @@ public class Card {
 	@Column
 	private Integer buffValue;
 	
-	//Prevents negative numbers
-//	public void setAttackValue(Integer attackValue) {
-//		if (attackValue >= 0) {
-//			this.attackValue = attackValue;
-//		} else {
-//			System.err.println("Value cannot be negative!");
-//		}
-//	}
-//	public void setDefenseValue(Integer defenseValue) {
-//		if (defenseValue >= 0) {
-//			this.defenseValue = defenseValue;
-//		} else {
-//			System.err.println("Value cannot be negative!");
-//		}
-//	}
-//	public void setDamageValue(Integer damageValue) {
-//		if (damageValue >= 0) {
-//			this.damageValue = damageValue;
-//		} else {
-//			System.err.println("Value cannot be negative!");
-//		}
-//	}
+
+	public Card() {
+		super();
+	}
+
 }
