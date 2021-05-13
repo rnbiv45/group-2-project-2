@@ -5,8 +5,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Component;
 
-import com.revature.group2.beans.User;
-
 @Component
 @Aspect
 public class SecurityAspect {
