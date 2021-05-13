@@ -76,24 +76,6 @@ public class CardController {
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
 	
-//	@GetMapping
-//	public Map<Card, Integer> getUserCards(ServerWebExchange exchange){
-//		User user = null;
-//		try {
-//			if(exchange.getRequest().getCookies().get("token") != null) {
-//				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
-//				if(!token.equals("")) {
-//					user = tokenService.parser(token);
-//					return user.getCards();
-//				}
-//			}
-//		} catch (Exception e) {
-//			exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
-//			return null;
-//		}
-//		return null;
-//	}
-	
 	//add a card
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);

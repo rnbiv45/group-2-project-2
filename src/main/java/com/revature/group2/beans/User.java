@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tinkerpop.gremlin.structure.io.binary.DataType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 
 import lombok.Data;
@@ -75,10 +74,6 @@ public class User {
 	
 	public void addDeck(Deck deck) {
 		this.decks.add(deck.getKey().getUuid().toString());
-	}
-	
-	public void removeDeck(Deck deck) {
-		
 	}
 	
 }

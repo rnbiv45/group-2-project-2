@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.revature.group2.beans.Deck;
 import com.revature.group2.services.DeckService;
 
 import reactor.core.publisher.Mono;
@@ -39,20 +40,13 @@ public class DeckControllerTest {
 	DeckService deckService;
 	
 	@Test
-	void addDeckToUserAddsDeck() {
-//		Mono<ResponseEntity<Object>> 
-//		String token = "";
-//		
-//		Mockito.when(deckService.addDeckToUser(null, null, null))
-//		
-//		Mono<ResponseEntity<Object>> result = deckController.addDeckToUser(token, "WATER", "WIND");
-//		assertThat(result).isEqualTo();
+	void addDeckToUserReturnsResponse() {
+		Mono<ResponseEntity<Object>> expected = Mono.just(new Deck())
+				.map(u -> ResponseEntity.status(201).body(u));
+		String token = "";
+		Mockito.when(deckService.addDeckToUser(Mockito.any(), Mockito.any(), Mockito.any()));	
+		Mono<ResponseEntity<Object>> result = deckController.addDeckToUser(token, "WATER", "WIND");
+		assertThat(result).isEqualTo(expected);
 	}
-	
-	@Test
-	void addDeckToUserHasDefaults() {
-		
-	}
-	
 	
 }

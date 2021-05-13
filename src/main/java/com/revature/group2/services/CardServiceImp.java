@@ -130,7 +130,7 @@ public class CardServiceImp implements CardService {
 			Optional<Boolean> isBanned) {
 		Flux<Card> cards = cardRepo.findAll();
 		if (isBanned.isPresent()) {
-			cards = cards.filter(card -> card.getKey().getIsBanned() == isBanned.get());
+			cards = cards.filter(card -> card.getKey().getIsBanned().equals(isBanned.get()));
 		}
 		if (type.isPresent()) {
 			cards = cards.filter(card -> card.getKey().getType().equals(CardType.valueOf(type.get())));
