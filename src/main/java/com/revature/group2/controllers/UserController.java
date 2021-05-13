@@ -51,8 +51,8 @@ public class UserController {
 	@PostMapping(value="/test")
 	public void addDummyUser() {
 		User myUser = new User();
-		Map<Card, Integer> myCards = new HashMap<Card, Integer>();
-		Set<Deck> myDecks = new HashSet<>();
+		Map<String, Integer> myCards = new HashMap<>();
+		Set<String> myDecks = new HashSet<>();
 		myUser.setName("DummyUser");
 		myUser.setDecks(myDecks);
 		myUser.setCards(myCards);
@@ -67,8 +67,8 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public Mono<ResponseEntity<User>> registerUser(String str,@RequestBody User user){
-		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(user)));
+	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
+		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorStop();
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
