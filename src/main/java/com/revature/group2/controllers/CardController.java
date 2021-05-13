@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -94,12 +95,13 @@ public class CardController {
 		return null;
 	}
 	
-	//add a card
+	@PostMapping
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
 				.onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
 	}
+	
 	@GetMapping(path="{name}")
 	public Mono<Card> getCard(@PathVariable String name) {
 		return cardService.getCardByName(name);
@@ -114,4 +116,7 @@ public class CardController {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
 	}
+	
+	@DeleteMapping
+	
 }
