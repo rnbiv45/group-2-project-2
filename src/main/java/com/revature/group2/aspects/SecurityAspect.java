@@ -1,13 +1,20 @@
 package com.revature.group2.aspects;
 
+import javax.management.RuntimeErrorException;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.User;
 import com.revature.group2.beans.UserRole;
 import com.revature.group2.utils.JWTParser;
@@ -28,36 +35,72 @@ public class SecurityAspect {
 		if(joinPoint.getArgs().length == 0) {
 			throw new Exception("Invalid arguments for advice method" + joinPoint.getSignature());
 		}
-		String token = (String) joinPoint.getArgs()[0];
-		if(token.isEmpty()) {
-			return ResponseEntity.status(401);
+		Object[] methodArgs = joinPoint.getArgs();
+		
+		ServerWebExchange exchange = null;
+		checkArg: for(Object arg: methodArgs) {
+			if(arg instanceof ServerWebExchange) {
+				exchange = (ServerWebExchange) arg;
+				break checkArg;
+			}
 		}
 		
-		User user = tokenService.parser(token);
-		
-		if(user == null) {
-			return ResponseEntity.badRequest().body("Unauthorized User");	
+		User user = new User();;
+		try {
+			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
+			
+			if(cookie == null) {
+				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+				return null;
+			}
+			String token = cookie.getValue();
+			user = tokenService.parser(token);
+			
+		} catch ( JsonProcessingException e) {
+			exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+			return null;
 		}
+		
 		return joinPoint.proceed();
 	}
 	
 	@Around("adminHook()")
-	public void adminUser (ProceedingJoinPoint joinPoint) throws Throwable{
+	public Object adminUser (ProceedingJoinPoint joinPoint) throws Throwable{
 		if(joinPoint.getArgs().length == 0) {
 			throw new Exception("Invalid arguments for advice method" + joinPoint.getSignature());
 		}
-		String token = (String) joinPoint.getArgs()[0];
+		Object[] methodArgs = joinPoint.getArgs();
 		
-		User user = tokenService.parser(token);
-		
-		if(user != null && user.getRole().equals(UserRole.ADMIN)) {
-			// We're an admin, the advised method can be called.
-			joinPoint.proceed();
-		} else {
-			// We aren't an admin, we aren't even going to call the method.
-			ResponseEntity.status(403).body("Forbidden");
-			return;
+		ServerWebExchange exchange = null;
+		checkArg: for(Object arg: methodArgs) {
+			if(arg instanceof ServerWebExchange) {
+				exchange = (ServerWebExchange) arg;
+				break checkArg;
+			}
 		}
+		
+		User user = new User();;
+		try {
+			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
+			
+			if(cookie == null) {
+				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+				return null;
+			}
+			String token = cookie.getValue();
+			user = tokenService.parser(token);
+			
+			if(!user.getRole().equals(UserRole.ADMIN)) {
+				exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+				return null;
+			}
+			
+		} catch ( JsonProcessingException e) {
+			exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+			return null;
+		}
+		
+		return joinPoint.proceed();
 	}
 	
 	@Pointcut("@annotation(com.revature.group2.aspects.Admin)")

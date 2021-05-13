@@ -69,7 +69,7 @@ public class CardController {
 	@Authorized
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
-			@CookieValue(value = "token", defaultValue = "") String string,
+			ServerWebExchange exchange,
 			@RequestParam Optional<String> type,
 			@RequestParam Optional<String> archetype,
 			@RequestParam Optional<Integer> rarity,
