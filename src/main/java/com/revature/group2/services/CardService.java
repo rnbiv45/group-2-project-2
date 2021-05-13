@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.revature.group2.beans.Card;
-import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.CardKey;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
 
@@ -30,7 +30,7 @@ public interface CardService {
 	//-As a user, I can see the cards that are meta to the card game.
 	Flux<Card> getMetaCards(); //find a better name if need be for this function
 	
-	Mono<Card> getCard(CardPrimaryKey key);
+	Mono<Card> getCard(CardKey key);
 	
 	
 	/* ADMIN SECTION */

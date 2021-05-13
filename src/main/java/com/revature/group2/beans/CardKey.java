@@ -14,7 +14,7 @@ import lombok.Data;
 
 @PrimaryKeyClass
 @Data
-public class CardPrimaryKey implements Serializable{
+public class CardKey implements Serializable{
 	/**
 	 * 
 	 */
@@ -53,7 +53,7 @@ public class CardPrimaryKey implements Serializable{
 	@CassandraType(type = Name.BOOLEAN)
 	Boolean isBanned;
 	
-	public CardPrimaryKey() {
+	public CardKey() {
 		super();
 	}
 }
