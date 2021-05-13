@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.DeckService;
 import com.revature.group2.utils.JWTParser;
@@ -49,7 +51,7 @@ public class DeckController {
 		this.userService = userService;
 	}
 
-	public Set<Deck> viewDecks(ServerWebExchange exchange){
+	public Set<String> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {
@@ -88,10 +90,15 @@ public class DeckController {
 	}
 		
 	@PostMapping
-	public Mono<ResponseEntity<Object>> addDeckToUser(@CookieValue String token) {
+	public Mono<ResponseEntity<Object>> addDeckToUser(
+			@CookieValue String token,
+			@RequestParam String primaryArchetype,
+			@RequestParam String secondaryArchetype) {
 		try {
+			Archetype primary = Archetype.valueOf(primaryArchetype);
+			Archetype secondary = Archetype.valueOf(secondaryArchetype);
 			User user = tokenService.parser(token);
-			return deckService.addDeckToUser(user).map(u -> ResponseEntity.status(201).body(u));
+			return deckService.addDeckToUser(user, primary, secondary).map(u -> ResponseEntity.status(201).body(u));
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}

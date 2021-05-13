@@ -1,6 +1,7 @@
 package com.revature.group2.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+<<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
@@ -9,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+=======
+>>>>>>> b3c7fac1db7ec7d103fdbe09ac334346618c82fa
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,19 +19,29 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+<<<<<<< HEAD
 import org.springframework.http.HttpCookie;
+=======
+import org.springframework.http.ResponseEntity;
+>>>>>>> b3c7fac1db7ec7d103fdbe09ac334346618c82fa
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ServerWebExchange;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
+=======
+import com.revature.group2.beans.Deck;
+>>>>>>> b3c7fac1db7ec7d103fdbe09ac334346618c82fa
 import com.revature.group2.services.DeckService;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
+
+import reactor.core.publisher.Mono;
 
 @ExtendWith(SpringExtension.class)
 public class DeckControllerTest {
@@ -65,6 +78,7 @@ public class DeckControllerTest {
 	@Autowired
 	DeckService deckService;
 	
+<<<<<<< HEAD
 	@Autowired
 	JWTParser parser;
 	
@@ -141,4 +155,16 @@ public class DeckControllerTest {
 		verify(userService).updateUser(user);
 		
 	}
+=======
+	@Test
+	void addDeckToUserReturnsResponse() {
+		Mono<ResponseEntity<Object>> expected = Mono.just(new Deck())
+				.map(u -> ResponseEntity.status(201).body(u));
+		String token = "";
+		Mockito.when(deckService.addDeckToUser(Mockito.any(), Mockito.any(), Mockito.any()));	
+		Mono<ResponseEntity<Object>> result = deckController.addDeckToUser(token, "WATER", "WIND");
+		assertThat(result).isEqualTo(expected);
+	}
+	
+>>>>>>> b3c7fac1db7ec7d103fdbe09ac334346618c82fa
 }

@@ -3,6 +3,7 @@ package com.revature.group2.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -19,6 +20,7 @@ public class DeckServiceImp implements DeckService {
 
 	private DeckRepo deckRepo;
 	private UserRepo userRepo;
+	private UserService userService;
 	
 	@Autowired
 	public void setDeckRepo(DeckRepo deckRepo) {
@@ -27,6 +29,11 @@ public class DeckServiceImp implements DeckService {
 	@Autowired
 	public void setUserRepo(UserRepo userRepo) {
 		this.userRepo = userRepo;
+	}
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 	
 	@Override
@@ -53,13 +60,13 @@ public class DeckServiceImp implements DeckService {
 	public User addCardToDeck(User user, Deck deck, Card card) {
 		user.getDecks().remove(deck);
 		if(deck.getCards().containsKey(card)) {
-			deck.getCards().replace(card, deck.getCards().get(card)+1);
+			//deck.getCards().replace(card, deck.getCards().get(card)+1);
 		}
 		else {
-			deck.getCards().put(card, 1);
+			//deck.getCards().put(card, 1);
 		}
 		deckRepo.save(deck);
-		user.getDecks().add(deck);
+		//user.getDecks().add(deck);
 		userRepo.save(user);
 		return user;
 	}
@@ -69,22 +76,26 @@ public class DeckServiceImp implements DeckService {
 		user.getDecks().remove(deck);
 		if(deck.getCards().containsKey(card)) {
 			if(deck.getCards().get(card) > 1) {
-				deck.getCards().replace(card, deck.getCards().get(card)-1);
+				//deck.getCards().replace(card, deck.getCards().get(card)-1);
 			} else {
-				deck.getCards().remove(card);
+				//deck.getCards().remove(card);
 			}
 		}
 		deckRepo.save(deck);
-		user.getDecks().add(deck);
+		//user.getDecks().add(deck);
 		userRepo.save(user);
 		return user;
 	}
 
 	@Override
-	public Mono<User> addDeckToUser(User user) {
-		Mono<Deck> deck = Mono.just(new Deck());
-		// TODO
-		return null;
+	public Mono<User> addDeckToUser(
+			User user, 
+			Archetype primaryArchetype, 
+			Archetype secondaryArchetype) {
+		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
+				.subscribe(user::addDeck);
+		userService.updateUser(user);
+		return Mono.just(user);
 	}
 
 }

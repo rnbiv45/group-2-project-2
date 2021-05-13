@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.revature.group2.beans.Card;
-import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.CardKey;
 import com.revature.group2.repos.CardRepo;
 import com.revature.group2.services.CardService;
 import com.revature.group2.services.CardServiceImp;
@@ -57,7 +57,7 @@ public class CardServiceTest {
 	void testGetCard() {
 		Card card = new Card();
 		Mono<Card> cardMono = Mono.just(card);
-		CardPrimaryKey key = new CardPrimaryKey();
+		CardKey key = new CardKey();
 		when(cardRepo.findById(key)).thenReturn(cardMono);
 		Mono<Card> result = cardService.getCard(key);
 		assertThat(result).isEqualTo(cardMono);
@@ -65,8 +65,8 @@ public class CardServiceTest {
 	@Test
 	void testGetCardThatDoesNotExist() {
 		Card card = new Card();
-		CardPrimaryKey key = new CardPrimaryKey();
-		card.setCardPrimaryKey(key);
+		CardKey key = new CardKey();
+		card.setKey(key);
 		Mono<Card> cardMono = Mono.just(card);
 		Mono<Card> nullMono = Mono.empty();
 		when(cardRepo.findById(key)).thenReturn(nullMono);
