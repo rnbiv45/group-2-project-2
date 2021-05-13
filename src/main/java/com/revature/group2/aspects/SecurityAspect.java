@@ -33,13 +33,7 @@ public class SecurityAspect {
 		}
 		Object[] methodArgs = joinPoint.getArgs();
 		
-		ServerWebExchange exchange = null;
-		for(Object arg: methodArgs) {
-			if(arg instanceof ServerWebExchange) {
-				exchange = (ServerWebExchange) arg;
-				break;
-			}
-		}
+		ServerWebExchange exchange = getWebExchange(methodArgs);
 		
 		try {
 			User user = new User();
@@ -71,13 +65,7 @@ public class SecurityAspect {
 		}
 		Object[] methodArgs = joinPoint.getArgs();
 		
-		ServerWebExchange exchange = null;
-		for(Object arg: methodArgs) {
-			if(arg instanceof ServerWebExchange) {
-				exchange = (ServerWebExchange) arg;
-				break;
-			}
-		}
+		ServerWebExchange exchange = getWebExchange(methodArgs);
 		
 		try {
 			User user = new User();
@@ -101,6 +89,15 @@ public class SecurityAspect {
 		}
 		
 		return joinPoint.proceed();
+	}
+	
+	private ServerWebExchange getWebExchange(Object[] methodArgs) {
+		for(Object arg: methodArgs) {
+			if(arg instanceof ServerWebExchange) {
+				return (ServerWebExchange) arg;
+			}
+		}
+		throw new IllegalArgumentException();
 	}
 	
 	@Pointcut("@annotation(com.revature.group2.aspects.Admin)")
