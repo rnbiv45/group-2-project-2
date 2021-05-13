@@ -14,8 +14,6 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class UserServiceImp implements UserService {
-	Mono<User> resultsMono;
-	Flux<User> resultsFlux;
 
 	private UserRepo userRepo;
 	
@@ -31,33 +29,12 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> addUser(User user) {
-			resultsMono = null;
-			//makes a get for the user you are trying to add and converts that to a boolean
-			//if no user was found it adds the user
-			userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
-				System.out.println("0");
-				if(!result) {
-					resultsMono = userRepo.insert(user);
-				} else {
-					resultsMono = null;
-				}
-			}).subscribe();
-			return resultsMono;
+		return userRepo.save(user);
 	}
 
 	@Override
 	public Mono<User> updateUser(User user) {
-		resultsMono = null;
-		//makes a get for the user you are trying to update and converts that to a boolean
-		//if a user was found it is updated otherwise nothing happens
-		userRepo.findById(user.getName()).hasElement().doOnNext(result -> {
-			if(result) {
-				resultsMono = userRepo.save(user);
-			} else {
-				resultsMono = null;
-			}
-		}).subscribe();
-		return resultsMono;
+		return userRepo.save(user);
 	}
 
 	@Override

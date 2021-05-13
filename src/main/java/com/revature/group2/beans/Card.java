@@ -16,7 +16,7 @@ public class Card {
 	public static final String tableName = "card";
 	
 	@PrimaryKey
-	private CardPrimaryKey cardPrimaryKey;
+	private CardKey key;
 	@Column
 	private String name;
 	@Column
