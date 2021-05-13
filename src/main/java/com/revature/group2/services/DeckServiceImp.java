@@ -5,6 +5,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -20,10 +21,20 @@ public class DeckServiceImp implements DeckService {
 	private DeckRepo deckRepo;
 	private UserRepo userRepo;
 
+	private UserService userService;
+	
+
 	@Autowired
 	public void setDeckRepo(DeckRepo deckRepo) {
 		this.deckRepo = deckRepo;
 	}
+
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+	
 
 	@Override
 	public void createDeck() {
@@ -33,14 +44,15 @@ public class DeckServiceImp implements DeckService {
 
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
-		Set<Deck> decks = user.getDecks();
-		return deckRepo.findAll().filter(c -> {
-			for (Deck d : decks)
-				if (d.equals(c)) {
-					return true;
-				}
-			return true;
-		});
+//		Set<String> decks = user.getDecks();
+//		return deckRepo.findAll().filter(c -> {
+//			for (Deck d : decks)
+//				if (d.equals(c)) {
+//					return true;
+//				}
+//			return true;
+//		});
+		return null;
 	}
 
 	@Override
@@ -62,10 +74,14 @@ public class DeckServiceImp implements DeckService {
 	}
 
 	@Override
-	public Mono<User> addDeckToUser(User user) {
-		Mono<Deck> deck = Mono.just(new Deck());
-		// TODO
-		return null;
+	public Mono<User> addDeckToUser(
+			User user, 
+			Archetype primaryArchetype, 
+			Archetype secondaryArchetype) {
+		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
+				.subscribe(user::addDeck);
+		userService.updateUser(user);
+		return Mono.just(user);
 	}
 
 }

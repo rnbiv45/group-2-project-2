@@ -100,10 +100,10 @@ public class CardControllerTest {
 		card1.setName("t1");
 		card2.setName("t2");
 		card3.setName("t3");
-		Map<Card, Integer> cards = new HashMap <Card, Integer>();
-		cards.put(card1, 3);
-		cards.put(card2, 5);
-		cards.put(card3, 1);
+		Map<String, Integer> cards = new HashMap <String, Integer>();
+		cards.put(card1.getKey().getUuid().toString(), 3);
+		cards.put(card2.getKey().getUuid().toString(), 5);
+		cards.put(card3.getKey().getUuid().toString(), 1);
 		user.setCards(cards);
 		String token = "hello";
 		Mockito.when(exchange.getRequest().getCookies().get("token")).thenReturn(cookies);
@@ -117,7 +117,7 @@ public class CardControllerTest {
 			e.printStackTrace();
 			return;
 		}
-		Map<Card, Integer> result = cardController.getUserCards(exchange);
+		Map<String, Integer> result = cardController.getUserCards(exchange);
 		assertThat(result).isEqualTo(cards);
 		//StepVerifier.create(result).expectNext(ResponseEntity.status(200).body(user.getCards())).expectComplete().verify();
 	}

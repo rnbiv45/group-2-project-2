@@ -7,58 +7,55 @@ import org.springframework.data.cassandra.core.cql.Ordering;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
+import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 
 import lombok.Data;
 
 
+@Table("deck")
 @Data
 public class Deck {
-	@PrimaryKeyColumn(
-			name="primaryArchetype",
-			ordinal=0,
-			type = PrimaryKeyType.PARTITIONED)
-	@CassandraType(type = Name.TEXT)
-	private Archetype primaryArchetype;
-	@PrimaryKeyColumn(
-			name="secondaryArchetype",
-			ordinal=1,
-			type = PrimaryKeyType.PARTITIONED)
-	@CassandraType(type = Name.TEXT)
-	private Archetype secondaryArchetype;
-	@PrimaryKeyColumn(
-			name="uuid",
-			ordinal=2,
-			type = PrimaryKeyType.CLUSTERED,
-			ordering = Ordering.DESCENDING)
-	@CassandraType(type = Name.UUID)
-	private UUID uuid;
+	@PrimaryKey
+	private DeckKey key;
 	@Column
 	@CassandraType(type = Name.TEXT)
 	private String creator;
 	@Column
-	@CassandraType(type = Name.BLOB)
-	private Map<Card, Integer> cards;
+	@CassandraType(type = Name.MAP, typeArguments = {Name.TEXT, Name.INT})
+	private Map<String, Integer> cards;
 	
 	public Deck() {
 		super();
 	}
 	
 	public void addCard(Card card) {
-		this.cards.compute(card, (k, v) -> (v == null) ? 1 : v++);
-
+		String cardName = card.getKey().getUuid().toString();
+		this.cards.compute(cardName, (k, v) -> (v == null) ? 1 : v++);
 	}
 	
 	public void removeCard(Card card) {
-		Integer amount = this.cards.get(card);
+		String cardName = card.getKey().getUuid().toString();
+		Integer amount = this.cards.get(cardName);
 		if (amount == null) {
 			return;
 		}
 		if (amount > 1) {
-			this.cards.put(card, amount-1);
+			this.cards.put(cardName, amount-1);
 			return;
 		}
-		this.cards.remove(card);
+		this.cards.remove(cardName);
+	}
+
+	public Deck(
+			String creator,
+			Archetype primaryArchetype,
+			Archetype secondaryArchetype) {
+		super();
+		this.creator = creator;
+		this.key = new DeckKey(primaryArchetype, secondaryArchetype);
+
 	}
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
-import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.CardKey;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
@@ -44,32 +44,34 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-	public Mono<Card> getCard(CardPrimaryKey key) {
+	public Mono<Card> getCard(CardKey key){
 		return cardRepo.findById(key);
 	}
 
 	@Override
 	public Flux<Card> getCardsFromUser(User user) {
-		return cardRepo.findAll().filter(c -> {
-			for (Card result : user.getCards().keySet()) {
-				if (c.equals(result)) {
-					return true;
-				}
-			}
-			return false;
-		});
+//		return cardRepo.findAll().filter(c -> {
+//			for (Card result : user.getCards().keySet()) {
+//				if (c.equals(result)) {
+//					return true;
+//				}
+//			}
+//			return false;
+//		});
+		return null;
 	}
 
 	@Override
 	public Flux<Card> getCardsMissingFromSystem(User user) {
-		return cardRepo.findAll().filter(c -> {
-			for (Card result : user.getCards().keySet()) {
-				if (c.equals(result)) {
-					return false;
-				}
-			}
-			return true;
-		});
+//		return cardRepo.findAll().filter(c -> {
+//			for (Card result : user.getCards().keySet()) {
+//				if (c.equals(result)) {
+//					return false;
+//				}
+//			}
+//			return true;
+//		});
+		return null;
 	}
 
 	@Override
@@ -123,16 +125,16 @@ public class CardServiceImp implements CardService {
 			Optional<Boolean> isBanned) {
 		Flux<Card> cards = cardRepo.findAll();
 		if (isBanned.isPresent()) {
-			cards = cards.filter(card -> card.getCardPrimaryKey().getIsBanned() == isBanned.get());
+			cards = cards.filter(card -> card.getKey().getIsBanned().equals(isBanned.get()));
 		}
 		if (type.isPresent()) {
-			cards = cards.filter(card -> card.getCardPrimaryKey().getType().equals(CardType.valueOf(type.get())));
+			cards = cards.filter(card -> card.getKey().getType().equals(CardType.valueOf(type.get())));
 		}
 		if (archetype.isPresent()) {
-			cards = cards.filter(card -> card.getCardPrimaryKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
+			cards = cards.filter(card -> card.getKey().getArchetype().equals(Archetype.valueOf(archetype.get())));
 		}
 		if (rarity.isPresent()) {
-			cards = cards.filter(card -> card.getCardPrimaryKey().getRarity().equals(rarity.get()));
+			cards = cards.filter(card -> card.getKey().getRarity().equals(rarity.get()));
 		}
 		return cards;
 

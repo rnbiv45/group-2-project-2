@@ -1,5 +1,6 @@
 package com.revature.group2.services;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -26,6 +27,6 @@ public interface DeckService {
 	// -As a user, I can add and remove cards from a deck.
 	void addCardToDeck(User user, Deck deck, Card card);
 	void removeCardFromDeck(User user, Deck deck, Card card);
-	Mono<User> addDeckToUser(User user);
+	Mono<User> addDeckToUser(User user, Archetype primaryArchetype, Archetype secondaryArchetype);
 
 }

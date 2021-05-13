@@ -28,7 +28,7 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> addUser(User user) {
-		return userRepo.insert(user);
+		return userRepo.save(user);
 	}
 
 	@Override
