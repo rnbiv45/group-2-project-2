@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tinkerpop.gremlin.structure.io.binary.DataType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 
 import lombok.Data;
@@ -20,12 +21,7 @@ import com.revature.group2.deserializers.UserDeserializer;
 
 
 @Table("user")
-//@JsonAutoDetect(fieldVisibility = Visibility.ANY)
-//@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @Data
-//@Accessors(fluent = true)
-//@NoArgsConstructor
-//@AllArgsConstructor
 @JsonDeserialize(using = UserDeserializer.class)
 public class User {
 	@PrimaryKey
@@ -37,13 +33,13 @@ public class User {
 	@JsonProperty
 	private String pass;
 	@Column
-	@CassandraType(type = Name.BLOB)
+	@CassandraType(type = Name.MAP, typeArguments = {Name.TEXT, Name.INT})
 	@JsonProperty
-	private Map<Card, Integer> cards;
+	private Map<String, Integer> cards;
 	@Column
-	@CassandraType(type = Name.BLOB)
+	@CassandraType(type = Name.SET, typeArguments = {Name.TEXT})
 	@JsonProperty
-	private Set<Deck> decks;
+	private Set<String> decks;
 	@Column
 	@CassandraType(type = Name.TEXT)
 	@JsonProperty
@@ -53,25 +49,36 @@ public class User {
 		super();
 		this.setName("");
 		this.setPass("");
-		this.setCards(new HashMap<Card, Integer>());
-		this.setDecks(new HashSet<Deck>());
+		this.setCards(new HashMap<>());
+		this.setDecks(new HashSet<>());
 		this.setRole(UserRole.MEMBER);
 	}
 	
 	public void addCard(Card card) {
-		this.cards.compute(card, (k, v) -> (v == null) ? 1 : v++);
+		String cardName = card.getKey().getUuid().toString();
+		this.cards.compute(cardName, (k, v) -> (v == null) ? 1 : v++);
 
 	}
 	
 	public void removeCard(Card card) {
-		Integer amount = this.cards.get(card);
+		String cardName = card.getKey().getUuid().toString(); 
+		Integer amount = this.cards.get(cardName);
 		if (amount == null) {
 			return;
 		}
 		if (amount > 1) {
-			this.cards.put(card, amount-1);
+			this.cards.put(cardName, amount-1);
 			return;
 		}
-		this.cards.remove(card);
+		this.cards.remove(cardName);
 	}
+	
+	public void addDeck(Deck deck) {
+		this.decks.add(deck.getKey().getUuid().toString());
+	}
+	
+	public void removeDeck(Deck deck) {
+		
+	}
+	
 }
