@@ -173,4 +173,9 @@ public class CardServiceImp implements CardService {
 			return c;
 		}));
 	}
+
+	@Override
+	public Flux<Card> updateCard(Mono<Card> card) {
+		return cardRepo.saveAll(card);
+	}
 }

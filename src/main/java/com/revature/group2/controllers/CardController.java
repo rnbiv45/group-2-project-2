@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -94,6 +95,7 @@ public class CardController {
 	}
 	
 	@GetMapping(value="/users/{user}/cards")
+
 	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
 		User user = null;
 		try {
@@ -131,5 +133,11 @@ public class CardController {
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
+	}
+	
+	@Admin
+	@PutMapping(path="/{uuid}")
+	public Flux<Card> updateCard(ServerWebExchange exchange, @RequestBody Card card, @PathVariable UUID uuid) {
+		return cardService.updateCard(Mono.just(card));
 	}
 }
