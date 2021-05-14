@@ -12,6 +12,11 @@ import com.revature.group2.beans.User;
 import com.revature.group2.repos.DeckRepo;
 import com.revature.group2.repos.UserRepo;
 
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -20,13 +25,19 @@ public class DeckServiceImp implements DeckService {
 
 	private DeckRepo deckRepo;
 	private UserRepo userRepo;
-
 	private UserService userService;
-	
+
+
+
 
 	@Autowired
 	public void setDeckRepo(DeckRepo deckRepo) {
 		this.deckRepo = deckRepo;
+	}
+
+	@Autowired
+	public void setUserRepo(UserRepo userRepo) {
+		this.userRepo = userRepo;
 	}
 
 	
@@ -36,28 +47,23 @@ public class DeckServiceImp implements DeckService {
 	}
 	
 
-	@Override
-	public void createDeck() {
-		// TODO Auto-generated method stub
-
+	public Mono<Deck> createDeck(Deck deck) {
+		return deckRepo.insert(deck);
 	}
 
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
-//		Set<String> decks = user.getDecks();
-//		return deckRepo.findAll().filter(c -> {
-//			for (Deck d : decks)
-//				if (d.equals(c)) {
-//					return true;
-//				}
-//			return true;
-//		});
+		Flux<Deck> decks = deckRepo.findAll();
+		//decks = decks.filter(decks ->  == user.getName())
+
 		return null;
 	}
 
 	@Override
-	public void removeDeck(User user, Deck deck) {
+	public Mono<User> removeDeck(User user, Deck deck) {
 		// TODO Auto-generated method stub
+		if(user.getDecks().remove(deck));
+		return userRepo.save(user);
 
 	}
 
