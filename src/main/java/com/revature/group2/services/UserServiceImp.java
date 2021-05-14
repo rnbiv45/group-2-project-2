@@ -27,7 +27,12 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> getUser(String username) {
-		return userRepo.findById(username);
+		return userRepo.findByName(username);
+	}
+	
+	@Override
+	public Mono<User> getUserByUUID(UUID uuid) {
+		return userRepo.findByUuid(uuid);
 	}
 
 	@Override
@@ -54,7 +59,7 @@ public class UserServiceImp implements UserService {
 	@Override
 	public Mono<User> getUserByNameAndPass(String name, String password) {
 		
-		return userRepo.findById(name).map(user -> {
+		return userRepo.findByName(name).map(user -> {
 			User resultUser = new User();
 			if (user != null && user.getPass().equals(password)) {
 				resultUser.setUuid(user.getUuid());

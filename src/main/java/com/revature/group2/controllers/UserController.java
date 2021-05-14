@@ -8,12 +8,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,8 +85,12 @@ public class UserController {
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Publisher<User> login(ServerWebExchange exchange, @RequestBody User user) {
-
+	public Mono<User> login(@CookieValue(value = "token", defaultValue = "")String token, ServerWebExchange exchange, @RequestBody User user) {
+		
+		if(token == "") {
+			
+		}
+		
 		return userService.getUserByNameAndPass(user.getName(), user.getPass())
 				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
 			try {
@@ -96,7 +100,6 @@ public class UserController {
 				.addCookie(ResponseCookie
 						.from("token", tokenService.makeToken(nextUser))
 						.httpOnly(true).path("/").build());
-				System.out.println(exchange.getResponse().getCookies());
 			} catch (JsonProcessingException e) {
 				exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
