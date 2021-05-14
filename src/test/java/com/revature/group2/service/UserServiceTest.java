@@ -100,7 +100,7 @@ public class UserServiceTest {
 		Mono<User> userMono = Mono.just(user);
 		when(userRepo.findById("thomas15399")).thenReturn(userMono);
 		when(userRepo.save(user)).thenReturn(userMono);
-		Mono<User> result = userService.updateUser(user);
+		Flux<User> result = userService.updateUser(Mono.just(user));
 		assertThat(result).isNotNull();
 	}
 	@Test
@@ -112,7 +112,7 @@ public class UserServiceTest {
 		Mono<User> userMono = Mono.just(user);
 		when(userRepo.findById("thomas15399")).thenReturn(nullMono);
 		when(userRepo.save(user)).thenReturn(userMono);
-		Mono<User> result = userService.updateUser(user);
+		Flux<User> result = userService.updateUser(Mono.just(user));
 		assertThat(result).isNull();
 	}
 }

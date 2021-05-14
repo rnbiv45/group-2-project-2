@@ -2,6 +2,7 @@ package com.revature.group2.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,17 +16,21 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ServerWebExchange;
-
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ServerWebExchange;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
+import com.revature.group2.beans.DeckKey;
 import com.revature.group2.beans.User;
+import com.revature.group2.beans.Deck;
 import com.revature.group2.services.DeckService;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
@@ -78,14 +83,18 @@ public class DeckControllerTest {
 		assertTrue(true);
 	}
 	
-	
+	/*
 	@Test
 	void testViewDeck() {
 		User user = new User();
 		Deck deck1 = new Deck();
 		Deck deck2 = new Deck();
-		deck1.setPrimaryArchetype(Archetype.EARTH);
-		deck2.setPrimaryArchetype(Archetype.FIRE);
+		DeckKey deckKey1 = new DeckKey();
+		DeckKey deckKey2 = new DeckKey();
+		deckKey1.setPrimaryArchetype(Archetype.EARTH);
+		deckKey2.setPrimaryArchetype(Archetype.FIRE);
+		deck1.setKey(deckKey1);
+		deck2.setKey(deckKey2);;
 		Set<Deck> decks = new HashSet<Deck>();
 		decks.add(deck1);
 		decks.add(deck2);
@@ -112,7 +121,7 @@ public class DeckControllerTest {
 	}
 	
 	@Test
-	public void testDeletedeckExists() {
+	public void testDeletedeck() {
 		User user = new User();
 		Deck deck1 = new Deck();
 		Deck deck2 = new Deck();
@@ -121,6 +130,8 @@ public class DeckControllerTest {
 		Set<Deck> decks = new HashSet<Deck>();
 		decks.add(deck1);
 		decks.add(deck2);
+		Set<Deck> decks2 = new HashSet<Deck>();
+		decks2.add(deck2);
 		user.setDecks(decks);
 		ServerWebExchange exchange = Mockito.mock(ServerWebExchange.class,  Mockito.RETURNS_DEEP_STUBS);
 		HttpCookie cookie = Mockito.mock(HttpCookie.class);
@@ -138,9 +149,20 @@ public class DeckControllerTest {
 			e.printStackTrace();
 			return;
 		}
+		verify(userService).updateUser(user);
 		
 	}
 	@Test
+<<<<<<< HEAD
+	void addDeckToUserReturnsResponse() {
+		Mono<ResponseEntity<Object>> expected = Mono.just(new Deck())
+				.map(u -> ResponseEntity.status(201).body(u));
+		String token = "";
+		Mockito.when(deckService.addDeckToUser(Mockito.any(), Mockito.any(), Mockito.any()));	
+		Mono<ResponseEntity<Object>> result = deckController.addDeckToUser(token, "WATER", "WIND");
+		assertThat(result).isEqualTo(expected);
+	}
+	*/
 	public void testDeleteDeckNotExist() {
 		User user = new User();
 		ServerWebExchange exchange = Mockito.mock(ServerWebExchange.class,  Mockito.RETURNS_DEEP_STUBS);
