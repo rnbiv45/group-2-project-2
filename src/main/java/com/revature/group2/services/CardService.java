@@ -1,9 +1,6 @@
 package com.revature.group2.services;
 
 import java.util.Optional;
-import java.util.UUID;
-
-import org.springframework.http.ResponseEntity;
 
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
@@ -50,6 +47,10 @@ public interface CardService {
 	
 	public Flux<Card> getCardsFromSystemWithArguments(Optional<String> type, Optional<String> archetype,
 			Optional<Integer> rarity, Optional<Boolean> isBanned);
-	public Mono<Card> banCardFromSystem(String name);
+	
+	public Flux<Card> updateCard(Mono<Card> card);
+	
+	Mono<Card> banCardFromSystem(String name);
+	
 	
 }

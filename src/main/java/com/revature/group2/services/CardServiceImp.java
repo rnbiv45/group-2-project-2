@@ -194,4 +194,8 @@ public class CardServiceImp implements CardService {
 //		
 //		return Mono.just(bannedCard);
 	}
+	
+	public Flux<Card> updateCard(Mono<Card> card) {
+		return cardRepo.saveAll(card);
+	}
 }

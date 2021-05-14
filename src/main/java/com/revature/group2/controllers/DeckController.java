@@ -1,30 +1,30 @@
 package com.revature.group2.controllers;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.DeckService;
 import com.revature.group2.services.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.revature.group2.beans.Archetype;
-import com.revature.group2.beans.User;
-import com.revature.group2.services.DeckService;
 import com.revature.group2.utils.JWTParser;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -49,7 +49,7 @@ public class DeckController {
 		this.userService = userService;
 	}
 
-	public Set<Deck> viewDecks(ServerWebExchange exchange){
+	public Set<String> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {
@@ -74,8 +74,8 @@ public class DeckController {
 				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
-					user.getDecks().remove(deck);
-					userService.updateUser(user);
+					user.getDecks().remove(deck.getKey().getUuid().toString());
+					userService.updateUser(Mono.just(user));
 					exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
 					exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
 					return;
@@ -100,5 +100,11 @@ public class DeckController {
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
+	}
+	
+	@PutMapping("/{uuid}")
+	public Flux<Deck> updateDeck(ServerWebExchange exchange, @RequestBody Deck deck, @PathVariable UUID uuid) {
+		deck.getKey().setUuid(uuid);
+		return deckService.updateDeck(Mono.just(deck));
 	}
 }
