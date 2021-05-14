@@ -97,6 +97,7 @@ public class CardController {
 	}
 
 	//add a card
+	@PostMapping
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
