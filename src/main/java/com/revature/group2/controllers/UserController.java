@@ -68,6 +68,7 @@ public class UserController {
 
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
+		System.out.println(user);
 		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorStop();
 	}
 
@@ -80,7 +81,7 @@ public class UserController {
 				exchange.getResponse()
 				.addCookie(ResponseCookie
 						.from("token", tokenService.makeToken(nextUser))
-						.httpOnly(true).build());
+						.httpOnly(true).path("/").build());
 			} catch (JsonProcessingException e) {
 				exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
 			}

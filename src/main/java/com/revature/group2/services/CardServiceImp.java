@@ -1,6 +1,7 @@
 package com.revature.group2.services;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import com.revature.group2.beans.CardKey;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
-import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -56,7 +56,6 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-
 	public Mono<Card> addCardToSystem(Card card) {
 		return cardRepo.insert(card);
 		/*
@@ -81,6 +80,7 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Mono<Void> removeCardFromSystem(Card card) {
+		
 		return deleteMono = cardRepo.delete(card);
 		/*
 		resultMono = null;
@@ -147,21 +147,51 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Mono<Card> banCardFromSystem(String name) {
-		Card bannedCard = new Card();
-		cardRepo.findByName(name).doOnNext(card -> {
+		
+		Mono<Card> oldCard = cardRepo.findByName(name);
+		
+			oldCard.doOnNext(card -> {
+				cardRepo.delete(card).subscribe();
+			});
+		
+		Mono<Card> bannedCard = oldCard.map(card ->{
+			Card newCard = new Card();
 			CardKey cardKey = card.getKey();
 			cardKey.setIsBanned(true);
-			cardRepo.delete(card);
-			bannedCard.setKey(cardKey);
-			bannedCard.setAttackValue(card.getAttackValue());
-			bannedCard.setDamageValue(card.getDamageValue());
-			bannedCard.setDefenseValue(card.getDefenseValue());
-			bannedCard.setIsUnique(card.getIsUnique());
-			bannedCard.setName(card.getName());
+			newCard.setKey(cardKey);
+			newCard.setAttackValue(card.getAttackValue());
+			newCard.setDamageValue(card.getDamageValue());
+			newCard.setDefenseValue(card.getDefenseValue());
+			newCard.setIsUnique(card.getIsUnique());
+			newCard.setName(card.getName());
+			addCardToSystem(newCard).subscribe();
 			
-			addCardToSystem(bannedCard);
+			return newCard;
 		});
 		
-		return Mono.just(bannedCard);
+		return bannedCard;
+		
+//		Card card;
+//		try {
+//			card = cardRepo.findByName(name).toFuture().get();
+//		} catch (InterruptedException e) {
+//			Thread.currentThread().interrupt();
+//			return null;
+//		} catch (ExecutionException e) {
+//			return null;
+//		}
+//		Card bannedCard = new Card();
+//		CardKey cardKey = card.getKey();
+//		cardKey.setIsBanned(true);
+//		cardRepo.delete(card);
+//		bannedCard.setKey(cardKey);
+//		bannedCard.setAttackValue(card.getAttackValue());
+//		bannedCard.setDamageValue(card.getDamageValue());
+//		bannedCard.setDefenseValue(card.getDefenseValue());
+//		bannedCard.setIsUnique(card.getIsUnique());
+//		bannedCard.setName(card.getName());
+//		addCardToSystem(bannedCard);
+//		
+//		return Mono.just(bannedCard);
 	}
 }

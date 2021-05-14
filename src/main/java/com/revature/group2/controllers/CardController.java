@@ -68,7 +68,7 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
-	@Authorized
+//	@Authorized
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -120,10 +120,10 @@ public class CardController {
 		}
 	}
 	
-	@Admin
-	@Authorized
+//	@Admin
+//	@Authorized
 	@DeleteMapping(path = "/cards/{name}")
-	public Mono<Card> banUser(ServerWebExchange exchange, @PathVariable String name){
+	public Mono<Card> banCard(ServerWebExchange exchange, @PathVariable String name){
 		return cardService.banCardFromSystem(name);
 	}
 	
