@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
-import com.revature.group2.repos.CardRepo;
 import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
@@ -48,6 +47,21 @@ public class UserServiceImp implements UserService {
 	}
 
 	@Override
+	public Mono<User> getUserByNameAndPass(String name, String password) {
+		User resultUser = new User();
+		
+		userRepo.findById(name).subscribe(user -> {
+			if(user != null && user.getPass().equals(password)){
+				resultUser.setName(user.getName());
+				resultUser.setPass(user.getPass());
+				resultUser.setRole(user.getRole());
+				resultUser.setCards(user.getCards());
+				resultUser.setDecks(user.getDecks());
+			}
+		});
+		
+		return  Mono.just(resultUser);
+	}
 	public Mono<User> addCardToUser(Mono<Card> card, Mono<User> user) {
 		// TODO Auto-generated method stub
 		return null;
