@@ -77,7 +77,7 @@ public class DeckController {
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					user.getDecks().remove(deck);
-					userService.updateUser(user);
+					userService.updateUser(Mono.just(user));
 					exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
 					exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
 					return;
