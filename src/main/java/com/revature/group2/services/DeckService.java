@@ -15,14 +15,14 @@ public interface DeckService {
 
 	void setDeckRepo(DeckRepo deckRepo);
 	// -As a user, I can create a new deck.
-	void createDeck();
+	Mono<Deck> createDeck(Deck deck);
 
 	// -As a user, I can view cards in my decks.
 	// -As a user, I can view other users’ decks.
-	Deck getUserDecks(User user);
+	Flux<Deck> getUserDecks(User user);
 
 	// -As a user, I can delete a deck.
-	void removeDeck(User user, Deck deck);
+	Mono<User> removeDeck(User user, Deck deck);
 
 	// -As a user, I can add and remove cards from a deck.
 	void addCardToDeck(User user, Deck deck, Card card);
