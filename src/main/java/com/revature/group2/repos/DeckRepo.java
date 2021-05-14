@@ -2,8 +2,6 @@ package com.revature.group2.repos;
 
 import java.util.UUID;
 
-import java.util.UUID;
-
 import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
 import org.springframework.stereotype.Repository;
 

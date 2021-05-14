@@ -43,28 +43,42 @@ public class DeckServiceImp implements DeckService {
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
 		Flux<Deck> decks = deckRepo.findAll();
-		//decks = decks.filter(decks ->  == user.getName())
+		//decks = decks.filter(deck -> deck.getKey().getUuid().)
 		return null;
 	}
 
 	@Override
 	public Mono<User> removeDeck(User user, Deck deck) {
-		// TODO Auto-generated method stub
 		if(user.getDecks().remove(deck.getKey().getUuid().toString()));
 		return userRepo.save(user);
 		
 	}
 
 	@Override
-	public void addCardToDeck(User user, Deck deck, Card card) {
-		// TODO Auto-generated method stub
-		
+	public User addCardToDeck(User user, Deck deck, Card card) {
+		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
+			//deck.getCards().replace(card, deck.getCards().get(card)+1);
+		}
+		else {
+			//deck.getCards().put(card, 1);
+		}
+		deckRepo.save(deck);
+		userRepo.save(user);
+		return user;
 	}
 
 	@Override
-	public void removeCardFromDeck(User user, Deck deck, Card card) {
-		// TODO Auto-generated method stub
-		
+	public User removeCardFromDeck(User user, Deck deck, Card card) {
+		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
+			if(deck.getCards().get(card.getKey().getUuid().toString()) > 1) {
+				//deck.getCards().replace(card, deck.getCards().get(card)-1);
+			} else {
+				//deck.getCards().remove(card);
+			}
+		}
+		deckRepo.save(deck);
+		userRepo.save(user);
+		return user;
 	}
 
 	@Override

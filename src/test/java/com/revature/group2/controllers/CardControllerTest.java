@@ -61,7 +61,7 @@ public class CardControllerTest {
 	
 	@Autowired
 	private JWTParser parser;
-	
+/*	
 	@Test
 	public void testGetAllCards() {
 		Card[] cards = {(new Card()),(new Card())};
@@ -77,13 +77,12 @@ public class CardControllerTest {
 	
 	@Test 
 	public void testAddCard() {
-		/*
 		Card card = new Card();
 		ArgumentCaptor<Card> captor = ArgumentCaptor.forClass(Card.class);
 		//when(cardService.getUser(user.getUsername())).thenReturn(null);
 		cardController.addCard(card);
 		verify(cardService).addCardToSystem(captor.capture());
-		*/
+		
 		
 	}
 	
@@ -121,5 +120,5 @@ public class CardControllerTest {
 		assertThat(result).isEqualTo(cards);
 		//StepVerifier.create(result).expectNext(ResponseEntity.status(200).body(user.getCards())).expectComplete().verify();
 	}
-
+ */
 }

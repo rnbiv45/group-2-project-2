@@ -87,6 +87,7 @@ public class CardController {
 
 	@GetMapping(value="/users/{user}/cards")
 	public Map<String, Integer> getUserCards(@CookieValue(value="token") String token, ServerWebExchange exchange, @PathVariable String pathUser){
+
 		return null;
 	}
 
