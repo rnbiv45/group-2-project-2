@@ -11,6 +11,7 @@ import com.revature.group2.beans.CardKey;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
+import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -142,5 +143,25 @@ public class CardServiceImp implements CardService {
 			cards = cards.filter(card -> card.getKey().getRarity().equals(rarity.get()));
 		}
 		return cards;
+	}
+
+	@Override
+	public Mono<Card> banCardFromSystem(String name) {
+		Card bannedCard = new Card();
+		cardRepo.findByName(name).doOnNext(card -> {
+			CardKey cardKey = card.getKey();
+			cardKey.setIsBanned(true);
+			cardRepo.delete(card);
+			bannedCard.setKey(cardKey);
+			bannedCard.setAttackValue(card.getAttackValue());
+			bannedCard.setDamageValue(card.getDamageValue());
+			bannedCard.setDefenseValue(card.getDefenseValue());
+			bannedCard.setIsUnique(card.getIsUnique());
+			bannedCard.setName(card.getName());
+			
+			addCardToSystem(bannedCard);
+		});
+		
+		return Mono.just(bannedCard);
 	}
 }
