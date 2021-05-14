@@ -79,7 +79,7 @@ public class CardController {
 	}
 	
 	@GetMapping(value="/users/{user}/cards")
-	public Map<Card, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
+	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {
