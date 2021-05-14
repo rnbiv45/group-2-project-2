@@ -80,8 +80,8 @@ public class CardController {
 	}
 	
 	@Authorized
-	@GetMapping(value="/users/cards")
-	public Map<String, Integer> getUserCards(ServerWebExchange exchange){
+	@GetMapping("/User")
+	public Map<Card, Integer> getUserCards(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {
@@ -97,7 +97,9 @@ public class CardController {
 		}
 		return null;
 	}
-	
+
+
+	//add a card
 	@PostMapping
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
