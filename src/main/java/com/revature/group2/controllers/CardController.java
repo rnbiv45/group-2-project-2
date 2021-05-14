@@ -68,7 +68,7 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
-//	@Authorized
+	//@Authorized
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -79,28 +79,19 @@ public class CardController {
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
 	
-
-	@GetMapping(value="/users/{user}/cards")
-	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
-		User user = null;
-		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
-				if(!token.equals("")) {
-					user = tokenService.parser(token);
-					return user.getCards();
-				}
-			}
-		} catch (Exception e) {
-			exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
-			return null;
-		}
+	@PostMapping(path="/users/{user}/cards")
+	public Flux<User> addCardToUser(@CookieValue(value="token") String token, ServerWebExchange exchange, @PathVariable UUID uuid) {
+		
 		return null;
 	}
 
+	@GetMapping(value="/users/{user}/cards")
+	public Map<String, Integer> getUserCards(@CookieValue(value="token") String token, ServerWebExchange exchange, @PathVariable String pathUser){
+		return null;
+	}
 
-	//add a card
-	@PostMapping
+	@Admin
+	@PostMapping(path="/cards")
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
