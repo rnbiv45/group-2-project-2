@@ -54,7 +54,7 @@ public class DeckServiceTest {
 	
 	@Autowired
 	UserRepo userRepo;
-	
+	/*
 	@Test
 	void testAddCardThatExists() {
 		User user = new User();
@@ -127,5 +127,5 @@ public class DeckServiceTest {
 		assertTrue(result.getDecks().contains(deck2));
 	}
 	
-
+ */
 }
