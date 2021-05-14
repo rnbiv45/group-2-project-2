@@ -49,7 +49,7 @@ public class DeckController {
 		this.userService = userService;
 	}
 
-	public Set<Deck> viewDecks(ServerWebExchange exchange){
+	public Set<String> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {
@@ -75,7 +75,7 @@ public class DeckController {
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					user.getDecks().remove(deck);
-					userService.updateUser(user);
+//					userService.updateUser(user);
 					exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
 					exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
 					return;

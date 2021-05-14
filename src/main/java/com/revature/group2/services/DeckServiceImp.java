@@ -1,7 +1,5 @@
 package com.revature.group2.services;
 
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Service
 public class DeckServiceImp implements DeckService {
@@ -86,7 +82,7 @@ public class DeckServiceImp implements DeckService {
 			Archetype secondaryArchetype) {
 		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
 				.subscribe(user::addDeck);
-		userService.updateUser(user);
+		userService.updateUser(Mono.just(user));
 		return Mono.just(user);
 	}
 

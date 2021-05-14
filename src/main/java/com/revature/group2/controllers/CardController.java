@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -17,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.revature.group2.aspects.Admin;
 import com.revature.group2.aspects.Authorized;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
-import com.revature.group2.beans.User;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.CardService;
@@ -68,7 +69,7 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
-	@Authorized
+
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -79,8 +80,21 @@ public class CardController {
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
 	
-	@GetMapping("/User")
-	public Map<Card, Integer> getUserCards(ServerWebExchange exchange){
+	
+	@PostMapping(path="/cards")
+	public Flux<Card> changeStat(
+			@RequestParam Optional<UUID> uuid,
+			@RequestParam Optional<String> name,
+			@RequestParam Optional<Boolean> isUnique,
+			@RequestParam Optional<Integer> attackValue,
+			@RequestParam Optional<Integer> defenseValue,
+			@RequestParam Optional<Integer> damageValue,
+			@RequestParam Optional<Integer> buffValue){
+		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
+	}
+	
+	@GetMapping(value="/users/{user}/cards")
+	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {

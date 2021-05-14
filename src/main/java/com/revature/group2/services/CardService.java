@@ -49,6 +49,14 @@ public interface CardService {
 	public Flux<Card> getCardsFromSystemWithArguments(Optional<String> type, Optional<String> archetype,
 			Optional<Integer> rarity, Optional<Boolean> isBanned);
 	
+	Flux<Card> changeCardInSystemWithArguments(
+			Optional<UUID> uuid,
+			Optional<String> name,
+			Optional<Boolean> isUnique,
+			Optional<Integer> attackValue,
+			Optional<Integer> defenseValue,
+			Optional<Integer> damageValue,
+			Optional<Integer> buffValue);
 	
 	
 }

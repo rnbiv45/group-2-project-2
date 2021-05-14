@@ -4,7 +4,9 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.revature.group2.aspects.Admin;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -28,6 +32,7 @@ import com.revature.group2.beans.UserRole;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
 
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -46,6 +51,17 @@ public class UserController {
 	@Autowired
 	public void setTokenServicer(JWTParser parser) {
 		this.tokenService = parser;
+	}
+	
+	@GetMapping
+	public Flux<User> getAll(ServerWebExchange exchange) {
+		exchange.getResponse().setStatusCode(HttpStatus.OK);
+		return userService.getAll();
+	}
+	
+	@GetMapping("/{uuid}")
+	public Mono<ResponseEntity<Object>> getUser() {
+		return null;
 	}
 	
 	@PostMapping(value="/test")
@@ -86,6 +102,7 @@ public class UserController {
 				.addCookie(ResponseCookie
 						.from("token", tokenService.makeToken(nextUser))
 						.httpOnly(true).build());
+				System.out.println(exchange.getResponse().getCookies());
 			} catch (JsonProcessingException e) {
 				exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
@@ -96,5 +113,11 @@ public class UserController {
 	public ResponseEntity<Void> logout(ServerWebExchange exchange) {
 		exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
 		return ResponseEntity.noContent().build();
+	}
+	
+	@DeleteMapping("/{uuid}")
+	public Flux<User> ban(ServerWebExchange exchange, @PathVariable Optional<UUID> uuid) {
+		exchange.getResponse().setStatusCode(HttpStatus.OK);
+		return userService.banUser(uuid);
 	}
 }

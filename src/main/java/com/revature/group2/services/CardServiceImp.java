@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
@@ -50,28 +51,26 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Flux<Card> getCardsFromUser(User user) {
-//		return cardRepo.findAll().filter(c -> {
-//			for (Card result : user.getCards().keySet()) {
-//				if (c.equals(result)) {
-//					return true;
-//				}
-//			}
-//			return false;
-//		});
-		return null;
+		return cardRepo.findAll().filter(c -> {
+			for (String result : user.getCards().keySet()) {
+				if (c.equals(result)) {
+					return true;
+				}
+			}
+			return false;
+		});
 	}
 
 	@Override
 	public Flux<Card> getCardsMissingFromSystem(User user) {
-//		return cardRepo.findAll().filter(c -> {
-//			for (Card result : user.getCards().keySet()) {
-//				if (c.equals(result)) {
-//					return false;
-//				}
-//			}
-//			return true;
-//		});
-		return null;
+		return cardRepo.findAll().filter(c -> {
+			for (String result : user.getCards().keySet()) {
+				if (c.equals(result)) {
+					return false;
+				}
+			}
+			return true;
+		});
 	}
 
 	@Override
@@ -138,5 +137,40 @@ public class CardServiceImp implements CardService {
 		}
 		return cards;
 
+	}
+	
+	@Override
+	public Flux<Card> changeCardInSystemWithArguments(
+			Optional<UUID> uuid,
+			Optional<String> name,
+			Optional<Boolean> isUnique,
+			Optional<Integer> attackValue,
+			Optional<Integer> defenseValue,
+			Optional<Integer> damageValue,
+			Optional<Integer> buffValue){
+		return cardRepo.saveAll(cardRepo.findAll()
+				.filter(c -> c.getKey().getUuid().equals(uuid.get()))
+				.map(c -> {
+			if (name.isPresent()) {
+				c.setName(name.get());
+			}
+			if (isUnique.isPresent()) {
+				c.setIsUnique(isUnique.get());
+			}
+			if (attackValue.isPresent()) {
+				c.setAttackValue(attackValue.get());
+			}
+			if (defenseValue.isPresent()) {
+				c.setDefenseValue(defenseValue.get());
+			}
+			if (damageValue.isPresent()) {
+				c.setDamageValue(damageValue.get());
+			}
+			if (buffValue.isPresent()) {
+				c.setBuffValue(buffValue.get());
+			}
+
+			return c;
+		}));
 	}
 }

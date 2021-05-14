@@ -1,11 +1,14 @@
 package com.revature.group2.repos;
 
-import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
-import org.springframework.stereotype.Repository;
+import java.util.UUID;
 
-import com.revature.group2.beans.Card;
+import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
+
 import com.revature.group2.beans.User;
 
+import reactor.core.publisher.Mono;
+
 public interface UserRepo extends ReactiveCassandraRepository<User, String> {
-	
+	Mono<User> findByUuid(UUID uuid);
+	Mono<User> deleteByUuid(UUID uuid);
 }
