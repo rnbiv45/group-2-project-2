@@ -27,11 +27,17 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> getUser(String username) {
-		return userRepo.findById(username);
+		return userRepo.findByName(username);
+	}
+	
+	@Override
+	public Mono<User> getUserByUUID(UUID uuid) {
+		return userRepo.findByUuid(uuid);
 	}
 
 	@Override
 	public Mono<User> addUser(User user) {
+		System.out.println(user);
 		return userRepo.save(user);
 	}
 
@@ -52,20 +58,27 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public Mono<User> getUserByNameAndPass(String name, String password) {
-		User resultUser = new User();
 		
-		userRepo.findById(name).subscribe(user -> {
-			if(user != null && user.getPass().equals(password)){
-				resultUser.setUuid(user.getUuid());
-				resultUser.setName(user.getName());
-				resultUser.setPass(user.getPass());
-				resultUser.setRole(user.getRole());
-				resultUser.setCards(user.getCards());
-				resultUser.setDecks(user.getDecks());
+		return userRepo.findByName(name).map(user -> {
+			if (user != null && user.getName().equals(name) && user.getPass().equals(password)) {
+				return user;
+			} else {
+				return new User();
 			}
 		});
-		
-		return  Mono.just(resultUser);
+//		return userRepo.findByName(name).map(user -> {
+//			User resultUser = new User();
+//			if (user != null && user.getPass().equals(password)) {
+//				resultUser.setUuid(user.getUuid());
+//				resultUser.setName(user.getName());
+//				resultUser.setPass(user.getPass());
+//				resultUser.setRole(user.getRole());
+//				resultUser.setCards(user.getCards());
+//				resultUser.setDecks(user.getDecks());
+//				return resultUser;
+//			}
+//			return new User();
+//		});
 	}
 	public Mono<User> addCardToUser(Mono<Card> card, Mono<User> user) {
 		return null;
@@ -89,5 +102,4 @@ public class UserServiceImp implements UserService {
 	public Flux<User> getAll() {
 		return userRepo.findAll();
 	}
-
 }

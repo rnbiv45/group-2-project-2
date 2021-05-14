@@ -8,12 +8,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,24 +80,37 @@ public class UserController {
 
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
+		System.out.println(user);
 		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorStop();
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Publisher<User> login(ServerWebExchange exchange, @RequestBody User user) {
-
-		return userService.getUserByNameAndPass(user.getName(), user.getPass())
-				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+	public Mono<User> login(@CookieValue(value = "token", defaultValue = "")String token, ServerWebExchange exchange, @RequestBody User user) {
+		
+		return userService.getUserByNameAndPass(user.getName(), user.getPass()).doOnNext(u -> {
 			try {
 				exchange.getResponse()
 				.addCookie(ResponseCookie
-						.from("token", tokenService.makeToken(nextUser))
-						.httpOnly(true).build());
-				System.out.println(exchange.getResponse().getCookies());
+						.from("token", tokenService.makeToken(u))
+						.httpOnly(true).path("/").build());
 			} catch (JsonProcessingException e) {
 				exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		});
+		
+//		return userService.getUserByNameAndPass(user.getName(), user.getPass())
+//				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+//			try {
+//				System.out.println(nextUser);
+//				System.out.println(tokenService.makeToken(nextUser));
+//				exchange.getResponse()
+//				.addCookie(ResponseCookie
+//						.from("token", tokenService.makeToken(nextUser))
+//						.httpOnly(true).path("/").build());
+//			} catch (JsonProcessingException e) {
+//				exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+//			}
+//		});
 	}
 	
 	@DeleteMapping("logout")
