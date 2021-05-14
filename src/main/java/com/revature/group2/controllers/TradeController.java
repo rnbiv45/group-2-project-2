@@ -1,5 +1,7 @@
 package com.revature.group2.controllers;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import reactor.core.publisher.Mono;
 public class TradeController {
 	TradeService tradeService;
 	private JWTParser tokenService;
+	private String tokenString = "token";
 	
 	@Autowired
 	public void setTradeService(TradeService tradeService) {
@@ -38,8 +41,8 @@ public class TradeController {
 	public Flux<Trade> getOwnTrades(ServerWebExchange exchange){
 		User user = null;
 		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					return tradeService.viewTradesByUser(user);
@@ -77,14 +80,14 @@ public class TradeController {
 	}
 	
 	@PostMapping("accept")
-	public Mono<Trade> acceptTrade(ServerWebExchange exchange, @RequestBody Trade trade){
+	public Mono<Trade> acceptTrade(ServerWebExchange exchange, @RequestBody UUID tradeId){
 		User user = null;
 		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
-					return tradeService.acceptTrade(trade, user);
+					return tradeService.acceptTrade(tradeId, user);
 				}
 			}
 		} catch (Exception e) {

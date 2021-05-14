@@ -41,10 +41,8 @@ public class TradeServiceImp implements TradeService {
 		//get all trades  with user as poster
 		Flux<Trade> postedTrades = tradeRepo.findAll().filter(trade -> trade.getPoster().equals(user.getName()));
 		//get all trades with user as acceptor
-		Flux<Trade> Acceptedtrades = tradeRepo.findAll().filter(trade -> trade.getAcceptor().equals(user.getName()));
-		//concat the fluxes
-		Flux<Trade> trades = Flux.merge(postedTrades, Acceptedtrades);
-		return trades;
+		Flux<Trade> acceptedTrades = tradeRepo.findAll().filter(trade -> trade.getAcceptor().equals(user.getName()));
+		return Flux.merge(postedTrades, acceptedTrades);
 		
 	}
 	
@@ -66,9 +64,15 @@ public class TradeServiceImp implements TradeService {
 	}
 
 	@Override
-	public Mono<Trade> acceptTrade(Trade trade, User user) {
-		Trade tradeInSystem = tradeRepo.findById(trade.getTradeId()).block();
+	public Mono<Trade> acceptTrade(UUID tradeId, User user) {
+		Trade tradeInSystem = tradeRepo.findById(tradeId).block();
+		if(tradeInSystem == null) {
+			return Mono.empty();
+		}
 		User poster = userRepo.findByUuid(tradeInSystem.getPosterId()).block();
+		if(poster == null) {
+			return Mono.empty();
+		}
 		Map<String, Integer> cards1 = poster.getCards();
 		Map<String, Integer> cards2 = user.getCards();
 		//check if both parties have their cards

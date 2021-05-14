@@ -43,7 +43,7 @@ public class DeckServiceImp implements DeckService {
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
 		Flux<Deck> decks = deckRepo.findAll();
-		//decks = decks.filter(decks ->  == user.getName())
+		//decks = decks.filter(deck -> deck.getKey().getUuid().)
 		return null;
 	}
 
@@ -56,31 +56,27 @@ public class DeckServiceImp implements DeckService {
 
 	@Override
 	public User addCardToDeck(User user, Deck deck, Card card) {
-		user.getDecks().remove(deck);
-		if(deck.getCards().containsKey(card)) {
+		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
 			//deck.getCards().replace(card, deck.getCards().get(card)+1);
 		}
 		else {
 			//deck.getCards().put(card, 1);
 		}
 		deckRepo.save(deck);
-		//user.getDecks().add(deck);
 		userRepo.save(user);
 		return user;
 	}
 
 	@Override
 	public User removeCardFromDeck(User user, Deck deck, Card card) {
-		user.getDecks().remove(deck);
-		if(deck.getCards().containsKey(card)) {
-			if(deck.getCards().get(card) > 1) {
+		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
+			if(deck.getCards().get(card.getKey().getUuid().toString()) > 1) {
 				//deck.getCards().replace(card, deck.getCards().get(card)-1);
 			} else {
 				//deck.getCards().remove(card);
 			}
 		}
 		deckRepo.save(deck);
-		//user.getDecks().add(deck);
 		userRepo.save(user);
 		return user;
 	}

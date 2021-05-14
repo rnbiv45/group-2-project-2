@@ -12,16 +12,16 @@ import lombok.Data;
 @Data
 public class Trade {
 	@Column
-	String Poster;
+	String poster;
 	@Column
-	UUID PosterId;
+	UUID posterId;
 	@Column
 	@CassandraType(type = Name.TEXT)
 	String card1;
 	@Column
-	String Acceptor;
+	String acceptor;
 	@Column
-	UUID AcceptorId;
+	UUID acceptorId;
 	@Column
 	String card2;
 	@Column

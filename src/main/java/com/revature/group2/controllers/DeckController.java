@@ -35,6 +35,7 @@ public class DeckController {
 	private DeckService deckService;
 	private UserService userService;
 	private JWTParser tokenService;
+	private String tokenString = "token";
 
 	@Autowired
 	public void setDeckService(DeckService deckService) {
@@ -54,8 +55,8 @@ public class DeckController {
 	public Set<String> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					return user.getDecks();
@@ -72,14 +73,14 @@ public class DeckController {
 	public void deleteOwnDeck(ServerWebExchange exchange, Deck deck) {
 		User user = null;
 		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					user.getDecks().remove(deck.getKey().getUuid().toString());
 					userService.updateUser(Mono.just(user));
-					exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
-					exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
+					exchange.getResponse().addCookie(ResponseCookie.from(tokenString, "").httpOnly(true).build());
+					exchange.getResponse().addCookie(ResponseCookie.from(tokenString, tokenService.makeToken(user)).httpOnly(true).build());
 					return;
 				}
 			}
@@ -108,8 +109,8 @@ public class DeckController {
 	public Mono<ResponseEntity<Object>> addCardToDeck(ServerWebExchange exchange, Deck deck, Card card) {
 		User user = null;
 		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					return null;

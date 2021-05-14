@@ -1,5 +1,7 @@
 package com.revature.group2.services;
 
+import java.util.UUID;
+
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Trade;
 import com.revature.group2.beans.User;
@@ -16,6 +18,6 @@ public interface TradeService {
 	Flux<Trade> viewTradesByUser(User user);
 	Flux<Trade> viewPendingTrades();
 	Mono<Trade> submitTrade(Trade trade);
-	Mono<Trade> acceptTrade(Trade trade, User user);
+	Mono<Trade> acceptTrade(UUID tradeId, User user);
 
 }
