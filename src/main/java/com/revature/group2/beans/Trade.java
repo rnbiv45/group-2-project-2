@@ -14,10 +14,14 @@ public class Trade {
 	@Column
 	String Poster;
 	@Column
+	UUID PosterId;
+	@Column
 	@CassandraType(type = Name.TEXT)
 	String card1;
 	@Column
 	String Acceptor;
+	@Column
+	UUID AcceptorId;
 	@Column
 	String card2;
 	@Column

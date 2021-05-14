@@ -1,6 +1,7 @@
 package com.revature.group2.services;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,51 +47,64 @@ public class TradeServiceImp implements TradeService {
 		return trades;
 		
 	}
+	
+	@Override
+	public Flux<Trade> viewPendingTrades(){
+		return tradeRepo.findAll().filter(trade -> trade.getTradeStatus().equals(TradeStatus.PENDING));
+		
+	}
 
 	@Override
 	public Mono<Trade> submitTrade(Trade trade) {
+		if(trade.getTradeId() == null) {
+			trade.setTradeId(UUID.randomUUID());
+		}
+		if(trade.getCard1() == null || trade.getCard2() == null) {
+			return null;
+		}
 		return tradeRepo.save(trade);
 	}
 
 	@Override
 	public Mono<Trade> acceptTrade(Trade trade, User user) {
-		User poster = userRepo.findById(trade.getPoster()).block();
+		Trade tradeInSystem = tradeRepo.findById(trade.getTradeId()).block();
+		User poster = userRepo.findByUuid(tradeInSystem.getPosterId()).block();
 		Map<String, Integer> cards1 = poster.getCards();
 		Map<String, Integer> cards2 = user.getCards();
 		//check if both parties have their cards
-		if (cards1.containsKey(trade.getCard1()) && cards2.containsKey(trade.getCard2())){
+		if (cards1.containsKey(tradeInSystem.getCard1()) && cards2.containsKey(tradeInSystem.getCard2())){
 			//remove poster's giving card to poster
-			if(cards1.get(trade.getCard1()) > 1) {
-				cards1.replace(trade.getCard1(), cards1.get(trade.getCard1())-1);
+			if(cards1.get(tradeInSystem.getCard1()) > 1) {
+				cards1.replace(tradeInSystem.getCard1(), cards1.get(tradeInSystem.getCard1())-1);
 			} else {
-				cards1.remove(trade.getCard1());
+				cards1.remove(tradeInSystem.getCard1());
 			}
 			//add poster's recieving card to poster
-			if(cards1.containsKey(trade.getCard2())) {
-				cards1.replace(trade.getCard2(), cards1.get(trade.getCard2())+1);
+			if(cards1.containsKey(tradeInSystem.getCard2())) {
+				cards1.replace(tradeInSystem.getCard2(), cards1.get(tradeInSystem.getCard2())+1);
 			} else {
-				cards1.put(trade.getCard2(), 1);
+				cards1.put(tradeInSystem.getCard2(), 1);
 			}
 			//remove posters recieving card from acceptor
-			if(cards2.get(trade.getCard2()) > 1) {
-				cards2.replace(trade.getCard2(), cards2.get(trade.getCard2())-1);
+			if(cards2.get(tradeInSystem.getCard2()) > 1) {
+				cards2.replace(tradeInSystem.getCard2(), cards2.get(tradeInSystem.getCard2())-1);
 			} else {
-				cards2.remove(trade.getCard2());
+				cards2.remove(tradeInSystem.getCard2());
 			}
 			//add poster's giving card to acceptor
-			if(cards2.containsKey(trade.getCard1())) {
-				cards2.replace(trade.getCard1(), cards2.get(trade.getCard1())+1);
+			if(cards2.containsKey(tradeInSystem.getCard1())) {
+				cards2.replace(tradeInSystem.getCard1(), cards2.get(tradeInSystem.getCard1())+1);
 			} else {
-				cards2.put(trade.getCard1(), 1);
+				cards2.put(tradeInSystem.getCard1(), 1);
 			}
 			user.setCards(cards2);
 			poster.setCards(cards1);
-			trade.setAcceptor(user.getName());
-			trade.setTradeStatus(TradeStatus.ACCEPTED);
+			tradeInSystem.setAcceptor(user.getName());
+			tradeInSystem.setTradeStatus(TradeStatus.ACCEPTED);
 		}
 		userRepo.save(user);
 		userRepo.save(poster);
-		return tradeRepo.save(trade);
+		return tradeRepo.save(tradeInSystem);
 	}
 
 }
