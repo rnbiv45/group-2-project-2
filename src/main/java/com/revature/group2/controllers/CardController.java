@@ -78,8 +78,8 @@ public class CardController {
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
 	
-	@GetMapping(value="/users/{user}/cards")
-	public Map<Card, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
+	@GetMapping("/User")
+	public Map<Card, Integer> getUserCards(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {
@@ -97,6 +97,7 @@ public class CardController {
 	}
 
 	//add a card
+	@PostMapping
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
