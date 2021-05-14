@@ -13,14 +13,12 @@ import com.revature.group2.repos.UserRepo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import reactor.core.publisher.Mono;
-
 @Service
 public class DeckServiceImp implements DeckService {
 
 	private DeckRepo deckRepo;
-	private UserRepo userRepo;
 	private UserService userService;
+	private UserRepo userRepo;
 	
 	@Autowired
 	public void setDeckRepo(DeckRepo deckRepo) {
@@ -51,7 +49,7 @@ public class DeckServiceImp implements DeckService {
 
 	@Override
 	public Mono<User> removeDeck(User user, Deck deck) {
-		if(user.getDecks().remove(deck));
+		if(user.getDecks().remove(deck.getKey().getUuid().toString()));
 		return userRepo.save(user);
 		
 	}
@@ -96,6 +94,11 @@ public class DeckServiceImp implements DeckService {
 				.subscribe(user::addDeck);
 		userService.updateUser(Mono.just(user));
 		return Mono.just(user);
+	}
+
+	@Override
+	public Flux<Deck> updateDeck(Mono<Deck> deck) {
+		return deckRepo.saveAll(deck);
 	}
 
 }

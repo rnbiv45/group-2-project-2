@@ -30,5 +30,6 @@ public interface DeckService {
 	User addCardToDeck(User user, Deck deck, Card card);
 	User removeCardFromDeck(User user, Deck deck, Card card);
 	Mono<User> addDeckToUser(User user, Archetype primaryArchetype, Archetype secondaryArchetype);
+	Flux<Deck> updateDeck(Mono<Deck> deck);
 
 }
