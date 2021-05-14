@@ -1,5 +1,8 @@
 package com.revature.group2.services;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -13,7 +16,7 @@ public interface UserService {
 	
 	Mono<User> addUser(User user);
 	
-	Mono<User> updateUser(User user);
+	Flux<User> updateUser(Mono<User> user);
 	
 	Flux<User> getUsers();
 	
@@ -28,4 +31,8 @@ public interface UserService {
 	Mono<User> addCardToUser(Mono<Card> card, Mono<User> user);
 	
 	Mono<User> addDeckToUser(Mono<Deck> deck, Mono<User> user);
+
+	Flux<User> banUser(Optional<UUID> uuid);
+
+	Flux<User> getAll();
 }
