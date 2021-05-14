@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 
@@ -24,6 +25,10 @@ import com.revature.group2.deserializers.UserDeserializer;
 @JsonDeserialize(using = UserDeserializer.class)
 public class User {
 	@PrimaryKey
+	@CassandraType(type = Name.UUID)
+	@JsonProperty
+	private UUID uuid;
+	@Column
 	@CassandraType(type = Name.TEXT)
 	@JsonProperty
 	private String name;
@@ -46,6 +51,7 @@ public class User {
 
 	public User() {
 		super();
+		this.uuid = UUID.randomUUID();
 		this.setName("");
 		this.setPass("");
 		this.setCards(new HashMap<>());

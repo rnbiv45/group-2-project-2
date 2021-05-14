@@ -76,7 +76,7 @@ public class DeckServiceImp implements DeckService {
 			Archetype secondaryArchetype) {
 		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
 				.subscribe(user::addDeck);
-		userService.updateUser(user);
+		userService.updateUser(Mono.just(user));
 		return Mono.just(user);
 	}
 
