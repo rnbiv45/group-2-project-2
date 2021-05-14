@@ -3,6 +3,7 @@ package com.revature.group2.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 public class DeckServiceImp implements DeckService {
 
 	private DeckRepo deckRepo;
+
 	private UserRepo userRepo;
 	
 	@Autowired
@@ -27,6 +29,11 @@ public class DeckServiceImp implements DeckService {
 	@Autowired
 	public void setUserRepo(UserRepo userRepo) {
 		this.userRepo = userRepo;
+	}
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 	
 	@Override
@@ -63,10 +70,14 @@ public class DeckServiceImp implements DeckService {
 	}
 
 	@Override
-	public Mono<User> addDeckToUser(User user) {
-		Mono<Deck> deck = Mono.just(new Deck());
-		// TODO
-		return null;
+	public Mono<User> addDeckToUser(
+			User user, 
+			Archetype primaryArchetype, 
+			Archetype secondaryArchetype) {
+		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
+				.subscribe(user::addDeck);
+		userService.updateUser(user);
+		return Mono.just(user);
 	}
 
 }

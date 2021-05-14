@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.revature.group2.aspects.Authorized;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
-import com.revature.group2.beans.CardPrimaryKey;
+import com.revature.group2.beans.CardKey;
 import com.revature.group2.beans.User;
 import com.revature.group2.beans.CardType;
+import com.revature.group2.beans.User;
 import com.revature.group2.services.CardService;
 import com.revature.group2.utils.JWTParser;
 
@@ -31,7 +31,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(value="/cards")
+@RequestMapping
 public class CardController {
 	CardService cardService;
 	private JWTParser tokenService;
@@ -49,14 +49,14 @@ public class CardController {
 	@PostMapping("/test")
 	public Mono<Card> addDummyCard() {
 		Card myCard = new Card();
-		CardPrimaryKey myKey = new CardPrimaryKey();
+		CardKey myKey = new CardKey();
 		myKey.setArchetype(Archetype.FIRE);
 		myKey.setIsBanned(false);
 		//myKey.setEffects(null);
 		myKey.setUuid(UUID.randomUUID());
 		myKey.setType(CardType.MONSTER);
 		myKey.setRarity(5);
-		myCard.setCardPrimaryKey(myKey);
+		myCard.setKey(myKey);
 		myCard.setIsUnique(false);
 		myCard.setAttackValue(5);
 		myCard.setDefenseValue(5);
@@ -67,8 +67,10 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
-	@GetMapping
+	@Authorized
+	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
+			ServerWebExchange exchange,
 			@RequestParam Optional<String> type,
 			@RequestParam Optional<String> archetype,
 			@RequestParam Optional<Integer> rarity,
@@ -93,7 +95,7 @@ public class CardController {
 		}
 		return null;
 	}
-	
+
 	//add a card
 	@PostMapping
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
@@ -101,12 +103,12 @@ public class CardController {
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
 				.onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
 	}
-	@GetMapping(path="{name}")
+	@GetMapping(path="/cards/{name}")
 	public Mono<Card> getCard(@PathVariable String name) {
 		return cardService.getCardByName(name);
 	}
 	
-	@GetMapping(path="/new/{name}")
+	@GetMapping(path="/cards/new/{name}")
 	public Mono<ResponseEntity<Object>> addCardToUser(@CookieValue(value="token") String token, @PathVariable String name) {
 		try {
 			User user = tokenService.parser(token);

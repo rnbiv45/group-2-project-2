@@ -51,15 +51,14 @@ public class UserController {
 	@PostMapping(value="/test")
 	public void addDummyUser() {
 		User myUser = new User();
-		Map<Card, Integer> myCards = new HashMap<Card, Integer>();
-		Set<Deck> myDecks = new HashSet<>();
+		Map<String, Integer> myCards = new HashMap<>();
+		Set<String> myDecks = new HashSet<>();
 		myUser.setName("DummyUser");
 		myUser.setDecks(myDecks);
 		myUser.setCards(myCards);
 		myUser.setPass("Tom");
 		myUser.setRole(UserRole.MEMBER);
 		userService.addUser(myUser);
-		
 	}
 	
 	@GetMapping(value="/test")
@@ -69,13 +68,14 @@ public class UserController {
 
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
-		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(user)));
+		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorStop();
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Publisher<User> login(ServerWebExchange exchange, @RequestBody User user) {
 
-		return userService.getUser(user.getName()).delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+		return userService.getUserByNameAndPass(user.getName(), user.getPass())
+				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
 			try {
 				exchange.getResponse()
 				.addCookie(ResponseCookie
