@@ -11,17 +11,18 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.revature.group2.aspects.Admin;
 import com.revature.group2.aspects.Authorized;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
-import com.revature.group2.beans.User;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.CardService;
@@ -115,5 +116,11 @@ public class CardController {
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
+	}
+	
+	@Admin
+	@PutMapping(path="/{uuid}")
+	public Flux<Card> updateCard(ServerWebExchange exchange, @RequestBody Card card, @PathVariable UUID uuid) {
+		return cardService.updateCard(Mono.just(card));
 	}
 }

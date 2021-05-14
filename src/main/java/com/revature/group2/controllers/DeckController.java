@@ -1,20 +1,27 @@
 package com.revature.group2.controllers;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.revature.group2.aspects.Admin;
 import com.revature.group2.beans.Archetype;
+import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.DeckService;
 import com.revature.group2.utils.JWTParser;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -46,5 +53,11 @@ public class DeckController {
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
+	}
+	
+	@PutMapping("/{uuid}")
+	public Flux<Deck> updateDeck(ServerWebExchange exchange, @RequestBody Deck deck, @PathVariable UUID uuid) {
+		deck.getKey().setUuid(uuid);
+		return deckService.updateDeck(Mono.just(deck));
 	}
 }

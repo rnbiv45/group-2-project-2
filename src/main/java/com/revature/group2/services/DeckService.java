@@ -6,6 +6,7 @@ import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.DeckRepo;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface DeckService {
@@ -27,5 +28,6 @@ public interface DeckService {
 	void addCardToDeck(User user, Deck deck, Card card);
 	void removeCardFromDeck(User user, Deck deck, Card card);
 	Mono<User> addDeckToUser(User user, Archetype primaryArchetype, Archetype secondaryArchetype);
+	Flux<Deck> updateDeck(Mono<Deck> deck);
 
 }

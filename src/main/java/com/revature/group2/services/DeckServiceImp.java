@@ -9,6 +9,7 @@ import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.DeckRepo;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -66,6 +67,11 @@ public class DeckServiceImp implements DeckService {
 				.subscribe(user::addDeck);
 		userService.updateUser(Mono.just(user));
 		return Mono.just(user);
+	}
+
+	@Override
+	public Flux<Deck> updateDeck(Mono<Deck> deck) {
+		return deckRepo.saveAll(deck);
 	}
 
 }

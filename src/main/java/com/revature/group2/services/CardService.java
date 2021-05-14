@@ -1,7 +1,6 @@
 package com.revature.group2.services;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
@@ -48,6 +47,7 @@ public interface CardService {
 	
 	public Flux<Card> getCardsFromSystemWithArguments(Optional<String> type, Optional<String> archetype,
 			Optional<Integer> rarity, Optional<Boolean> isBanned);
+	public Flux<Card> updateCard(Mono<Card> card);
 	
 	
 	
