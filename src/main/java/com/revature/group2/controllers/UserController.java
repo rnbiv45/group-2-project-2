@@ -87,23 +87,30 @@ public class UserController {
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Mono<User> login(@CookieValue(value = "token", defaultValue = "")String token, ServerWebExchange exchange, @RequestBody User user) {
 		
-		if(token == "") {
-			
-		}
-		
-		return userService.getUserByNameAndPass(user.getName(), user.getPass())
-				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+		return userService.getUserByNameAndPass(user.getName(), user.getPass()).doOnNext(u -> {
 			try {
-				System.out.println(nextUser);
-				System.out.println(tokenService.makeToken(nextUser));
 				exchange.getResponse()
 				.addCookie(ResponseCookie
-						.from("token", tokenService.makeToken(nextUser))
+						.from("token", tokenService.makeToken(u))
 						.httpOnly(true).path("/").build());
 			} catch (JsonProcessingException e) {
 				exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		});
+		
+//		return userService.getUserByNameAndPass(user.getName(), user.getPass())
+//				.delayElement(Duration.ofSeconds(2)).doOnNext(nextUser -> {
+//			try {
+//				System.out.println(nextUser);
+//				System.out.println(tokenService.makeToken(nextUser));
+//				exchange.getResponse()
+//				.addCookie(ResponseCookie
+//						.from("token", tokenService.makeToken(nextUser))
+//						.httpOnly(true).path("/").build());
+//			} catch (JsonProcessingException e) {
+//				exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+//			}
+//		});
 	}
 	
 	@DeleteMapping("logout")

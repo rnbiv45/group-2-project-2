@@ -60,18 +60,25 @@ public class UserServiceImp implements UserService {
 	public Mono<User> getUserByNameAndPass(String name, String password) {
 		
 		return userRepo.findByName(name).map(user -> {
-			User resultUser = new User();
-			if (user != null && user.getPass().equals(password)) {
-				resultUser.setUuid(user.getUuid());
-				resultUser.setName(user.getName());
-				resultUser.setPass(user.getPass());
-				resultUser.setRole(user.getRole());
-				resultUser.setCards(user.getCards());
-				resultUser.setDecks(user.getDecks());
-				return resultUser;
+			if (user != null && user.getName().equals(name) && user.getPass().equals(password)) {
+				return user;
+			} else {
+				return new User();
 			}
-			return null;
 		});
+//		return userRepo.findByName(name).map(user -> {
+//			User resultUser = new User();
+//			if (user != null && user.getPass().equals(password)) {
+//				resultUser.setUuid(user.getUuid());
+//				resultUser.setName(user.getName());
+//				resultUser.setPass(user.getPass());
+//				resultUser.setRole(user.getRole());
+//				resultUser.setCards(user.getCards());
+//				resultUser.setDecks(user.getDecks());
+//				return resultUser;
+//			}
+//			return new User();
+//		});
 	}
 	public Mono<User> addCardToUser(Mono<Card> card, Mono<User> user) {
 		// TODO Auto-generated method stub
