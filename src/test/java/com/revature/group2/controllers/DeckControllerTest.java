@@ -16,18 +16,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-<<<<<<< HEAD
 import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ServerWebExchange;
-=======
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ServerWebExchange;
-
-
->>>>>>> ccf70bca806df50a72f7172ecc06050638da3011
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.Archetype;
@@ -35,10 +30,7 @@ import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.DeckKey;
 import com.revature.group2.beans.User;
-<<<<<<< HEAD
 import com.revature.group2.beans.Deck;
-=======
->>>>>>> ccf70bca806df50a72f7172ecc06050638da3011
 import com.revature.group2.services.DeckService;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
@@ -79,11 +71,7 @@ public class DeckControllerTest {
 	
 	@Autowired
 	DeckService deckService;
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> ccf70bca806df50a72f7172ecc06050638da3011
 	@Autowired
 	JWTParser parser;
 	
@@ -175,7 +163,6 @@ public class DeckControllerTest {
 		assertThat(result).isEqualTo(expected);
 	}
 	*/
-=======
 	public void testDeleteDeckNotExist() {
 		User user = new User();
 		ServerWebExchange exchange = Mockito.mock(ServerWebExchange.class,  Mockito.RETURNS_DEEP_STUBS);
@@ -197,5 +184,4 @@ public class DeckControllerTest {
 		
 	}
 
->>>>>>> ccf70bca806df50a72f7172ecc06050638da3011
 }
