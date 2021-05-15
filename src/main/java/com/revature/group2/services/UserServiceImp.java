@@ -46,7 +46,7 @@ public class UserServiceImp implements UserService {
 	}
 	
 	public Mono<User> addCardToUser(User user){
-		return userRepo.findById(user.getName()).doOnSuccess(c ->{
+		return userRepo.findById(user.getUuid()).doOnSuccess(c ->{
 			
 		});
 	}

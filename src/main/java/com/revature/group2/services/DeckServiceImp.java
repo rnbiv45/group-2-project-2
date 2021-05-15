@@ -45,7 +45,8 @@ public class DeckServiceImp implements DeckService {
 
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
-		return deckRepo.findAll();
+		Flux<Deck> decks = deckRepo.findAll();
+		return decks.filter(deck -> user.getDecks().contains(deck.getKey().getUuid().toString()));
 	}
 
 	@Override

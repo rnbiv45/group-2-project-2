@@ -97,8 +97,6 @@ public class CardServiceImp implements CardService {
 	@Override
 	public Mono<Void> removeCardFromSystem(Card card) {
 		return cardRepo.delete(card);
-		
-		return deleteMono = cardRepo.delete(card);
 		/*
 		resultMono = null;
 		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
