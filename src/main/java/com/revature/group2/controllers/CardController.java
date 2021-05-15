@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.revature.group2.aspects.Admin;
+import com.revature.group2.aspects.Authorized;
+import com.revature.group2.aspects.OwnerAndAdmin;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
@@ -70,7 +72,8 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
-
+	@Authorized
+	@Admin
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -94,8 +97,8 @@ public class CardController {
 		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
 	}
 
-	@GetMapping(value="/users/{user}/cards")
-
+	@OwnerAndAdmin
+	@GetMapping(value="/users/{pathUser}/cards")
 	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
 		User user = null;
 		try {

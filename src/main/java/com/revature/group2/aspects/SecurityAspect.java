@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -91,6 +92,52 @@ public class SecurityAspect {
 		return joinPoint.proceed();
 	}
 	
+	@Around("ownerAndAdminHook()")
+	public Object OwnerAndAdmin (ProceedingJoinPoint joinPoint) throws Throwable{
+		
+		if(joinPoint.getArgs().length == 0) {
+			throw new Exception("Invalid arguments for advice method" + joinPoint.getSignature());
+		}
+		Object[] methodArgs = joinPoint.getArgs();
+		
+		ServerWebExchange exchange = getWebExchange(methodArgs);
+		String pathVariable = getPathVariable(methodArgs);
+		
+		try {
+			User user = new User();
+			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
+			
+			if(cookie == null) {
+				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+				return null;
+			}
+			String token = cookie.getValue();
+			user = tokenService.parser(token);
+			
+			//if user is not the owner and user is not admin
+			if(!pathVariable.equals(user.getName()) && !user.getRole().equals(UserRole.ADMIN)){
+				exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+				return null;
+			}
+			
+		} catch ( JsonProcessingException e) {
+			exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+			return null;
+		}
+		
+		return joinPoint.proceed();
+	}
+	
+	//tools
+	private String getPathVariable(Object[] methodArgs) {
+		for(Object arg: methodArgs) {
+			if(arg instanceof String) {
+				return (String) arg;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+	
 	private ServerWebExchange getWebExchange(Object[] methodArgs) {
 		for(Object arg: methodArgs) {
 			if(arg instanceof ServerWebExchange) {
@@ -99,7 +146,10 @@ public class SecurityAspect {
 		}
 		throw new IllegalArgumentException();
 	}
-	
+
+	//PointCuts
+	@Pointcut("@annotation(com.revature.group2.aspects.OwnerAndAdmin)")
+	public void ownerAndAdminHook() { /* Empty method for Hook */ }
 	@Pointcut("@annotation(com.revature.group2.aspects.Admin)")
 	public void adminHook() { /* Empty method for Hook */ }
 	@Pointcut("@annotation(com.revature.group2.aspects.Authorized)")

@@ -13,7 +13,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
-import reactor.core.publisher.Mono;
 
 @Component
 public class JWTParser {
@@ -35,7 +34,7 @@ public class JWTParser {
 		String secretKey = System.getenv("SECRET_KEY");
 		
 		String userString = mapper.writeValueAsString(loggedInUser);
-
+		
 		return Jwts.builder().claim("user", userString)
 				.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(secretKey))
 				.compact();
