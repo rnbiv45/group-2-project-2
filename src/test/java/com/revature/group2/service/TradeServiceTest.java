@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -100,6 +101,18 @@ public class TradeServiceTest {
 		trades[2].setCard2(cardId1);
 		trades[3].setCard2(cardId4);
 		trades[4].setCard2(cardId3);
+	}
+	
+	@AfterEach
+	void teardown() {
+		id1 = null;
+		id2 = null;
+		id3 = null;
+		cardId1 = null;
+		cardId2 = null;
+		cardId3 = null;
+		cardId4 = null;
+		trades = null;
 	}
 	
 	@Test
