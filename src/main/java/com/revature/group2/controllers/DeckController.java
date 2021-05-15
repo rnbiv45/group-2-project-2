@@ -52,14 +52,14 @@ public class DeckController {
 		this.userService = userService;
 	}
 
-	public Set<String> viewDecks(ServerWebExchange exchange){
+	public Flux<Deck> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get(tokenString) != null) {
 				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
-					return user.getDecks();
+					return deckService.getUserDecks(user);
 				}
 			}
 		} catch (Exception e) {
