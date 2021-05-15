@@ -84,7 +84,8 @@ public class CardController {
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
 
-	
+	@Authorized
+	@Admin
 	@PostMapping(path="/cards")
 	public Flux<Card> changeStat(
 			@RequestParam Optional<UUID> uuid,

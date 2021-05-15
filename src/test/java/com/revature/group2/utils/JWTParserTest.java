@@ -66,7 +66,7 @@ public class JWTParserTest {
 		when(mapper.writeValueAsString(logged)).thenReturn(userString);
 		String result = parser.makeToken(logged);
 		
-		assertThat(result.equals(expected));
+		assertThat(result).isEqualTo(expected);
 	}
 	
 	@Test
@@ -94,12 +94,10 @@ public class JWTParserTest {
 		.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(key))
 		.compact();
 		
-		
-		
 		when(mapper.readValue(jws.getBody()
 				.get("user").toString(),User.class)).thenReturn(logged);
 		
-		assertThat(parser.parser(parsed).equals(userString));
+		assertThat(parser.parser(parsed)).isEqualTo(logged);
 		
 	}
 	

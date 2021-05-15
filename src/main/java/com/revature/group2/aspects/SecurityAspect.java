@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,6 +20,7 @@ import com.revature.group2.utils.JWTParser;
 public class SecurityAspect {
 	
 	private JWTParser tokenService;
+	private String token = "token";
 	
 	@Autowired
 	public void setTokenServicer(JWTParser parser) {
@@ -37,15 +37,14 @@ public class SecurityAspect {
 		ServerWebExchange exchange = getWebExchange(methodArgs);
 		
 		try {
-			User user = new User();
-			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
+			HttpCookie cookie = exchange.getRequest().getCookies().getFirst(token);
 			
 			if(cookie == null) {
 				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 				return null;
 			}
 			String token = cookie.getValue();
-			user = tokenService.parser(token);
+			User user = tokenService.parser(token);
 			if(user == null) {
 				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 				return null;
@@ -69,15 +68,14 @@ public class SecurityAspect {
 		ServerWebExchange exchange = getWebExchange(methodArgs);
 		
 		try {
-			User user = new User();
-			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
+			HttpCookie cookie = exchange.getRequest().getCookies().getFirst(token);
 			
 			if(cookie == null) {
 				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 				return null;
 			}
 			String token = cookie.getValue();
-			user = tokenService.parser(token);
+			User user = tokenService.parser(token);
 			
 			if(!user.getRole().equals(UserRole.ADMIN)) {
 				exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
@@ -93,7 +91,7 @@ public class SecurityAspect {
 	}
 	
 	@Around("ownerAndAdminHook()")
-	public Object OwnerAndAdmin (ProceedingJoinPoint joinPoint) throws Throwable{
+	public Object ownerAndAdmin (ProceedingJoinPoint joinPoint) throws Throwable{
 		
 		if(joinPoint.getArgs().length == 0) {
 			throw new Exception("Invalid arguments for advice method" + joinPoint.getSignature());
@@ -104,15 +102,14 @@ public class SecurityAspect {
 		String pathVariable = getPathVariable(methodArgs);
 		
 		try {
-			User user = new User();
-			HttpCookie cookie = exchange.getRequest().getCookies().getFirst("token");
+			HttpCookie cookie = exchange.getRequest().getCookies().getFirst(token);
 			
 			if(cookie == null) {
 				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 				return null;
 			}
 			String token = cookie.getValue();
-			user = tokenService.parser(token);
+			User user = tokenService.parser(token);
 			
 			//if user is not the owner and user is not admin
 			if(!pathVariable.equals(user.getName()) && !user.getRole().equals(UserRole.ADMIN)){
