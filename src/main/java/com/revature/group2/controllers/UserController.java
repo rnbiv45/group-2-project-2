@@ -85,7 +85,7 @@ public class UserController {
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
 		System.out.println(user);
-		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorStop();
+		return userService.addUser(user).map(userVar -> ResponseEntity.status(201).body(userVar)).onErrorStop();
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
