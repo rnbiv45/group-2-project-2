@@ -51,24 +51,23 @@ public class UserServiceTest {
 		assertThat(result).isEqualTo(userFlux);
 		
 	}
-	/*
+	
 	@Test
 	void testGetUser() {
 		User user = new User();
 		Mono<User> userMono = Mono.just(user);
-		when(userRepo.findById("thomas15399")).thenReturn(userMono);
+		when(userRepo.findByName("thomas15399")).thenReturn(userMono);
 		Mono<User> result = userService.getUser("thomas15399");
 		assertThat(result).isEqualTo(userMono);
 	}
 	@Test
 	void testGetUserNoUserFound() {
-		User user = new User();
-		Mono<User> userMono = Mono.just(user);
 		Mono<User> nullMono = Mono.empty();
-		when(userRepo.findById("thomas15399")).thenReturn(nullMono);
+		when(userRepo.findByName("thomas15399")).thenReturn(nullMono);
 		Mono<User> result = userService.getUser("thomas15399");
 		assertThat(result).isEqualTo(nullMono);
 	}
+	/*
 	@Test
 	void testAddUserThatExists() {
 		User user = new User();

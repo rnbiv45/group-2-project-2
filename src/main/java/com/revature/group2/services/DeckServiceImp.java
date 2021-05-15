@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class DeckServiceImp implements DeckService {
 
 	private DeckRepo deckRepo;
-	private UserService userService;
+	//private UserService userService;
 	private UserRepo userRepo;
 
 
@@ -33,10 +33,10 @@ public class DeckServiceImp implements DeckService {
 	}
 
 	
-	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+	//@Autowired
+	//public void setUserService(UserService userService) {
+	//	this.userService = userService;
+	//}
 	
 
 	public Mono<Deck> createDeck(Deck deck) {
@@ -61,19 +61,23 @@ public class DeckServiceImp implements DeckService {
 	@Override
 	public Flux<Deck> addCardToDeck(User user, Deck deck, Card card) {
 		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
-			deck.getCards().replace(card.getKey().toString(), deck.getCards().get(card.getKey().toString())+1);
+			deck.getCards().replace(card.getKey().getUuid().toString(), deck.getCards().get(card.getKey().getUuid().toString())+1);
 		}
 		else {
 			deck.getCards().put(card.getKey().toString(), 1);
 		}
-		return deckRepo.saveAll(Mono.just(deck));
+		System.out.println(deck);
+		System.out.println(Mono.just(deck));
+		Flux<Deck> newDeck = deckRepo.saveAll(Mono.just(deck));
+		System.out.println(newDeck);
+		return newDeck;
 	}
 
 	@Override
 	public Flux<Deck> removeCardFromDeck(User user, Deck deck, Card card) {
 		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
 			if(deck.getCards().get(card.getKey().getUuid().toString()) > 1) {
-				deck.getCards().replace(card.getKey().toString(), deck.getCards().get(card.getKey().toString())-1);
+				deck.getCards().replace(card.getKey().getUuid().toString(), deck.getCards().get(card.getKey().getUuid().toString())-1);
 			} else {
 				deck.getCards().remove(card.getKey().toString());
 			}
@@ -88,7 +92,7 @@ public class DeckServiceImp implements DeckService {
 			Archetype secondaryArchetype) {
 		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
 				.subscribe(user::addDeck);
-		userService.updateUser(Mono.just(user));
+		userRepo.saveAll(Mono.just(user));
 		return Mono.just(user);
 	}
 
