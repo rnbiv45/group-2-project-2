@@ -35,4 +35,6 @@ public interface UserService {
 	Flux<User> banUser(Optional<UUID> uuid);
 
 	Flux<User> getAll();
+
+	Mono<User> getUserByUUID(UUID uuid);
 }

@@ -48,6 +48,7 @@ public interface CardService {
 	
 	public Flux<Card> getCardsFromSystemWithArguments(Optional<String> type, Optional<String> archetype,
 			Optional<Integer> rarity, Optional<Boolean> isBanned);
+	
 	public Flux<Card> updateCard(Mono<Card> card);
 	
 	Flux<Card> changeCardInSystemWithArguments(
@@ -58,6 +59,8 @@ public interface CardService {
 			Optional<Integer> defenseValue,
 			Optional<Integer> damageValue,
 			Optional<Integer> buffValue);
+  
+	Mono<Card> banCardFromSystem(String name);
 	
 	
 }

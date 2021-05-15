@@ -1,5 +1,6 @@
 package com.revature.group2.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,10 +13,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
+import reactor.core.publisher.Mono;
 
 @Component
 public class JWTParser {
 
+	@Autowired
 	private ObjectMapper mapper;
 	
 	public User parser(String jwStr) throws JsonMappingException, JsonProcessingException{
@@ -28,10 +31,10 @@ public class JWTParser {
 				.get("user").toString(), User.class);
 	}
 	
-	public String makeToken(User user) throws JsonProcessingException {
+	public String makeToken(User loggedInUser) throws JsonProcessingException {
 		String secretKey = System.getenv("SECRET_KEY");
 		
-		String userString = mapper.writeValueAsString(user);
+		String userString = mapper.writeValueAsString(loggedInUser);
 
 		return Jwts.builder().claim("user", userString)
 				.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(secretKey))

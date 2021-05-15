@@ -9,6 +9,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.revature.group2.aspects.Admin;
-import com.revature.group2.aspects.Authorized;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
@@ -80,7 +80,7 @@ public class CardController {
 			@RequestParam Optional<Boolean> isBanned){
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
-	
+
 	
 	@PostMapping(path="/cards")
 	public Flux<Card> changeStat(
@@ -93,7 +93,7 @@ public class CardController {
 			@RequestParam Optional<Integer> buffValue){
 		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
 	}
-	
+
 	@GetMapping(value="/users/{user}/cards")
 
 	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
@@ -113,6 +113,7 @@ public class CardController {
 		return null;
 	}
 
+
 	//add a card
 	@PostMapping
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
@@ -120,6 +121,7 @@ public class CardController {
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
 				.onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
 	}
+	
 	@GetMapping(path="/cards/{name}")
 	public Mono<Card> getCard(@PathVariable String name) {
 		return cardService.getCardByName(name);
@@ -133,6 +135,13 @@ public class CardController {
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
+	}
+	
+//	@Admin
+//	@Authorized
+	@DeleteMapping(path = "/cards/{name}")
+	public Mono<Card> banCard(ServerWebExchange exchange, @PathVariable String name){
+		return cardService.banCardFromSystem(name);
 	}
 	
 	@Admin

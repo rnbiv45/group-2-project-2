@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +80,7 @@ public class CardServiceImp implements CardService {
 		return null;
 	}
 
-	
-	
-
+	@Override
 	public Mono<Card> addCardToSystem(Card card) {
 		return cardRepo.save(card);
 
@@ -98,6 +97,19 @@ public class CardServiceImp implements CardService {
 	@Override
 	public Mono<Void> removeCardFromSystem(Card card) {
 		return cardRepo.delete(card);
+		
+		return deleteMono = cardRepo.delete(card);
+		/*
+		resultMono = null;
+		cardRepo.findById(card.getCardPrimaryKey()).hasElement().doOnNext(result -> {
+			if(result) {
+				deleteMono = cardRepo.delete(card);
+			} else {
+				deleteMono = null;
+			}
+		});
+		return deleteMono;
+		*/
 	}
 
 	@Override
@@ -175,6 +187,55 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
+	public Mono<Card> banCardFromSystem(String name) {
+		
+		Mono<Card> oldCard = cardRepo.findByName(name);
+		
+			oldCard.doOnNext(card -> {
+				cardRepo.delete(card).subscribe();
+			});
+		
+		Mono<Card> bannedCard = oldCard.map(card ->{
+			Card newCard = new Card();
+			CardKey cardKey = card.getKey();
+			cardKey.setIsBanned(true);
+			newCard.setKey(cardKey);
+			newCard.setAttackValue(card.getAttackValue());
+			newCard.setDamageValue(card.getDamageValue());
+			newCard.setDefenseValue(card.getDefenseValue());
+			newCard.setIsUnique(card.getIsUnique());
+			newCard.setName(card.getName());
+			addCardToSystem(newCard).subscribe();
+			
+			return newCard;
+		});
+		
+		return bannedCard;
+		
+//		Card card;
+//		try {
+//			card = cardRepo.findByName(name).toFuture().get();
+//		} catch (InterruptedException e) {
+//			Thread.currentThread().interrupt();
+//			return null;
+//		} catch (ExecutionException e) {
+//			return null;
+//		}
+//		Card bannedCard = new Card();
+//		CardKey cardKey = card.getKey();
+//		cardKey.setIsBanned(true);
+//		cardRepo.delete(card);
+//		bannedCard.setKey(cardKey);
+//		bannedCard.setAttackValue(card.getAttackValue());
+//		bannedCard.setDamageValue(card.getDamageValue());
+//		bannedCard.setDefenseValue(card.getDefenseValue());
+//		bannedCard.setIsUnique(card.getIsUnique());
+//		bannedCard.setName(card.getName());
+//		addCardToSystem(bannedCard);
+//		
+//		return Mono.just(bannedCard);
+	}
+	
 	public Flux<Card> updateCard(Mono<Card> card) {
 		return cardRepo.saveAll(card);
 	}
