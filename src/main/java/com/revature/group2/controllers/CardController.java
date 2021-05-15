@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -34,7 +35,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping
 public class CardController {
-	CardService cardService;
+	private CardService cardService;
 	private JWTParser tokenService;
 	
 	@Autowired
@@ -64,11 +65,12 @@ public class CardController {
 		myCard.setDamageValue(0);
 		myCard.setName("DummyCard");
 		myCard.setBuffValue(0);
+
 		System.out.println(myCard);
 		return cardService.addCardToSystem(myCard);
 	}
 	
-//	@Authorized
+
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -78,7 +80,19 @@ public class CardController {
 			@RequestParam Optional<Boolean> isBanned){
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
+
 	
+	@PostMapping(path="/cards")
+	public Flux<Card> changeStat(
+			@RequestParam Optional<UUID> uuid,
+			@RequestParam Optional<String> name,
+			@RequestParam Optional<Boolean> isUnique,
+			@RequestParam Optional<Integer> attackValue,
+			@RequestParam Optional<Integer> defenseValue,
+			@RequestParam Optional<Integer> damageValue,
+			@RequestParam Optional<Integer> buffValue){
+		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
+	}
 
 	@GetMapping(value="/users/{user}/cards")
 

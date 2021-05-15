@@ -73,10 +73,15 @@ public class UserController {
 		userService.addUser(myUser);
 	}
 	
-	@GetMapping(value="/test")
+	@GetMapping(value="/test/check")
 	public Flux<User> checkUsers() {
 		return userService.getUsers();
 	}
+	
+//	@GetMapping(value="/test/check")
+//	public Mono<User> addCardToUser() {
+//		return userService.
+//	}
 
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
