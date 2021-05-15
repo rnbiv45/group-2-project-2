@@ -6,6 +6,12 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import com.revature.group2.beans.Trade;
+import com.revature.group2.beans.User;
+import com.revature.group2.repos.UserRepo;
+
+
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Trade;
 import com.revature.group2.beans.TradeStatus;
@@ -14,12 +20,21 @@ import com.revature.group2.repos.TradeRepo;
 import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
+
 import reactor.core.publisher.Mono;
 
 @Service
 public class TradeServiceImp implements TradeService {
+
+	private UserRepo userRepo;
 	TradeRepo tradeRepo;
-	UserRepo userRepo;
+	
+	public Mono<User> requestTrade(User user){
+		return userRepo.findByUuid(user.getUuid());
+	}		
+
+
+
 	
 	@Autowired
 	public void setTradeRepo(TradeRepo tradeRepo) {
@@ -109,6 +124,7 @@ public class TradeServiceImp implements TradeService {
 		userRepo.save(user);
 		userRepo.save(poster);
 		return tradeRepo.save(tradeInSystem);
+
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.revature.group2.services;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
@@ -50,6 +51,15 @@ public interface CardService {
 	
 	public Flux<Card> updateCard(Mono<Card> card);
 	
+	Flux<Card> changeCardInSystemWithArguments(
+			Optional<UUID> uuid,
+			Optional<String> name,
+			Optional<Boolean> isUnique,
+			Optional<Integer> attackValue,
+			Optional<Integer> defenseValue,
+			Optional<Integer> damageValue,
+			Optional<Integer> buffValue);
+  
 	Mono<Card> banCardFromSystem(String name);
 	
 	

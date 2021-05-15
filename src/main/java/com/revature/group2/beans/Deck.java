@@ -10,6 +10,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import lombok.Data;
 
+
 @Table("deck")
 @Data
 public class Deck {
@@ -26,6 +27,24 @@ public class Deck {
 		super();
 	}
 	
+	public void addCard(Card card) {
+		String cardName = card.getKey().getUuid().toString();
+		this.cards.compute(cardName, (k, v) -> (v == null) ? 1 : v++);
+	}
+	
+	public void removeCard(Card card) {
+		String cardName = card.getKey().getUuid().toString();
+		Integer amount = this.cards.get(cardName);
+		if (amount == null) {
+			return;
+		}
+		if (amount > 1) {
+			this.cards.put(cardName, amount-1);
+			return;
+		}
+		this.cards.remove(cardName);
+	}
+
 	public Deck(
 			String creator,
 			Archetype primaryArchetype,
@@ -33,5 +52,6 @@ public class Deck {
 		super();
 		this.creator = creator;
 		this.key = new DeckKey(primaryArchetype, secondaryArchetype);
+
 	}
 }
