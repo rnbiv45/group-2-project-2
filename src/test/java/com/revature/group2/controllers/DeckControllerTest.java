@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpCookie;
+
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ServerWebExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ServerWebExchange;
@@ -26,7 +28,6 @@ import org.springframework.web.server.ServerWebExchange;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.Archetype;
-import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.DeckKey;
 import com.revature.group2.beans.User;
@@ -34,8 +35,6 @@ import com.revature.group2.beans.Deck;
 import com.revature.group2.services.DeckService;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
-
-import reactor.core.publisher.Mono;
 
 @ExtendWith(SpringExtension.class)
 public class DeckControllerTest {
