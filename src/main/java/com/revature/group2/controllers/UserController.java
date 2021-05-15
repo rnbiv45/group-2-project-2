@@ -1,6 +1,5 @@
 package com.revature.group2.controllers;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -120,7 +119,7 @@ public class UserController {
 	
 	@DeleteMapping("logout")
 	public ResponseEntity<Void> logout(ServerWebExchange exchange) {
-		exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
+		exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).path("/").build());
 		return ResponseEntity.noContent().build();
 	}
 	

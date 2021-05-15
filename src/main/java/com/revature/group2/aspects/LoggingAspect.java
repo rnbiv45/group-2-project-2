@@ -17,15 +17,13 @@ public class LoggingAspect {
 	
 	@Around("everything()")
 	public Object log(ProceedingJoinPoint pjp) throws Throwable {
-		// ProceedingJoinPoint - Object representation of the method being called.
+
 		Object result = null;
 		log = LogManager.getLogger(pjp.getTarget().getClass());
 		log.trace("Method with signature: "+pjp.getSignature());
 		log.trace("with arguments: "+Arrays.toString(pjp.getArgs()));
 		try {
-			result = pjp.proceed(); // proceed will call the method with the arguments given to it
-			// If you want to change the arguments, you can pass in a new array of arguments.
-			// result = pjp.proceed(arr);
+			result = pjp.proceed(); 
 		}  catch(Throwable t) {
 			log.error("Method threw exception: "+t);
 			for(StackTraceElement s : t.getStackTrace()) {
@@ -38,15 +36,12 @@ public class LoggingAspect {
 					log.warn(s);
 				}
 			}
-			throw t; // we don't want our proxy to have the side-effect of
-			// stopping the exception from being thrown (it needs to be handled elsewhere)
-			// but we do want to log it for ourselves.
+			throw t; 
 		}
 		log.trace("Method returning with: "+result);
 		return result;
 	}
 	
-	// hook - a method that only exists as the target for an annotation
 	@Pointcut("execution( * com.revature..*(..) )")
 	private void everything() { /* Empty method for hook */ }
 }
