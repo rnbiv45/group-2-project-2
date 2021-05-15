@@ -31,11 +31,8 @@ public class TradeServiceImp implements TradeService {
 	
 	public Mono<User> requestTrade(User user){
 		return userRepo.findByUuid(user.getUuid());
-	}		
+	}
 
-
-
-	
 	@Autowired
 	public void setTradeRepo(TradeRepo tradeRepo) {
 		this.tradeRepo = tradeRepo;

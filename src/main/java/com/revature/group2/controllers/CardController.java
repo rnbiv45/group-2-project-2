@@ -88,6 +88,7 @@ public class CardController {
 	@Admin
 	@PostMapping(path="/cards")
 	public Flux<Card> changeStat(
+			ServerWebExchange exchange,
 			@RequestParam Optional<UUID> uuid,
 			@RequestParam Optional<String> name,
 			@RequestParam Optional<Boolean> isUnique,
@@ -98,6 +99,7 @@ public class CardController {
 		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
 	}
 
+	@Authorized	
 	@OwnerAndAdmin
 	@GetMapping(value="/users/{pathUser}/cards")
 	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
@@ -119,18 +121,23 @@ public class CardController {
 
 
 	//add a card
+	@Authorized
 	@PostMapping
-	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
+	public Mono<ResponseEntity<Card>> addCard(ServerWebExchange exchange, @RequestBody Card card) {
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
 				.onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
 	}
 	
+	@Authorized
 	@GetMapping(path="/cards/{name}")
-	public Mono<Card> getCard(@PathVariable String name) {
-		return cardService.getCardByName(name);
+	public Mono<ResponseEntity<Card>> getCard(ServerWebExchange exchange, @PathVariable String name) {
+		return cardService.getCardByName(name).map(card ->{
+			return ResponseEntity.ok().body(card);
+		});
 	}
 	
+	@Authorized
 	@GetMapping(path="/cards/new/{name}")
 	public Mono<ResponseEntity<Object>> addCardToUser(@CookieValue(value="token") String token, @PathVariable String name) {
 		try {
@@ -141,13 +148,15 @@ public class CardController {
 		}
 	}
 	
-//	@Admin
-//	@Authorized
+	
+	@Authorized
+	@Admin
 	@DeleteMapping(path = "/cards/{name}")
 	public Mono<Card> banCard(ServerWebExchange exchange, @PathVariable String name){
 		return cardService.banCardFromSystem(name);
 	}
 	
+	@Authorized
 	@Admin
 	@PutMapping(path="/{uuid}")
 	public Flux<Card> updateCard(ServerWebExchange exchange, @RequestBody Card card, @PathVariable UUID uuid) {
