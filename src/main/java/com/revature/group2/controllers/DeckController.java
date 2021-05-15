@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.revature.group2.beans.Archetype;
+import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.DeckService;
@@ -33,6 +35,7 @@ public class DeckController {
 	private DeckService deckService;
 	private UserService userService;
 	private JWTParser tokenService;
+	private String tokenString = "token";
 
 	@Autowired
 	public void setDeckService(DeckService deckService) {
@@ -52,8 +55,8 @@ public class DeckController {
 	public Set<String> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					return user.getDecks();
@@ -66,18 +69,18 @@ public class DeckController {
 		return null;
 		
 	}
-	
+	@DeleteMapping
 	public void deleteOwnDeck(ServerWebExchange exchange, Deck deck) {
 		User user = null;
 		try {
-			if(exchange.getRequest().getCookies().get("token") != null) {
-				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					user.getDecks().remove(deck.getKey().getUuid().toString());
 					userService.updateUser(Mono.just(user));
-					exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
-					exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
+					exchange.getResponse().addCookie(ResponseCookie.from(tokenString, "").httpOnly(true).build());
+					exchange.getResponse().addCookie(ResponseCookie.from(tokenString, tokenService.makeToken(user)).httpOnly(true).build());
 					return;
 				}
 			}
@@ -100,6 +103,29 @@ public class DeckController {
 		} catch (Exception e) {
 			return Mono.just(ResponseEntity.status(500).body(e));
 		}
+	}
+	
+	@PostMapping("/card")
+	public Mono<ResponseEntity<Object>> addCardToDeck(ServerWebExchange exchange, Deck deck, Card card) {
+		User user = null;
+		try {
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
+				if(!token.equals("")) {
+					user = tokenService.parser(token);
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+			return null;
+		}
+		return null;
+	}
+	
+	@DeleteMapping("/card")
+	public Mono<ResponseEntity<Object>> removeCardFromDeck(ServerWebExchange exchange, Deck deck, Card card) {
+		return null;
 	}
 	
 	@PutMapping("/{uuid}")

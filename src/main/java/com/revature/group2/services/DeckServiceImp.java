@@ -43,28 +43,38 @@ public class DeckServiceImp implements DeckService {
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
 		Flux<Deck> decks = deckRepo.findAll();
-		//decks = decks.filter(decks ->  == user.getName())
+		//decks = decks.filter(deck -> deck.getKey().getUuid().)
 		return null;
 	}
 
 	@Override
-	public Mono<User> removeDeck(User user, Deck deck) {
-		// TODO Auto-generated method stub
+	public Flux<User> removeDeck(User user, Deck deck) {
 		if(user.getDecks().remove(deck.getKey().getUuid().toString()));
-		return userRepo.save(user);
+		return userRepo.saveAll(Mono.just(user));
 		
 	}
 
 	@Override
-	public void addCardToDeck(User user, Deck deck, Card card) {
-		// TODO Auto-generated method stub
-		
+	public Flux<Deck> addCardToDeck(User user, Deck deck, Card card) {
+		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
+			deck.getCards().replace(card.getKey().toString(), deck.getCards().get(card.getKey().toString())+1);
+		}
+		else {
+			deck.getCards().put(card.getKey().toString(), 1);
+		}
+		return deckRepo.saveAll(Mono.just(deck));
 	}
 
 	@Override
-	public void removeCardFromDeck(User user, Deck deck, Card card) {
-		// TODO Auto-generated method stub
-		
+	public Flux<Deck> removeCardFromDeck(User user, Deck deck, Card card) {
+		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
+			if(deck.getCards().get(card.getKey().getUuid().toString()) > 1) {
+				deck.getCards().replace(card.getKey().toString(), deck.getCards().get(card.getKey().toString())-1);
+			} else {
+				deck.getCards().remove(card.getKey().toString());
+			}
+		}
+		return deckRepo.saveAll(Mono.just(deck));
 	}
 
 	@Override
