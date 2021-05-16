@@ -1,17 +1,11 @@
 package com.revature.group2.services;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
@@ -19,7 +13,6 @@ import com.revature.group2.beans.CardKey;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
-import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,17 +20,9 @@ import reactor.core.publisher.Mono;
 @Service
 public class CardServiceImp implements CardService {
 	private CardRepo cardRepo;
-	private UserRepo userRepo;
-
-	
 	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
 		this.cardRepo = cardRepo;
-	}
-
-	@Autowired
-	public void setUserRepo(UserRepo userRepo) {
-		this.userRepo = userRepo;
 	}
 
 	@Override
@@ -203,7 +188,7 @@ public class CardServiceImp implements CardService {
 			newCard.setDefenseValue(card.getDefenseValue());
 			newCard.setIsUnique(card.getIsUnique());
 			newCard.setName(card.getName());
-			addCardToSystem(newCard).subscribe();
+			addCardToSystem(newCard);
 			
 			return newCard;
 		});

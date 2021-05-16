@@ -1,18 +1,27 @@
 package com.revature.group2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.internal.matchers.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
+import com.revature.group2.beans.CardType;
 import com.revature.group2.repos.CardRepo;
 import com.revature.group2.services.CardService;
 import com.revature.group2.services.CardServiceImp;
@@ -62,6 +71,7 @@ public class CardServiceTest {
 		Mono<Card> result = cardService.getCard(key);
 		assertThat(result).isEqualTo(cardMono);
 	}
+	
 	@Test
 	void testGetCardThatDoesNotExist() {
 		Card card = new Card();
@@ -104,6 +114,62 @@ public class CardServiceTest {
 		});
 		
 		
+	}
+	
+	@Test
+	void testChangeCardInSystemWithArguments(){
+		Card card = new Card();
+		CardKey key = new CardKey();
+		
+		key.setArchetype(Archetype.WIND);
+		key.setIsBanned(true);
+		key.setRarity(5);
+		key.setType(CardType.MONSTER);
+		key.setUuid(UUID.randomUUID());
+		
+		card.setAttackValue(5);
+		card.setBuffValue(5);
+		card.setDamageValue(5);
+		card.setDefenseValue(5);
+		card.setIsUnique(true);
+		card.setKey(key);
+		card.setName("AyLmao");
+		
+		Card update = card;
+		update.setIsUnique(false);
+		update.setAttackValue(6);
+		update.setBuffValue(6);
+		update.setDamageValue(6);
+		update.setDefenseValue(6);
+		update.setName("Bruh");
+		List <Card> cList = new ArrayList<Card>();
+		cList.add(card);
+		
+		Flux<Card> findAll = Flux.just(cList);
+		Flux<Card> changeCard = Flux.just(update);
+		
+//		when(cardRepo.findAll()).thenReturn(findAll);
+		when(cardRepo.saveAll(findAll)).thenReturn(changeCard);
+		
+		Optional<String> optName= Optional.of("Bruh");
+		Optional<UUID> optuuid= Optional.of(key.getUuid());
+		Optional<Boolean> optBool= Optional.of(false);
+		Optional<Integer> optAtk= Optional.of(6);
+		Optional<Integer> optDef= Optional.of(6);
+		Optional<Integer> optDmg= Optional.of(6);
+		Optional<Integer> optBuf= Optional.of(6);
+		
+		Flux<Card> changed = cardService.changeCardInSystemWithArguments(
+				optuuid, optName, optBool, 
+				optAtk, optDef, optDmg, 
+				optBuf);
+		Mono<List<Card>> result = changed.collectList();
+		Mono<List<Card>> expected = changed.collectList();
+		
+		Mono<Boolean> comparer = Mono.sequenceEqual(result, expected);
+		comparer.subscribe(bool -> {
+			assertThat(bool).isEqualTo(true);
+		});
 	}
 	/*
 	@Test
