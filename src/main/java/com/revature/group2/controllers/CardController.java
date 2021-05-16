@@ -111,6 +111,7 @@ public class CardController {
 		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
 	}
 
+
 	@Authorized	
 	@OwnerAndAdmin
 	@GetMapping(value="/users/{pathUser}/cards")
@@ -130,6 +131,7 @@ public class CardController {
 		}
 		return null;
 	}
+
 	//add a card
 	@Authorized
 	@Admin

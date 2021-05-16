@@ -1,5 +1,7 @@
 package com.revature.group2.services;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,6 +14,7 @@ import com.revature.group2.beans.User;
 import com.revature.group2.beans.UserRole;
 import com.revature.group2.repos.UserRepo;
 
+import jdk.internal.net.http.common.Log;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -103,6 +106,26 @@ public class UserServiceImp implements UserService {
 			return u;
 		}));
 	}
+	
+	public Flux<Map<String, Integer>> metaCard(){
+		Map<String, Integer> count = new HashMap<String, Integer>();
+		userRepo.findAll().filter(u -> u.getCards()!=null&&u.getCards().size()>0).map(u ->{
+			for (String card : u.getCards().keySet()) {
+				if (card.equals(card)){
+					count.put(card,count.get(card)+1);
+				} else {
+					count.put(card,1);
+				}
+			}
+				return Flux.just(count);
+			}).subscribe();
+		for (Map.Entry<String, Integer> entry : count.entrySet()) {
+		    System.out.println(entry.getKey() + ":" + entry.getValue().toString());
+		}
+		return Flux.just(count);
+	}
+	
+	
 
 	@Override
 	public Flux<User> getAll(Optional<UUID> card, Optional<UserRole> role) {

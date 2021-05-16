@@ -1,5 +1,6 @@
 package com.revature.group2.services;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,4 +39,6 @@ public interface UserService {
 	Flux<User> getAll(Optional<UUID> card, Optional<UserRole> role);
 
 	Mono<User> getUserByUUID(UUID uuid);
+	
+	Flux<Map<String, Integer>> metaCard();
 }
