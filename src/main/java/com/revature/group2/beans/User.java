@@ -7,9 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.CassandraType;
-
-import lombok.Data;
-
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -18,6 +15,8 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revature.group2.deserializers.UserDeserializer;
+
+import lombok.Data;
 
 
 @Table("user")
@@ -80,6 +79,15 @@ public class User {
 	
 	public void addDeck(Deck deck) {
 		this.decks.add(deck.getKey().getUuid().toString());
+
 	}
 	
+	public void removeCard(Deck deck) {
+		this.decks.remove(deck);
+	}
+
+		
+
+	
+
 }

@@ -19,5 +19,5 @@ public interface TradeService {
 	Flux<Trade> viewPendingTrades();
 	Mono<Trade> submitTrade(Trade trade);
 	Mono<Trade> acceptTrade(UUID tradeId, User user);
-
+	Mono<Trade> reverseTrade(UUID tradeId);
 }

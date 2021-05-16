@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class UserServiceImp implements UserService {
-
 	private UserRepo userRepo;
 	
 	@Autowired
@@ -44,6 +43,12 @@ public class UserServiceImp implements UserService {
 	@Override
 	public Flux<User> updateUser(Mono<User> user) {
 		return userRepo.saveAll(user);
+	}
+	
+	public Mono<User> addCardToUser(User user){
+		return userRepo.findById(user.getUuid()).doOnSuccess(c ->{
+			
+		});
 	}
 
 	@Override
@@ -89,6 +94,7 @@ public class UserServiceImp implements UserService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 	@Override
 	public Flux<User> banUser(Optional<UUID> uuid) {

@@ -52,14 +52,14 @@ public class DeckController {
 		this.userService = userService;
 	}
 
-	public Set<String> viewDecks(ServerWebExchange exchange){
+	public Flux<Deck> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get(tokenString) != null) {
 				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
-					return user.getDecks();
+					return deckService.getUserDecks(user);
 				}
 			}
 		} catch (Exception e) {
@@ -77,6 +77,10 @@ public class DeckController {
 				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
+					//user.getDecks().remove(deck);
+//					//userService.updateUser(user);
+					//exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
+					//exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
 					user.getDecks().remove(deck.getKey().getUuid().toString());
 					userService.updateUser(Mono.just(user));
 					exchange.getResponse().addCookie(ResponseCookie.from(tokenString, "").httpOnly(true).build());

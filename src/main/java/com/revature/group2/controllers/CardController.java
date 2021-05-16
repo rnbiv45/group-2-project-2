@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.revature.group2.aspects.Admin;
+import com.revature.group2.aspects.Authorized;
+import com.revature.group2.aspects.OwnerAndAdmin;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.CardKey;
@@ -34,7 +37,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping
 public class CardController {
-	CardService cardService;
+	private CardService cardService;
 	private JWTParser tokenService;
 	
 	@Autowired
@@ -64,11 +67,15 @@ public class CardController {
 		myCard.setDamageValue(0);
 		myCard.setName("DummyCard");
 		myCard.setBuffValue(0);
+
 		System.out.println(myCard);
 		return cardService.addCardToSystem(myCard);
 	}
 	
-	//@Authorized
+
+	@Authorized
+	@Admin
+
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -78,6 +85,7 @@ public class CardController {
 			@RequestParam Optional<Boolean> isBanned){
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
 	}
+
 	
 	@PostMapping(path="/users/{user}/cards")
 	public Flux<User> addCardToUser(@CookieValue(value="token") String token, ServerWebExchange exchange, @PathVariable UUID uuid) {
@@ -85,12 +93,40 @@ public class CardController {
 		return null;
 	}
 
-	@GetMapping(value="/users/{user}/cards")
-	public Map<String, Integer> getUserCards(@CookieValue(value="token") String token, ServerWebExchange exchange, @PathVariable String pathUser){
-
+	@Authorized
+	@Admin
+	@PostMapping(path="/cards")
+	public Flux<Card> changeStat(
+			@RequestParam Optional<UUID> uuid,
+			@RequestParam Optional<String> name,
+			@RequestParam Optional<Boolean> isUnique,
+			@RequestParam Optional<Integer> attackValue,
+			@RequestParam Optional<Integer> defenseValue,
+			@RequestParam Optional<Integer> damageValue,
+			@RequestParam Optional<Integer> buffValue){
+		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
+	}
+/* this one doesnt really show stuff IIRC
+	@OwnerAndAdmin
+	@GetMapping(value="/users/{pathUser}/cards")
+	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
+		User user = null;
+		try {
+			if(exchange.getRequest().getCookies().get("token") != null) {
+				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
+				if(!token.equals("")) {
+					user = tokenService.parser(token);
+					return user.getCards();
+				}
+			}
+		} catch (Exception e) {
+			exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+			return null;
+		}
 		return null;
 	}
-
+*/
+  
 	@Admin
 	@PostMapping(path="/cards")
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {

@@ -79,15 +79,20 @@ public class UserController {
 		userService.addUser(myUser);
 	}
 	
-	@GetMapping(value="/test")
+	@GetMapping(value="/test/check")
 	public Flux<User> checkUsers() {
 		return userService.getUsers();
 	}
+	
+//	@GetMapping(value="/test/check")
+//	public Mono<User> addCardToUser() {
+//		return userService.
+//	}
 
 	@PostMapping("/register")
 	public Mono<ResponseEntity<User>> registerUser(@RequestBody User user){
 		System.out.println(user);
-		return userService.addUser(user).map(userVar -> ResponseEntity.ok().body(userVar)).onErrorStop();
+		return userService.addUser(user).map(userVar -> ResponseEntity.status(201).body(userVar)).onErrorStop();
 	}
 
 	@PostMapping(value="login", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -121,7 +126,7 @@ public class UserController {
 	
 	@DeleteMapping("logout")
 	public ResponseEntity<Void> logout(ServerWebExchange exchange) {
-		exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
+		exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).path("/").build());
 		return ResponseEntity.noContent().build();
 	}
 	

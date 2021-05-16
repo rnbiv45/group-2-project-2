@@ -73,6 +73,38 @@ public class CardServiceTest {
 		Mono<Card> result = cardService.getCard(key);
 		assertThat(result).isEqualTo(nullMono);
 	}
+	
+	@Test
+	void testBanCardBansACard() {
+		Card card = new Card();
+		Card banningCard = new Card();
+		CardKey cardKey = new CardKey();
+		String name = "a";
+		
+		cardKey.setIsBanned(false);
+		card.setKey(cardKey);
+		
+		Mono<Card> cardMono = Mono.just(card);
+		
+		cardKey.setIsBanned(true);
+		banningCard.setKey(cardKey);
+		
+		Mono<Card> bannedCard = Mono.just(banningCard);
+		Mono<Void> voidMono = Mono.empty();
+		
+		when(cardRepo.findById(cardKey)).thenReturn(cardMono);
+		when(cardRepo.delete(card)).thenReturn(voidMono);
+		when(cardRepo.insert(banningCard)).thenReturn(bannedCard);
+		when(cardRepo.findByName(name)).thenReturn(cardMono);
+		
+		Mono<Card> result = cardService.banCardFromSystem(name);
+		Mono<Boolean> comparer = Mono.sequenceEqual(result, bannedCard);
+		comparer.subscribe(bool -> {
+			assertThat(bool).isEqualTo(true);
+		});
+		
+		
+	}
 	/*
 	@Test
 	void testAddCardDoesNotExist() {
