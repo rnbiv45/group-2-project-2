@@ -4,9 +4,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.tinkerpop.shaded.minlog.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.datastax.oss.driver.api.querybuilder.update.Update;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.revature.group2.aspects.Admin;
 import com.revature.group2.aspects.Authorized;
 import com.revature.group2.aspects.OwnerAndAdmin;
@@ -122,6 +125,7 @@ public class CardController {
 
 	//add a card
 	@Authorized
+	@Admin
 	@PostMapping
 	public Mono<ResponseEntity<Card>> addCard(ServerWebExchange exchange, @RequestBody Card card) {
 		cardService.addCardToSystem(card);
@@ -137,23 +141,39 @@ public class CardController {
 		});
 	}
 	
+	//Add Card to User
 	@Authorized
 	@GetMapping(path="/cards/new/{name}")
-	public Mono<ResponseEntity<Object>> addCardToUser(@CookieValue(value="token") String token, @PathVariable String name) {
+	public Mono<ResponseEntity<Object>> addCardToUser(
+			ServerWebExchange exchange, //exchange for authorization
+			@CookieValue(value="token") String token, //cookie to parse user value to get cards
+			@PathVariable String name) { //path variable to get card name
+		
 		try {
-			User user = tokenService.parser(token);
-			return cardService.addCardToUser(name, user).map(card -> ResponseEntity.status(201).body(card));
+			User user = tokenService.parser(token);// get user from token
+			System.out.println(user);
+			return cardService.addCardToUser(name.replace("_", " "), user)
+					.doOnNext(update -> {
+						try {
+							exchange.getResponse().addCookie(ResponseCookie
+									.from("token", tokenService.makeToken(update))
+									.httpOnly(true).path("/").build());
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}})
+					.map(card -> ResponseEntity.status(201).body(card));
+			
+			//return cardService.addCardToUser(name, user).map(card -> ResponseEntity.status(201).body(card));
 		} catch (Exception e) {
-			return Mono.just(ResponseEntity.status(500).body(e));
+			return Mono.just(ResponseEntity.status(500).body(e));//if we fuck up
 		}
 	}
-	
 	
 	@Authorized
 	@Admin
 	@DeleteMapping(path = "/cards/{name}")
-	public Mono<Card> banCard(ServerWebExchange exchange, @PathVariable String name){
-		return cardService.banCardFromSystem(name);
+	public Mono<ResponseEntity<Card>> banCard(ServerWebExchange exchange, @PathVariable String name){
+		return cardService.banCardFromSystem(name).map(card ->  ResponseEntity.ok().body(card));
 	}
 	
 	@Authorized

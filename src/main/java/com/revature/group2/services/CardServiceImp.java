@@ -13,6 +13,7 @@ import com.revature.group2.beans.CardKey;
 import com.revature.group2.beans.CardType;
 import com.revature.group2.beans.User;
 import com.revature.group2.repos.CardRepo;
+import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,9 +21,15 @@ import reactor.core.publisher.Mono;
 @Service
 public class CardServiceImp implements CardService {
 	private CardRepo cardRepo;
+	private UserRepo userRepo;
 	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
 		this.cardRepo = cardRepo;
+	}
+	
+	@Autowired
+	public void setUserRepo(UserRepo userRepo) {
+		this.userRepo = userRepo;
 	}
 
 	@Override
@@ -101,9 +108,18 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-	public Mono<User> addCardToUser(String name, User user) {
-		cardRepo.findByName(name).subscribe(user::addCard);
-		return Mono.just(user);
+	public Mono<User> addCardToUser(String name, User user) {//name of card, user to add
+		
+		return userRepo.findByName(user.getName())//get User by name
+				.flatMap(u-> cardRepo.findByName(name)//get card by name
+				.map(card -> {
+							user.addCard(card);
+							return user;
+							}));
+//		cardRepo.findByName(name).doOnNext(card ->{//find card
+//			user.addCard(card);//add card
+//		});
+//		return Mono.just(user);
 	}
 
 	@Override

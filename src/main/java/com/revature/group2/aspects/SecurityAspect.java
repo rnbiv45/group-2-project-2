@@ -76,7 +76,8 @@ public class SecurityAspect {
 			}
 			String token = cookie.getValue();
 			User user = tokenService.parser(token);
-			
+			System.out.println(user);
+			System.out.println(user.getRole());
 			if(!user.getRole().equals(UserRole.ADMIN)) {
 				exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
 				return null;

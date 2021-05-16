@@ -145,7 +145,7 @@ public class CardServiceTest {
 		List <Card> cList = new ArrayList<Card>();
 		cList.add(card);
 		
-		Flux<Card> findAll = Flux.just(cList);
+		Flux<Card> findAll = Flux.just(card);
 		Flux<Card> changeCard = Flux.just(update);
 		
 //		when(cardRepo.findAll()).thenReturn(findAll);
