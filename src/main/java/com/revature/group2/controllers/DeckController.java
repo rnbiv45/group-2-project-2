@@ -26,6 +26,7 @@ import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.DeckService;
+import com.revature.group2.services.DeckServiceImp;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
 
@@ -56,8 +57,8 @@ public class DeckController {
 	}
 
 	@Authorized
-	@GetMapping
-	public Flux<Deck> viewDecks(ServerWebExchange exchange){
+	@GetMapping(value = "/user")
+	public Flux<Deck> viewUserDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get(tokenString) != null) {
@@ -72,7 +73,10 @@ public class DeckController {
 			return null;
 		}
 		return null;
-		
+	}
+	@GetMapping
+	public Flux<Deck> viewAllDecks(ServerWebExchange exchange){
+		return deckService.getAll();
 	}
 	
 	@Authorized
@@ -113,7 +117,7 @@ public class DeckController {
 			ServerWebExchange exchange,
 			@CookieValue(value="token") String token,
 			@RequestPart String primaryArchetype,
-			@RequestPart String secondaryArchetype) {//changed to requestpart because requestparam is used for queries
+			@RequestPart String secondaryArchetype) {//changed to requestpart because requestparam is for queries
 		System.out.println("test");
 		try {
 			Archetype primary = Archetype.valueOf(primaryArchetype);
@@ -126,16 +130,15 @@ public class DeckController {
 	}
 	
 	@Authorized
-	@OwnerAndAdmin
-	@PostMapping("/card")
-	public Mono<ResponseEntity<Object>> addCardToDeck(ServerWebExchange exchange, Deck deck, Card card) {
+	@PostMapping("/{deckId}/card")
+	public Mono<ResponseEntity<Object>> addCardToDeck(ServerWebExchange exchange, @PathVariable String deckId, @RequestPart String cardUuid) {
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get(tokenString) != null) {
 				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
-					return null;
+					return deckService.addCardToDeck(user, deckId, cardUuid).map(deck -> ResponseEntity.ok().body(deck));
 				}
 			}
 		} catch (Exception e) {

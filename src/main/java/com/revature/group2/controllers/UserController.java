@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.revature.group2.beans.User;
 import com.revature.group2.beans.UserRole;
 import com.revature.group2.services.UserService;
@@ -63,7 +62,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value="/meta")
-	public Flux<Map<String, Integer>> getMetaCards(ServerWebExchange exchange, String users){
+	public Flux<Map<String, Integer>> getMetaCards(ServerWebExchange exchange){
 		exchange.getResponse().setStatusCode(HttpStatus.OK);
 		return userService.metaCard();
 	}

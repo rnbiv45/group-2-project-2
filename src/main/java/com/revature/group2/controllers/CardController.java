@@ -78,7 +78,6 @@ public class CardController {
 
 	@Authorized
 	@Admin
-
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -137,6 +136,7 @@ public class CardController {
 	@Admin
 	@PostMapping(path="/cards")
 	public Mono<ResponseEntity<Card>> addCard(ServerWebExchange exchange, @RequestBody Card card) {
+		System.out.println(card);
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
 				.onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
@@ -145,7 +145,7 @@ public class CardController {
 	@Authorized
 	@GetMapping(path="/cards/{name}")
 	public Mono<ResponseEntity<Card>> getCard(ServerWebExchange exchange, @PathVariable String name) {
-		return cardService.getCardByName(name).map(card ->{
+		return cardService.getCardByName(name.replace("_", " ")).map(card ->{
 			return ResponseEntity.ok().body(card);
 		});
 	}
@@ -160,7 +160,6 @@ public class CardController {
 		
 		try {
 			User user = tokenService.parser(token);// get user from token
-			System.out.println(user);
 			return cardService.addCardToUser(name.replace("_", " "), user)
 					.doOnNext(update -> {
 						try {
@@ -169,12 +168,13 @@ public class CardController {
 									.httpOnly(true).path("/").build());
 						} catch (JsonProcessingException e) {
 							e.printStackTrace();
+							
 						}})
 					.map(card -> ResponseEntity.status(201).body(card));
 			
 			//return cardService.addCardToUser(name, user).map(card -> ResponseEntity.status(201).body(card));
 		} catch (Exception e) {
-			return Mono.just(ResponseEntity.status(500).body(e));//if we fuck up
+			return Mono.just(ResponseEntity.status(500).body(e));//if there is a problem
 		}
 	}
 	

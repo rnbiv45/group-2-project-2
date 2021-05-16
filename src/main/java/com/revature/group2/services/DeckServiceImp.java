@@ -1,5 +1,7 @@
 package com.revature.group2.services;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +9,9 @@ import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
+import com.revature.group2.repos.CardRepo;
 import com.revature.group2.repos.DeckRepo;
 import com.revature.group2.repos.UserRepo;
-
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,6 +22,12 @@ public class DeckServiceImp implements DeckService {
 	private DeckRepo deckRepo;
 	//private UserService userService;
 	private UserRepo userRepo;
+	private CardRepo cardRepo;
+	
+	@Autowired
+	public void setCardRepo(CardRepo cardRepo) {
+		this.cardRepo = cardRepo;
+	}
 
 
 	@Autowired
@@ -57,20 +65,26 @@ public class DeckServiceImp implements DeckService {
 
 
 
-
 	@Override
-	public Flux<Deck> addCardToDeck(User user, Deck deck, Card card) {
-		if(deck.getCards().containsKey(card.getKey().getUuid().toString())) {
-			deck.getCards().replace(card.getKey().getUuid().toString(), deck.getCards().get(card.getKey().getUuid().toString())+1);
-		}
-		else {
-			deck.getCards().put(card.getKey().toString(), 1);
-		}
-		System.out.println(deck);
-		System.out.println(Mono.just(deck));
-		Flux<Deck> newDeck = deckRepo.saveAll(Mono.just(deck));
-		System.out.println(newDeck);
-		return newDeck;
+	public Mono<Deck> addCardToDeck(User user, String deckUuid, String cardUuid) {// user to save to, uuid of deck, uuid of card
+		
+		return userRepo.findById(user.getUuid())//getUser by name
+				.flatMap(u -> {	
+					return (Mono<Deck>) cardRepo.findByKeyUuid(UUID.fromString(cardUuid)) //find card
+					.flatMap(card -> { 
+						return deckRepo.findByKeyUuid(UUID.fromString(deckUuid))
+								.flatMap(deck -> {
+									u.removeDeck(deck);
+									deck.addCard(card);
+									u.addDeck(deck);
+									return deckRepo.save(deck);
+											});
+								});
+		});
+		
+//		Flux<Deck> newDeck = deckRepo.saveAll(Mono.just(deck));
+//		System.out.println(newDeck);
+//		return newDeck;
 	}
 
 	@Override
@@ -90,19 +104,15 @@ public class DeckServiceImp implements DeckService {
 			User user, 
 			Archetype primaryArchetype, 
 			Archetype secondaryArchetype) {
-		/*
-		userRepo.findById(user.getUuid()).map(filteredUser ->{
-			deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
-			.doOnNext(deck -> filteredUser.addDeck(deck))
-			.doOnNext();
-		});
-		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
-				.doOnNext(deck -> {
-					user.addDeck(deck);
-		});
-		userRepo.saveAll(Mono.just(user));
-		*/
-		return Mono.just(user);
+		return userRepo.findByName(user.getName())
+				.flatMap(filteredUser ->{
+					return deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
+							.flatMap(deck -> {
+								filteredUser.addDeck(deck);
+								return userRepo.save(filteredUser);
+						});
+			});
+
 	}
 
 	@Override
@@ -110,4 +120,9 @@ public class DeckServiceImp implements DeckService {
 		return deckRepo.saveAll(deck);
 	}
 
+
+	@Override
+	public Flux<Deck> getAll() {
+		return deckRepo.findAll();
+	}
 }
