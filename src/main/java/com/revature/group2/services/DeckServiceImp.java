@@ -48,7 +48,7 @@ public class DeckServiceImp implements DeckService {
 		Flux<Deck> decks = deckRepo.findAll();
 		return decks.filter(deck -> user.getDecks().contains(deck.getKey().getUuid().toString()));
 	}
-
+	
 	@Override
 	public Flux<User> removeDeck(User user, Deck deck) {
 		if(user.getDecks().remove(deck.getKey().getUuid().toString()));
