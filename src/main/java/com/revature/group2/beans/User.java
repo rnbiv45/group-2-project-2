@@ -60,6 +60,9 @@ public class User {
 	
 	public void addCard(Card card) {
 		String cardName = card.getKey().getUuid().toString();
+		if(this.cards == null) {
+			this.setCards(new HashMap<>());
+		}
 		this.cards.compute(cardName, (k, v) -> (v == null) ? 1 : v++);
 
 	}
@@ -79,15 +82,11 @@ public class User {
 	
 	public void addDeck(Deck deck) {
 		this.decks.add(deck.getKey().getUuid().toString());
-
 	}
 	
 	public void removeCard(Deck deck) {
 		this.decks.remove(deck);
 	}
 
-		
-
-	
 
 }

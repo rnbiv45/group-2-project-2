@@ -113,9 +113,13 @@ public class CardServiceImp implements CardService {
 		return userRepo.findByName(user.getName())//get User by name
 				.flatMap(u-> cardRepo.findByName(name)//get card by name
 				.map(card -> {
-							user.addCard(card);
-							return user;
-							}));
+							u.addCard(card); //add card to user
+							return u;
+							})
+				.doOnNext(update -> {
+					System.out.println(update);
+					userRepo.save(update).subscribe();
+				}));
 //		cardRepo.findByName(name).doOnNext(card ->{//find card
 //			user.addCard(card);//add card
 //		});
