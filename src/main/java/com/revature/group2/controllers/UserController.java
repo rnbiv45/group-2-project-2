@@ -55,6 +55,13 @@ public class UserController {
 		return userService.getAll();
 	}
 	
+	@GetMapping(value="/meta")
+	public Flux<Map<String, Integer>> getMetaCards(ServerWebExchange exchange, String users){
+		exchange.getResponse().setStatusCode(HttpStatus.OK);
+		return userService.metaCard();
+	}
+	
+	
 	@GetMapping("/{uuid}")
 	public Mono<ResponseEntity<Object>> getUser() {
 		return null;
