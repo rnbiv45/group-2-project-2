@@ -72,8 +72,10 @@ public class CardController {
 		return cardService.addCardToSystem(myCard);
 	}
 	
+
 	@Authorized
 	@Admin
+
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -82,6 +84,13 @@ public class CardController {
 			@RequestParam Optional<Integer> rarity,
 			@RequestParam Optional<Boolean> isBanned){
 		return cardService.getCardsFromSystemWithArguments(type, archetype, rarity, isBanned);
+	}
+
+	
+	@PostMapping(path="/users/{user}/cards")
+	public Flux<User> addCardToUser(@CookieValue(value="token") String token, ServerWebExchange exchange, @PathVariable UUID uuid) {
+		
+		return null;
 	}
 
 	@Authorized
@@ -97,7 +106,7 @@ public class CardController {
 			@RequestParam Optional<Integer> buffValue){
 		return cardService.changeCardInSystemWithArguments(uuid, name, isUnique, attackValue, defenseValue, damageValue, buffValue);
 	}
-
+/* this one doesnt really show stuff IIRC
 	@OwnerAndAdmin
 	@GetMapping(value="/users/{pathUser}/cards")
 	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
@@ -116,10 +125,10 @@ public class CardController {
 		}
 		return null;
 	}
-
-
-	//add a card
-	@PostMapping
+*/
+  
+	@Admin
+	@PostMapping(path="/cards")
 	public Mono<ResponseEntity<Card>> addCard(@RequestBody Card card) {
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))

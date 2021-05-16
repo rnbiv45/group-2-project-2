@@ -105,7 +105,15 @@ public class UserServiceImp implements UserService {
 	}
 
 	@Override
-	public Flux<User> getAll() {
-		return userRepo.findAll();
+	public Flux<User> getAll(Optional<UUID> card, Optional<UserRole> role) {
+		Flux<User> users =  userRepo.findAll();
+		if (role.isPresent()) {
+			users = users.filter(user -> user.getRole().equals(role.get()));
+		}
+		if (card.isPresent()) {
+			users = users.filter(user -> user.getCards().containsKey(card.get().toString()));
+		}
+		return users;
 	}
+
 }
