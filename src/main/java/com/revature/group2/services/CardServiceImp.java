@@ -69,6 +69,7 @@ public class CardServiceImp implements CardService {
 	@Override
 	public Flux<Card> getMetaCards() {
 		// TODO Auto-generated method stub
+		//int number = cardRepo.findAll().flatMap(c -> c.getAttackValue());
 		return null;
 	}
 

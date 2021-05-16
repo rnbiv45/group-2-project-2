@@ -78,7 +78,6 @@ public class CardController {
 
 	@Authorized
 	@Admin
-
 	@GetMapping(path="/cards")
 	public Flux<Card> getAllCards(
 			ServerWebExchange exchange,
@@ -137,6 +136,7 @@ public class CardController {
 	@Admin
 	@PostMapping(path="/cards")
 	public Mono<ResponseEntity<Card>> addCard(ServerWebExchange exchange, @RequestBody Card card) {
+		System.out.println(card);
 		cardService.addCardToSystem(card);
 		return cardService.addCardToSystem(card).map(returnCard -> ResponseEntity.status(201).body(returnCard))
 				.onErrorResume(error -> Mono.just(ResponseEntity.badRequest().body(null)));
@@ -174,7 +174,7 @@ public class CardController {
 			
 			//return cardService.addCardToUser(name, user).map(card -> ResponseEntity.status(201).body(card));
 		} catch (Exception e) {
-			return Mono.just(ResponseEntity.status(500).body(e));//if we fuck up
+			return Mono.just(ResponseEntity.status(500).body(e));//if there is a problem
 		}
 	}
 	

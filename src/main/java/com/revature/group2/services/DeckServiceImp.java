@@ -124,12 +124,14 @@ public class DeckServiceImp implements DeckService {
 								return userRepo.save(filteredUser);
 						});
 			});
+
 //		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
 //				.doOnNext(deck -> {
 //					user.addDeck(deck);
 //		});
 //		userRepo.saveAll(Mono.just(user));
 //		return Mono.just(user);
+
 	}
 
 	@Override
