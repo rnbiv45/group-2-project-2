@@ -32,20 +32,7 @@ public class UserDeserializer extends StdDeserializer<User> {
 	public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 		JsonNode node = jp.getCodec().readTree(jp);
 		User user = new User();
-		if(node.get("card") != null) {
-			System.out.println(node.get("card").toString());
-		}
-		else {
-			System.out.println("null value");
-		}
-		
-		if(node.get("uuid") != null) {
-			user.setUuid(UUID.fromString(node.get("uuid").asText()));
-		}
-		else {
-			user.setUuid(UUID.randomUUID());
-		}
-		
+		user.setUuid(node.get("uuid") == null ? UUID.randomUUID() : UUID.fromString(node.get("uuid").asText()));
 		user.setName(node.get("name").asText());
 		user.setPass(node.get("pass").asText());
 		user.setCards(new HashMap<>());
@@ -57,12 +44,7 @@ public class UserDeserializer extends StdDeserializer<User> {
 			System.out.println("card is null");
 		}
 		user.setDecks(new HashSet<>());
-		if(node.get("role") != null) {
-			user.setRole(UserRole.valueOf(node.get("role").asText()));
-		}
-		else {
-			user.setRole(UserRole.MEMBER);
-		}
+		user.setRole(node.get("role") == null ? UserRole.MEMBER : UserRole.valueOf(node.get("role").asText()));
 		return user;
     }
 

@@ -163,6 +163,21 @@ public class TradeServiceTest {
 	}
 	
 	@Test
+	void testViewTradesByUser2() {
+		User user = new User();
+		user.setName("Hank");
+		user.setUuid(UUID.randomUUID());
+		Flux<Trade> tradesFlux = Flux.fromArray(trades);
+		when(tradeRepo.findAll()).thenReturn(tradesFlux);
+		Flux<Trade> result = tradeService.viewTradesByUser(user);
+		assertFalse(result.hasElement(trades[0]).block());
+		assertFalse(result.hasElement(trades[1]).block());
+		assertFalse(result.hasElement(trades[2]).block());
+		assertFalse(result.hasElement(trades[3]).block());
+		assertFalse(result.hasElement(trades[4]).block());
+	}
+	
+	@Test
 	void testSubmitTrade() {
 		Trade trade = new Trade();
 		Mono<Trade> tradeMono = Mono.just(trade);
