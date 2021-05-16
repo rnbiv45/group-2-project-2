@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.User;
+import com.revature.group2.beans.UserRole;
 import com.revature.group2.repos.UserRepo;
 
 import reactor.core.publisher.Flux;
@@ -35,7 +36,7 @@ public interface UserService {
 
 	Flux<User> banUser(Optional<UUID> uuid);
 
-	Flux<User> getAll();
+	Flux<User> getAll(Optional<UUID> card, Optional<UserRole> role);
 
 	Mono<User> getUserByUUID(UUID uuid);
 	

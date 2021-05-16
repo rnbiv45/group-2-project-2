@@ -1,6 +1,5 @@
 package com.revature.group2.controllers;
 
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.revature.group2.aspects.Authorized;
+import com.revature.group2.aspects.OwnerAndAdmin;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Deck;
@@ -52,6 +54,8 @@ public class DeckController {
 		this.userService = userService;
 	}
 
+	@Authorized
+	@GetMapping
 	public Flux<Deck> viewDecks(ServerWebExchange exchange){
 		User user = null;
 		try {
@@ -69,7 +73,9 @@ public class DeckController {
 		return null;
 		
 	}
-	@DeleteMapping
+	
+	@Authorized
+	@DeleteMapping()
 	public void deleteOwnDeck(ServerWebExchange exchange, Deck deck) {
 		User user = null;
 		try {
@@ -78,7 +84,7 @@ public class DeckController {
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
 					//user.getDecks().remove(deck);
-//					//userService.updateUser(user);
+					//userService.updateUser(user);
 					//exchange.getResponse().addCookie(ResponseCookie.from("token", "").httpOnly(true).build());
 					//exchange.getResponse().addCookie(ResponseCookie.from("token", tokenService.makeToken(user)).httpOnly(true).build());
 					user.getDecks().remove(deck.getKey().getUuid().toString());
@@ -94,9 +100,11 @@ public class DeckController {
 		}
 	}
 		
+	@Authorized
+	@OwnerAndAdmin
 	@PostMapping
 	public Mono<ResponseEntity<Object>> addDeckToUser(
-			@CookieValue String token,
+			@CookieValue(value="token") String token,
 			@RequestParam String primaryArchetype,
 			@RequestParam String secondaryArchetype) {
 		try {
@@ -109,6 +117,8 @@ public class DeckController {
 		}
 	}
 	
+	@Authorized
+	@OwnerAndAdmin
 	@PostMapping("/card")
 	public Mono<ResponseEntity<Object>> addCardToDeck(ServerWebExchange exchange, Deck deck, Card card) {
 		User user = null;
@@ -127,11 +137,13 @@ public class DeckController {
 		return null;
 	}
 	
+	@Authorized
 	@DeleteMapping("/card")
 	public Mono<ResponseEntity<Object>> removeCardFromDeck(ServerWebExchange exchange, Deck deck, Card card) {
 		return null;
 	}
 	
+	@Authorized
 	@PutMapping("/{uuid}")
 	public Flux<Deck> updateDeck(ServerWebExchange exchange, @RequestBody Deck deck, @PathVariable UUID uuid) {
 		deck.getKey().setUuid(uuid);

@@ -30,12 +30,12 @@ public class UserDeserializer extends StdDeserializer<User> {
 	public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 		JsonNode node = jp.getCodec().readTree(jp);
 		User user = new User();
+		user.setUuid(UUID.fromString(node.get("uuid").asText()));
 		user.setName(node.get("name").asText());
 		user.setPass(node.get("pass").asText());
 		user.setCards(new HashMap<>());
 		user.setDecks(new HashSet<>());
-		user.setRole(UserRole.MEMBER);
-		user.setUuid(UUID.randomUUID());
+		user.setRole(UserRole.valueOf(node.get("role").asText()));
 		return user;
     }
 }
