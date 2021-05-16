@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -50,10 +51,23 @@ public class UserController {
 	}
 	
 	@GetMapping
-	public Flux<User> getAll(ServerWebExchange exchange) {
+	public Flux<User> getAll(
+			@CookieValue(value = "token", defaultValue = "")String token, 
+			ServerWebExchange exchange,
+			@RequestParam Optional<UUID> card,
+			@RequestParam Optional<UserRole> role) {
 		exchange.getResponse().setStatusCode(HttpStatus.OK);
-		return userService.getAll();
+		return userService.getAll(
+				card,
+				role);
 	}
+	
+	@GetMapping(value="/meta")
+	public Flux<Map<String, Integer>> getMetaCards(ServerWebExchange exchange, String users){
+		exchange.getResponse().setStatusCode(HttpStatus.OK);
+		return userService.metaCard();
+	}
+	
 	
 	@GetMapping("/{uuid}")
 	public Mono<ResponseEntity<Object>> getUser() {
