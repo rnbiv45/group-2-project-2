@@ -5,10 +5,12 @@ import java.util.UUID;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 
 import lombok.Data;
 
+@Table("trade")
 @Data
 public class Trade {
 	@Column
