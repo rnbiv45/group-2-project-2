@@ -84,12 +84,13 @@ public class DeckServiceImp implements DeckService {
 		}
 		return deckRepo.saveAll(Mono.just(deck));
 	}
-
+	
 	@Override
 	public Mono<User> addDeckToUser(
 			User user, 
 			Archetype primaryArchetype, 
 			Archetype secondaryArchetype) {
+		/*
 		userRepo.findById(user.getUuid()).map(filteredUser ->{
 			deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
 			.doOnNext(deck -> filteredUser.addDeck(deck))
@@ -100,6 +101,7 @@ public class DeckServiceImp implements DeckService {
 					user.addDeck(deck);
 		});
 		userRepo.saveAll(Mono.just(user));
+		*/
 		return Mono.just(user);
 	}
 

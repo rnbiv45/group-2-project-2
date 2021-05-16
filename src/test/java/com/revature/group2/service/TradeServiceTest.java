@@ -136,7 +136,8 @@ public class TradeServiceTest {
 	void testViewTradesForCard() {
 		Card card = new Card();
 		CardKey key = new CardKey();
-		key.setUuid(UUID.fromString(cardId3));card.setKey(key);
+		key.setUuid(UUID.fromString(cardId3));
+		card.setKey(key);
 		Flux<Trade> tradesFlux = Flux.fromArray(trades);
 		when(tradeRepo.findAll()).thenReturn(tradesFlux);
 		Flux<Trade> result = tradeService.viewTradesForCard(card);
@@ -144,6 +145,22 @@ public class TradeServiceTest {
 		assertFalse(result.hasElement(trades[1]).block());
 		assertTrue(result.hasElement(trades[2]).block());
 		assertTrue(result.hasElement(trades[3]).block());
+		assertFalse(result.hasElement(trades[4]).block());
+	}
+	
+	@Test
+	void testViewTradesForCardThatDoesNotExist() {
+		Card card = new Card();
+		CardKey key = new CardKey();
+		key.setUuid(UUID.randomUUID());
+		card.setKey(key);
+		Flux<Trade> tradesFlux = Flux.fromArray(trades);
+		when(tradeRepo.findAll()).thenReturn(tradesFlux);
+		Flux<Trade> result = tradeService.viewTradesForCard(card);
+		assertFalse(result.hasElement(trades[0]).block());
+		assertFalse(result.hasElement(trades[1]).block());
+		assertFalse(result.hasElement(trades[2]).block());
+		assertFalse(result.hasElement(trades[3]).block());
 		assertFalse(result.hasElement(trades[4]).block());
 	}
 	
