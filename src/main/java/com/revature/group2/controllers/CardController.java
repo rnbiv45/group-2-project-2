@@ -86,7 +86,7 @@ public class CardController {
 
 	@Authorized
 	@Admin
-	@PostMapping(path="/cards")
+	@PutMapping(path="/cards")
 	public Flux<Card> changeStat(
 			@RequestParam Optional<UUID> uuid,
 			@RequestParam Optional<String> name,

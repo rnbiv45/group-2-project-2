@@ -54,11 +54,16 @@ public class TradeServiceImp implements TradeService {
 	@Override
 	public Flux<Trade> viewTradesByUser(User user) {
 		//get all trades  with user as poster
+		//System.out.println(user);
 		Flux<Trade> postedTrades = tradeRepo.findAll().filter(trade -> trade.getPosterId().equals(user.getUuid()));
+		//System.out.println(postedTrades.blockLast());
 		//get all trades with user as acceptor
 		Flux<Trade> acceptedTrades = tradeRepo.findAll().filter(trade -> trade.getAcceptorId() != null);
 		acceptedTrades = acceptedTrades.filter(trade -> trade.getAcceptorId().equals(user.getUuid()));
-		return Flux.merge(postedTrades, acceptedTrades);
+		//System.out.println(acceptedTrades.blockLast());
+		Flux<Trade> trades = Flux.merge(postedTrades, acceptedTrades);
+		//System.out.println(trades);
+		return trades;
 		
 	}
 	
@@ -76,6 +81,9 @@ public class TradeServiceImp implements TradeService {
 		if(trade.getCard1() == null || trade.getCard2() == null || trade.getPosterId() == null) {
 			return null;
 		}
+		trade.setTradeId(UUID.randomUUID());
+		trade.setTradeStatus(TradeStatus.PENDING);
+		System.out.println(trade);;
 		return tradeRepo.save(trade);
 	}
 

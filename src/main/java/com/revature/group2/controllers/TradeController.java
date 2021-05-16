@@ -76,18 +76,37 @@ public class TradeController {
 	
 	@PostMapping("submit")
 	public Mono<Trade> submitTrade(ServerWebExchange exchange, @RequestBody Trade trade){
-		return tradeService.submitTrade(trade);
-	}
-	
-	@PostMapping("accept")
-	public Mono<Trade> acceptTrade(ServerWebExchange exchange, @RequestBody UUID tradeId){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get(tokenString) != null) {
 				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
-					return tradeService.acceptTrade(tradeId, user);
+					trade.setPoster(user.getName());
+					trade.setPosterId(user.getUuid());
+					trade.setAcceptor("pending");
+					trade.setAcceptorId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+					System.out.println(trade);
+					System.out.println(user);
+					return tradeService.submitTrade(trade);
+				}
+			}
+		} catch (Exception e) {
+			exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+			return null;
+		}
+		return null;
+	}
+	
+	@PostMapping("accept")
+	public Mono<Trade> acceptTrade(ServerWebExchange exchange, @RequestBody Trade trade){
+		User user = null;
+		try {
+			if(exchange.getRequest().getCookies().get(tokenString) != null) {
+				String token = exchange.getRequest().getCookies().getFirst(tokenString).getValue();
+				if(!token.equals("")) {
+					user = tokenService.parser(token);
+					return tradeService.acceptTrade(trade.getTradeId(), user);
 				}
 			}
 		} catch (Exception e) {
