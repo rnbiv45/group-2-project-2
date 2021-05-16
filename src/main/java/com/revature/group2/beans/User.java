@@ -81,11 +81,14 @@ public class User {
 	}
 	
 	public void addDeck(Deck deck) {
+		if(this.decks == null) {
+			this.decks = new HashSet<>();
+		}
 		this.decks.add(deck.getKey().getUuid().toString());
 	}
 	
-	public void removeCard(Deck deck) {
-		this.decks.remove(deck);
+	public void removeDeck(Deck deck) {
+		this.decks.remove(deck.getKey().getUuid().toString());
 	}
 
 

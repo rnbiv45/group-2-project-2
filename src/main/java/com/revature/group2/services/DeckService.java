@@ -28,9 +28,10 @@ public interface DeckService {
 	Flux<User> removeDeck(User user, Deck deck);
 
 	// -As a user, I can add and remove cards from a deck.
-	Flux<Deck> addCardToDeck(User user, Deck deck, Card card);
+	Mono<Deck> addCardToDeck(User user, String deckUuid, String cardUuid);
 	Flux<Deck> removeCardFromDeck(User user, Deck deck, Card card);
 	Mono<User> addDeckToUser(User user, Archetype primaryArchetype, Archetype secondaryArchetype);
 	Flux<Deck> updateDeck(Mono<Deck> deck);
+	Flux<Deck> getAll();
 
 }

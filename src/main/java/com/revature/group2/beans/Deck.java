@@ -1,5 +1,6 @@
 package com.revature.group2.beans;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.data.cassandra.core.mapping.CassandraType;
@@ -29,6 +30,9 @@ public class Deck {
 	
 	public void addCard(Card card) {
 		String cardName = card.getKey().getUuid().toString();
+		if(this.cards == null) {
+			this.setCards(new HashMap<>());
+		}
 		this.cards.compute(cardName, (k, v) -> (v == null) ? 1 : v++);
 	}
 	

@@ -145,7 +145,7 @@ public class CardController {
 	@Authorized
 	@GetMapping(path="/cards/{name}")
 	public Mono<ResponseEntity<Card>> getCard(ServerWebExchange exchange, @PathVariable String name) {
-		return cardService.getCardByName(name).map(card ->{
+		return cardService.getCardByName(name.replace("_", " ")).map(card ->{
 			return ResponseEntity.ok().body(card);
 		});
 	}
@@ -160,7 +160,6 @@ public class CardController {
 		
 		try {
 			User user = tokenService.parser(token);// get user from token
-			System.out.println(user);
 			return cardService.addCardToUser(name.replace("_", " "), user)
 					.doOnNext(update -> {
 						try {
@@ -169,6 +168,7 @@ public class CardController {
 									.httpOnly(true).path("/").build());
 						} catch (JsonProcessingException e) {
 							e.printStackTrace();
+							
 						}})
 					.map(card -> ResponseEntity.status(201).body(card));
 			
