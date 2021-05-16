@@ -55,5 +55,6 @@ public class CardKey implements Serializable{
 	
 	public CardKey() {
 		super();
+		this.uuid = UUID.randomUUID();
 	}
 }
