@@ -3,8 +3,10 @@ package com.revature.group2.deserializers;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
+import com.datastax.oss.driver.shaded.guava.common.base.Splitter;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,8 +36,16 @@ public class UserDeserializer extends StdDeserializer<User> {
 		user.setName(node.get("name").asText());
 		user.setPass(node.get("pass").asText());
 		user.setCards(new HashMap<>());
+		if(node.get("card") != null){
+			System.out.println(node.get("card"));
+			//user.setCards(node.get("card").asText());
+		}
+		else {
+			System.out.println("card is null");
+		}
 		user.setDecks(new HashSet<>());
 		user.setRole(node.get("role") == null ? UserRole.MEMBER : UserRole.valueOf(node.get("role").asText()));
 		return user;
     }
+
 }

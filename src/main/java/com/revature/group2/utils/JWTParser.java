@@ -34,7 +34,7 @@ public class JWTParser {
 		String secretKey = System.getenv("SECRET_KEY");
 		
 		String userString = mapper.writeValueAsString(loggedInUser);
-		
+		System.out.println(userString);
 		return Jwts.builder().claim("user", userString)
 				.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(secretKey))
 				.compact();

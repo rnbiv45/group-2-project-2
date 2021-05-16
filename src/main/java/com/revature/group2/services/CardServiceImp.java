@@ -1,17 +1,11 @@
 package com.revature.group2.services;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Card;
@@ -28,13 +22,11 @@ import reactor.core.publisher.Mono;
 public class CardServiceImp implements CardService {
 	private CardRepo cardRepo;
 	private UserRepo userRepo;
-
-	
 	@Autowired
 	public void setCardRepo(CardRepo cardRepo) {
 		this.cardRepo = cardRepo;
 	}
-
+	
 	@Autowired
 	public void setUserRepo(UserRepo userRepo) {
 		this.userRepo = userRepo;
@@ -116,9 +108,22 @@ public class CardServiceImp implements CardService {
 	}
 
 	@Override
-	public Mono<User> addCardToUser(String name, User user) {
-		cardRepo.findByName(name).subscribe(user::addCard);
-		return Mono.just(user);
+	public Mono<User> addCardToUser(String name, User user) {//name of card, user to add
+		
+		return userRepo.findByName(user.getName())//get User by name
+				.flatMap(u-> cardRepo.findByName(name)//get card by name
+				.map(card -> {
+							u.addCard(card); //add card to user
+							return u;
+							})
+				.doOnNext(update -> {
+					System.out.println(update);
+					userRepo.save(update).subscribe();
+				}));
+//		cardRepo.findByName(name).doOnNext(card ->{//find card
+//			user.addCard(card);//add card
+//		});
+//		return Mono.just(user);
 	}
 
 	@Override
@@ -203,7 +208,7 @@ public class CardServiceImp implements CardService {
 			newCard.setDefenseValue(card.getDefenseValue());
 			newCard.setIsUnique(card.getIsUnique());
 			newCard.setName(card.getName());
-			addCardToSystem(newCard).subscribe();
+			addCardToSystem(newCard);
 			
 			return newCard;
 		});

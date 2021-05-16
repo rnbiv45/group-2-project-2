@@ -48,7 +48,7 @@ public class DeckServiceImp implements DeckService {
 		Flux<Deck> decks = deckRepo.findAll();
 		return decks.filter(deck -> user.getDecks().contains(deck.getKey().getUuid().toString()));
 	}
-
+	
 	@Override
 	public Flux<User> removeDeck(User user, Deck deck) {
 		if(user.getDecks().remove(deck.getKey().getUuid().toString()));
@@ -90,8 +90,15 @@ public class DeckServiceImp implements DeckService {
 			User user, 
 			Archetype primaryArchetype, 
 			Archetype secondaryArchetype) {
+		userRepo.findById(user.getUuid()).map(filteredUser ->{
+			deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
+			.doOnNext(deck -> filteredUser.addDeck(deck))
+			.doOnNext();
+		});
 		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
-				.subscribe(user::addDeck);
+				.doOnNext(deck -> {
+					user.addDeck(deck);
+		});
 		userRepo.saveAll(Mono.just(user));
 		return Mono.just(user);
 	}

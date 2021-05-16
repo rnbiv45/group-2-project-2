@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.revature.group2.aspects.Authorized;
+import com.revature.group2.aspects.OwnerAndAdmin;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.Trade;
 import com.revature.group2.beans.User;
@@ -37,6 +39,7 @@ public class TradeController {
 		this.tokenService = parser;
 	}
 	
+	@Authorized
 	@GetMapping("/Own")
 	public Flux<Trade> getOwnTrades(ServerWebExchange exchange){
 		User user = null;
@@ -56,24 +59,28 @@ public class TradeController {
 		
 	}
 	
+	@Authorized
 	@GetMapping("/User")
 	public Flux<Trade> getTradesByUser(ServerWebExchange exchange, @RequestBody User user){
 		return tradeService.viewTradesByUser(user);
 		
 	}
 	
+	@Authorized
 	@GetMapping
 	public Flux<Trade> getPendingTrades(ServerWebExchange exchange){
 		return tradeService.viewPendingTrades();
 		
 	}
 	
+	@Authorized
 	@GetMapping("/Card")
 	public Flux<Trade> getTradesByCard(ServerWebExchange exchange, @RequestBody Card card){
 		return tradeService.viewTradesForCard(card);
 		
 	}
 	
+	@Authorized
 	@PostMapping("submit")
 	public Mono<Trade> submitTrade(ServerWebExchange exchange, @RequestBody Trade trade){
 		User user = null;
@@ -98,6 +105,7 @@ public class TradeController {
 		return null;
 	}
 	
+	@Authorized
 	@PostMapping("accept")
 	public Mono<Trade> acceptTrade(ServerWebExchange exchange, @RequestBody Trade trade){
 		User user = null;
@@ -114,7 +122,6 @@ public class TradeController {
 			return null;
 		}
 		return null;
-		
 	}
 
 }
