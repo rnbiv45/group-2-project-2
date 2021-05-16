@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -100,13 +101,20 @@ public class DeckController {
 		}
 	}
 		
-	@Authorized
-	@OwnerAndAdmin
+//	@Authorized
+//	@OwnerAndAdmin
 	@PostMapping
+//	public Mono<ResponseEntity<Object>> addDeckToUser(){
+//		return Mono.just(ResponseEntity.status(500).body("Test"));
+//	}
+//	
+//	
 	public Mono<ResponseEntity<Object>> addDeckToUser(
+			ServerWebExchange exchange,
 			@CookieValue(value="token") String token,
-			@RequestParam String primaryArchetype,
-			@RequestParam String secondaryArchetype) {
+			@RequestPart String primaryArchetype,
+			@RequestPart String secondaryArchetype) {//changed to requestpart because requestparam is used for queries
+		System.out.println("test");
 		try {
 			Archetype primary = Archetype.valueOf(primaryArchetype);
 			Archetype secondary = Archetype.valueOf(secondaryArchetype);
