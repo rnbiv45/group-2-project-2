@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.swing.text.html.HTML;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -74,7 +72,6 @@ public class CardController {
 		System.out.println(myCard);
 		return cardService.addCardToSystem(myCard);
 	}
-	
 
 	@Authorized
 	@Admin
@@ -113,16 +110,15 @@ public class CardController {
 
 
 	@Authorized	
-	@OwnerAndAdmin
-	@GetMapping(value="/users/{pathUser}/cards")
-	public Map<String, Integer> getUserCards(ServerWebExchange exchange, @PathVariable String pathUser){
+	@GetMapping(value="/cards/user")
+	public Flux<Card> getUserCards(ServerWebExchange exchange){
 		User user = null;
 		try {
 			if(exchange.getRequest().getCookies().get("token") != null) {
 				String token = exchange.getRequest().getCookies().getFirst("token").getValue();
 				if(!token.equals("")) {
 					user = tokenService.parser(token);
-					return user.getCards();
+					return cardService.getCardsFromUser(user);
 				}
 			}
 		} catch (Exception e) {
@@ -153,7 +149,7 @@ public class CardController {
 	//Add Card to User
 	@Authorized
 	@GetMapping(path="/cards/new/{name}")
-	public Mono<ResponseEntity<User>> addCardToUser(
+	public Mono<ResponseEntity<Object>> addCardToUser(
 			ServerWebExchange exchange, //exchange for authorization
 			@CookieValue(value="token") String token, //cookie to parse user value to get cards
 			@PathVariable String name) { //path variable to get card name
@@ -167,13 +163,13 @@ public class CardController {
 									.from("token", tokenService.makeToken(update))
 									.httpOnly(true).path("/").build());
 						} catch (JsonProcessingException e) {
-							return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(user));
+							exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
 							}})
 					.map(card -> ResponseEntity.status(201).body(card));
 			
-			//return cardService.addCardToUser(name, u	ser).map(card -> ResponseEntity.status(201).body(card));
+			//return cardService.addCardToUser(name, user).map(card -> ResponseEntity.status(201).body(card));
 		} catch (Exception e) {
-			return Mono.just(ResponseEntity.status(500).body(user));//if we fuck up
+			return Mono.just(ResponseEntity.status(500).body(e));//if there is a problem
 		}
 	}
 	

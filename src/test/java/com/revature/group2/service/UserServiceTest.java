@@ -1,10 +1,14 @@
 package com.revature.group2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -67,52 +71,42 @@ public class UserServiceTest {
 		Mono<User> result = userService.getUser("thomas15399");
 		assertThat(result).isEqualTo(nullMono);
 	}
+	@Test
+	void testGetUserByUuid() {
+		UUID id = UUID.randomUUID();
+		User user = new User();
+		Mono<User> userMono = Mono.just(user);
+		when(userRepo.findByUuid(id)).thenReturn(userMono);
+		Mono<User> result = userService.getUserByUUID(id);
+		assertThat(result).isEqualTo(userMono);
+	}
+	@Test
+	void testGetUserBiUuidNoUserFound() {
+		UUID id = UUID.randomUUID();
+		Mono<User> nullMono = Mono.empty();
+		when(userRepo.findByUuid(id)).thenReturn(nullMono);
+		Mono<User> result = userService.getUserByUUID(id);
+		assertThat(result).isEqualTo(nullMono);
+	}
+	@Test
+	void testAddUser() {
+		User user = new User();
+		ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+		userService.addUser(user);
+		verify(userRepo).save(captor.capture());
+	}
+	
+	@Test
+	void testUpdateUser() {
+		Mono<User> user = Mono.just(new User());
+		ArgumentCaptor<Mono<User>> captor = ArgumentCaptor.forClass(Mono.class);
+		userService.updateUser(user);
+		verify(userRepo).saveAll(captor.capture());
+	}
 	/*
 	@Test
-	void testAddUserThatExists() {
-		User user = new User();
-		user.setName("thomas15399");
-		user.setPass("38831");
-		Mono<User> userMono = Mono.just(user);
-		when(userRepo.findById("thomas15399")).thenReturn(userMono);
-		when(userRepo.insert(user)).thenReturn(userMono);
-		Mono<User> result = userService.addUser(user);
-		assertThat(result).isNull();
-	}
-	@Test
-	void testAddUserThatDoesNotExist() {
-		Mono<User> nullMono = Mono.empty();
-		User user = new User();
-		user.setName("thomas15399");
-		user.setPass("38831");
-		Mono<User> userMono = Mono.just(user);
-		when(userRepo.findById("thomas15399")).thenReturn(nullMono);
-		when(userRepo.insert(user)).thenReturn(userMono);
-		Mono<User> result = userService.addUser(user);
-		assertThat(result).isNotNull();
-	}
-	@Test
-	void testUpdateUserThatExists() {
-		User user = new User();
-		user.setName("thomas15399");
-		user.setPass("38831");
-		Mono<User> userMono = Mono.just(user);
-		when(userRepo.findById("thomas15399")).thenReturn(userMono);
-		when(userRepo.save(user)).thenReturn(userMono);
-		Flux<User> result = userService.updateUser(Mono.just(user));
-		assertThat(result).isNotNull();
-	}
-	@Test
 	void testUpdateUserThatDoesNotExist() {
-		Mono<User> nullMono = Mono.empty();
-		User user = new User();
-		user.setName("thomas15399");
-		user.setPass("38831");
-		Mono<User> userMono = Mono.just(user);
-		when(userRepo.findById("thomas15399")).thenReturn(nullMono);
-		when(userRepo.save(user)).thenReturn(userMono);
-		Flux<User> result = userService.updateUser(Mono.just(user));
-		assertThat(result).isNull();
+		
 	}
 	*/
 }

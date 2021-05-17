@@ -53,8 +53,41 @@ public class DeckServiceImp implements DeckService {
 
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
-		Flux<Deck> decks = deckRepo.findAll();
-		return decks.filter(deck -> user.getDecks().contains(deck.getKey().getUuid().toString()));
+		return userRepo.findById(user.getUuid())
+				.flatMapMany(u -> {
+				return deckRepo.findAll().filter(deck -> u.getDecks().contains(deck.getKey().getUuid().toString()));
+				});
+			
+//		return deckRepo.findAll()
+//				.filter(
+//						deck -> {
+//							boolean bool = () -> {
+//								
+//							};
+//							userRepo.findById(user.getUuid())
+//							.doOnNext(u -> {
+//								bool = u.getDecks().contains(deck.getKey().getUuid().toString());
+//										});
+//							return bool;
+//						});
+						//user.getDecks().contains(deck.getKey().getUuid().toString()
+								
+		
+//		return userRepo.findById(user.getUuid())//gets User
+//		.map(u -> {
+//			deckRepo.findAll().filter(deck ->
+//				u.getDecks().contains(deck.getKey().getUuid())
+//			boolean bool = false;
+//			user.getDecks().stream().forEach(deckId ->{
+//				
+//				if(deck.getKey().getUuid().equals(UUID.fromString(deckId))) {
+//					bool =  true;
+//				}});
+//			return bool;
+//			);
+//		});
+//		Flux<Deck> decks = deckRepo.findAll();
+//		return decks.filter(deck -> user.getDecks().contains(deck.getKey().getUuid().toString()));
 	}
 	
 	@Override
@@ -66,18 +99,7 @@ public class DeckServiceImp implements DeckService {
 
 
 	@Override
-	public Mono<Deck> addCardToDeck(User user, String deckUuid, String cardUuid) {// user to save to, uuid of deck // uuid of card
-		
-//		return userRepo.findByName(user.getName())//get User by name
-//				.flatMap(u-> cardRepo.findByName(name)//get card by name
-//				.map(card -> {
-//							u.addCard(card); //add card to user
-//							return u;
-//							})
-//				.doOnNext(update -> {
-//					System.out.println(update);
-//					userRepo.save(update).subscribe();
-//				}));
+	public Mono<Deck> addCardToDeck(User user, String deckUuid, String cardUuid) {// user to save to, uuid of deck, uuid of card
 		
 		return userRepo.findById(user.getUuid())//getUser by name
 				.flatMap(u -> {	
@@ -109,13 +131,12 @@ public class DeckServiceImp implements DeckService {
 		}
 		return deckRepo.saveAll(Mono.just(deck));
 	}
-
+	
 	@Override
 	public Mono<User> addDeckToUser(
 			User user, 
 			Archetype primaryArchetype, 
 			Archetype secondaryArchetype) {
-				
 		return userRepo.findByName(user.getName())
 				.flatMap(filteredUser ->{
 					return deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
@@ -124,12 +145,7 @@ public class DeckServiceImp implements DeckService {
 								return userRepo.save(filteredUser);
 						});
 			});
-//		deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
-//				.doOnNext(deck -> {
-//					user.addDeck(deck);
-//		});
-//		userRepo.saveAll(Mono.just(user));
-//		return Mono.just(user);
+
 	}
 
 	@Override
