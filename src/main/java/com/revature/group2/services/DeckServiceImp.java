@@ -98,13 +98,12 @@ public class DeckServiceImp implements DeckService {
 		}
 		return deckRepo.saveAll(Mono.just(deck));
 	}
-
+	
 	@Override
 	public Mono<User> addDeckToUser(
 			User user, 
 			Archetype primaryArchetype, 
 			Archetype secondaryArchetype) {
-				
 		return userRepo.findByName(user.getName())
 				.flatMap(filteredUser ->{
 					return deckRepo.save(new Deck(user.getName(), primaryArchetype, secondaryArchetype))
