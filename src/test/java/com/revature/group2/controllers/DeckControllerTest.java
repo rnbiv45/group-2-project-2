@@ -27,6 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ServerWebExchange;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.group2.beans.Archetype;
 import com.revature.group2.beans.Deck;
 import com.revature.group2.beans.DeckKey;
@@ -63,6 +64,11 @@ public class DeckControllerTest {
 		@Bean
 		public UserService getUserService() {
 			return Mockito.mock(UserService.class);
+		}
+		
+		@Bean
+		public ObjectMapper getMapper() {
+			return Mockito.mock(ObjectMapper.class);
 		}
 	}
 	@Autowired
