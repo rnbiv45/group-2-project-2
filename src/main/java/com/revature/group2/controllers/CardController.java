@@ -4,7 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.apache.tinkerpop.shaded.minlog.Log;
+import javax.swing.text.html.HTML;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.datastax.oss.driver.api.querybuilder.update.Update;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.revature.group2.aspects.Admin;
 import com.revature.group2.aspects.Authorized;
@@ -153,7 +153,7 @@ public class CardController {
 	//Add Card to User
 	@Authorized
 	@GetMapping(path="/cards/new/{name}")
-	public Mono<ResponseEntity<Object>> addCardToUser(
+	public Mono<ResponseEntity<User>> addCardToUser(
 			ServerWebExchange exchange, //exchange for authorization
 			@CookieValue(value="token") String token, //cookie to parse user value to get cards
 			@PathVariable String name) { //path variable to get card name
@@ -167,14 +167,13 @@ public class CardController {
 									.from("token", tokenService.makeToken(update))
 									.httpOnly(true).path("/").build());
 						} catch (JsonProcessingException e) {
-							e.printStackTrace();
-							
-						}})
+							return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(user));
+							}})
 					.map(card -> ResponseEntity.status(201).body(card));
 			
-			//return cardService.addCardToUser(name, user).map(card -> ResponseEntity.status(201).body(card));
+			//return cardService.addCardToUser(name, u	ser).map(card -> ResponseEntity.status(201).body(card));
 		} catch (Exception e) {
-			return Mono.just(ResponseEntity.status(500).body(e));//if we fuck up
+			return Mono.just(ResponseEntity.status(500).body(user));//if we fuck up
 		}
 	}
 	
