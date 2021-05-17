@@ -44,14 +44,21 @@ public class CardServiceImp implements CardService {
 
 	@Override
 	public Flux<Card> getCardsFromUser(User user) {
-		return cardRepo.findAll().filter(c -> {
-			for (String result : user.getCards().keySet()) {
-				if (c.equals(result)) {
-					return true;
-				}
-			}
-			return false;
-		});
+		return userRepo.findById(user.getUuid())
+				.flatMapMany(u -> {
+					return cardRepo.findAll()
+							.filter(card -> 
+							u.getCards().keySet().contains(card.getKey().getUuid().toString()));
+				});
+		
+//		return cardRepo.findAll().filter(c -> {
+//			for (String result : user.getCards().keySet()) {
+//				if (c.equals(result)) {
+//					return true;
+//				}
+//			}
+//			return false;
+//		});
 	}
 
 	@Override

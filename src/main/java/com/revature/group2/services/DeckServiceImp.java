@@ -53,8 +53,41 @@ public class DeckServiceImp implements DeckService {
 
 	@Override
 	public Flux<Deck> getUserDecks(User user) {
-		Flux<Deck> decks = deckRepo.findAll();
-		return decks.filter(deck -> user.getDecks().contains(deck.getKey().getUuid().toString()));
+		return userRepo.findById(user.getUuid())
+				.flatMapMany(u -> {
+				return deckRepo.findAll().filter(deck -> u.getDecks().contains(deck.getKey().getUuid().toString()));
+				});
+			
+//		return deckRepo.findAll()
+//				.filter(
+//						deck -> {
+//							boolean bool = () -> {
+//								
+//							};
+//							userRepo.findById(user.getUuid())
+//							.doOnNext(u -> {
+//								bool = u.getDecks().contains(deck.getKey().getUuid().toString());
+//										});
+//							return bool;
+//						});
+						//user.getDecks().contains(deck.getKey().getUuid().toString()
+								
+		
+//		return userRepo.findById(user.getUuid())//gets User
+//		.map(u -> {
+//			deckRepo.findAll().filter(deck ->
+//				u.getDecks().contains(deck.getKey().getUuid())
+//			boolean bool = false;
+//			user.getDecks().stream().forEach(deckId ->{
+//				
+//				if(deck.getKey().getUuid().equals(UUID.fromString(deckId))) {
+//					bool =  true;
+//				}});
+//			return bool;
+//			);
+//		});
+//		Flux<Deck> decks = deckRepo.findAll();
+//		return decks.filter(deck -> user.getDecks().contains(deck.getKey().getUuid().toString()));
 	}
 	
 	@Override
