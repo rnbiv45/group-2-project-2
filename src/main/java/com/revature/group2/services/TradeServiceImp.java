@@ -43,6 +43,7 @@ public class TradeServiceImp implements TradeService {
 		this.userRepo = userRepo;
 	}
 
+	//can't make a card from raw json
 	@Override
 	public Flux<Trade> viewTradesForCard(Card card) {
 		return tradeRepo.findAll().filter(trade -> trade.getCard1().equals(card.getKey().getUuid().toString()));
@@ -85,32 +86,22 @@ public class TradeServiceImp implements TradeService {
 
 	@Override
 	public Mono<Trade> acceptTrade(UUID tradeId, User user) {
-		System.out.println("1");
 		return tradeRepo.findById(tradeId).flatMap(tradeInSystem -> {
-			System.out.println("2");
 			if(tradeInSystem == null) {
 				return Mono.empty();
 			}
 			return userRepo.findByUuid(tradeInSystem.getPosterId()).flatMap(poster -> {
-				System.out.println("3");
 				if(poster == null) {
 					return Mono.empty();
 				}
 				return userRepo.findByUuid(user.getUuid()).flatMap(acceptor -> {
-					System.out.println("3");
 					if(acceptor == null) {
 						return Mono.empty();
 					}
-					System.out.println("4");
 					Map<String, Integer> cards1 = poster.getCards();
 					Map<String, Integer> cards2 = acceptor.getCards();
 					//check if both parties have their cards
-					System.out.println(cards1);
-					System.out.println(tradeInSystem.getCard1().toString());
-					System.out.println(cards2);
-					System.out.println(tradeInSystem.getCard2().toString());
 					if (cards1.containsKey(tradeInSystem.getCard1().toString()) && cards2.containsKey(tradeInSystem.getCard2().toString())){
-						System.out.println("5");
 						//remove poster's giving card to poster
 						if(cards1.get(tradeInSystem.getCard1()) > 1) {
 							cards1.replace(tradeInSystem.getCard1(), cards1.get(tradeInSystem.getCard1())-1);
@@ -135,11 +126,8 @@ public class TradeServiceImp implements TradeService {
 						} else {
 							cards2.put(tradeInSystem.getCard1(), 1);
 						}
-						System.out.println("6");
 						user.setCards(cards2);
-						System.out.println(acceptor);
 						poster.setCards(cards1);
-						System.out.println(poster);
 						tradeInSystem.setAcceptor(acceptor.getName());
 						tradeInSystem.setAcceptorId(acceptor.getUuid());
 						tradeInSystem.setTradeStatus(TradeStatus.ACCEPTED);

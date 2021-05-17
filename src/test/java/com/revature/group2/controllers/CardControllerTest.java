@@ -23,6 +23,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.group2.beans.Card;
 import com.revature.group2.beans.User;
 import com.revature.group2.services.CardService;
@@ -50,6 +51,10 @@ public class CardControllerTest {
 		@Bean
 		public JWTParser getParser() {
 			return Mockito.mock(JWTParser.class);
+		}
+		@Bean
+		public ObjectMapper getMapper() {
+			return Mockito.mock(ObjectMapper.class);
 		}
 	}
 	
