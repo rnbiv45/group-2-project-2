@@ -1,10 +1,15 @@
 package com.revature.group2.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -20,6 +25,7 @@ import com.revature.group2.beans.User;
 import com.revature.group2.services.UserService;
 import com.revature.group2.utils.JWTParser;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -77,4 +83,13 @@ public class UserControllerTest {
 		ResponseEntity<Void> result = userController.logout(exchange);
 		assertTrue(result.getStatusCodeValue() == 204);
 	}
+	/*
+	@Test
+	void testBanUser() {
+		ArgumentCaptor<Optional<UUID>> captor = ArgumentCaptor.forClass(Optional.class);
+		MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.delete("/users/{uuid}"));
+		userController.ban(exchange, Optional.of(UUID.randomUUID()));
+		verify(userService.banUser(captor.capture()));
+	}
+	*/
 }
