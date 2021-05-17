@@ -26,9 +26,9 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping(value="/trade")
 public class TradeController {
-	TradeService tradeService;
+	private TradeService tradeService;
 	private JWTParser tokenService;
-	private String tokenString = "token";
+	private String tokenString;
 	
 	@Autowired
 	public void setTradeService(TradeService tradeService) {
@@ -36,8 +36,13 @@ public class TradeController {
 	}
 	
 	@Autowired
-	public void setTokenServicer(JWTParser parser) {
+	public void setTokenService(JWTParser parser) {
 		this.tokenService = parser;
+	}
+	
+	@Autowired
+	public void setTokenString() {
+		this.tokenString = "token";
 	}
 	
 	@Authorized
@@ -94,8 +99,6 @@ public class TradeController {
 					trade.setPosterId(user.getUuid());
 					trade.setAcceptor("pending");
 					trade.setAcceptorId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-					System.out.println(trade);
-					System.out.println(user);
 					return tradeService.submitTrade(trade);
 				}
 			}
